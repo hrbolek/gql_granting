@@ -32,12 +32,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          
-      - name: Group of log lines
-        run: |
-            echo "::group::full metadata"
-            echo "${{DOCKER_METADATA_OUTPUT_JSON}}"
-            echo "::endgroup::"
-            echo "::group::full metadata"
-            echo "${{DOCKER_METADATA_OUTPUT_JSON}}"
-            echo "::endgroup::"            
+
