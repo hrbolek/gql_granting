@@ -807,13 +807,12 @@ class Query:
         result = await AcSubjectGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds a subject by its id""")
+    @strawberryA.field(description="""Lists all subjects""")
     async def acsubject_page(
         self, info: strawberryA.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10
-    ) -> Union["AcSubjectGQLModel", None]:
+    ) -> List["AcSubjectGQLModel"]:
         loader = getLoaders(info).subjects
-        result = await loader.page()
-        result = await AcSubjectGQLModel.resolve_reference(info, id)
+        result = await loader.page(skip=skip, limit=limit)
         return result
 
     @strawberryA.field(description="""Finds a subject semester by its id""")
@@ -823,7 +822,7 @@ class Query:
         result = await AcSemesterGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds a subject semester by its id""")
+    @strawberryA.field(description="""Lists all semesters""")
     async def acsemester_page(
         self, info: strawberryA.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10
     ) -> List["AcSemesterGQLModel"]:
