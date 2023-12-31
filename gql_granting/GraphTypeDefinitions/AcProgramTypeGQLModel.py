@@ -25,7 +25,7 @@ ProgramUpdateGQLModel= Annotated["ProgramUpdateGQLModel",strawberry.lazy(".AcPro
 class AcProgramTypeGQLModel:
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).programtype
+        loader = getLoadersFromInfo(info).programtypes
         return loader
 
     @strawberry.field(description="""primary key""")

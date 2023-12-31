@@ -24,7 +24,7 @@ GroupGQLModel= Annotated["GroupGQLModel",strawberry.lazy(".externals")]
 class AcProgramGQLModel:
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).program
+        loader = getLoadersFromInfo(info).programs
         return loader
 
     @strawberry.field(description="""primary key""")

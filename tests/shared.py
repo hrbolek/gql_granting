@@ -48,11 +48,11 @@ async def prepare_demodata(async_session_maker):
     )
 
 
-from gql_granting.Dataloaders import createLoaders_3, createLoaders
+from utils.Dataloaders import createLoaders_2
 
 
 async def createContext(asyncSessionMaker):
     return {
         "asyncSessionMaker": asyncSessionMaker,
-        "all": await createLoaders(asyncSessionMaker),
+        "all": await createLoaders_2(asyncSessionMaker),
     }

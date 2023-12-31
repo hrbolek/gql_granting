@@ -24,24 +24,24 @@ from ..DBDefinitions import (
 
 
 dbmodels = {
-    "programformtype":ProgramFormTypeModel,
-    "programgroup":ProgramGroupModel,
-    "programlanguagetype":ProgramLanguageTypeModel,
-    "programleveltype":ProgramLevelTypeModel,
-    "program":ProgramModel,
-    "programtitletype":ProgramTitleTypeModel,
-    "programtype":ProgramTypeModel,
-    "programstudents":ProgramStudents,
+    "programforms": ProgramFormTypeModel,
+    "programgroups": ProgramGroupModel,
+    "programlanguages": ProgramLanguageTypeModel,
+    "programleveltypes": ProgramLevelTypeModel,
+    "programs": ProgramModel,
+    "programtitletypes": ProgramTitleTypeModel,
+    "programtypes": ProgramTypeModel,
+    "programstudents": ProgramStudents,
 
-    "classificationlevel":ClassificationLevelModel,
-    "classification":ClassificationModel,
-    "classificationtype":ClassificationTypeModel,
+    "classificationlevels": ClassificationLevelModel,
+    "classifications": ClassificationModel,
+    "classificationtypes": ClassificationTypeModel,
     
-    "subject":SubjectModel,
-    "semester":SemesterModel,
-    "topic":TopicModel,
-    "lesson":LessonModel,
-    "lessontype":LessonTypeModel
+    "subjects": SubjectModel,
+    "semesters": SemesterModel,
+    "topics": TopicModel,
+    "lessons": LessonModel,
+    "lessontypes": LessonTypeModel
 }
 
 import datetime
@@ -51,126 +51,6 @@ import os
 from aiodataloader import DataLoader
 from uoishelpers.resolvers import select, update, delete
 from uoishelpers.dataloaders import createIdLoader
-
-
-# def prepareSelect(model, where: dict):   
-#     usedTables = [model.__tablename__]
-#     from sqlalchemy import select, and_, or_
-#     baseStatement = select(model)
-#     # stmt = select(GroupTypeModel).join(GroupTypeModel.groups.property.target).filter(GroupTypeModel.groups.property.target.c.name == "22-5KB")
-#     # type(GroupTypeModel.groups.property) sqlalchemy.orm.relationships.RelationshipProperty
-#     # GroupTypeModel.groups.property.entity.class_
-#     def limitDict(input):
-#         if isinstance(input, list):
-#             return [limitDict(item) for item in input]
-#         if not isinstance(input, dict):
-#             # print("limitDict", input)
-#             return input
-#         result = {key: limitDict(value) if isinstance(value, dict) else value for key, value in input.items() if value is not None}
-#         return result
-    
-#     def convertAnd(model, name, listExpr):
-#         assert len(listExpr) > 0, "atleast one attribute in And expected"
-#         results = [convertAny(model, w) for w in listExpr]
-#         return and_(*results)
-
-#     def convertOr(model, name, listExpr):
-#         # print("enter convertOr", listExpr)
-#         assert len(listExpr) > 0, "atleast one attribute in Or expected"
-#         results = [convertAny(model, w) for w in listExpr]
-#         return or_(*results)
-
-#     def convertAttributeOp(model, name, op, value):
-#         # print("convertAttributeOp", type(model))
-#         # print("convertAttributeOp", model, name, op, value)
-#         column = getattr(model, name)
-#         assert column is not None, f"cannot map {name} to model {model.__tablename__}"
-#         opMethod = getattr(column, op)
-#         assert opMethod is not None, f"cannot map {op} to attribute {name} of model {model.__tablename__}"
-#         return opMethod(value)
-
-#     def convertRelationship(model, attributeName, where, opName, opValue):
-#         # print("convertRelationship", model, attributeName, where, opName, opValue)
-#         # GroupTypeModel.groups.property.entity.class_
-#         targetDBModel = getattr(model, attributeName).property.entity.class_
-#         # print("target", type(targetDBModel), targetDBModel)
-
-#         nonlocal baseStatement
-#         if targetDBModel.__tablename__ not in usedTables:
-#             baseStatement = baseStatement.join(targetDBModel)
-#             usedTables.append(targetDBModel.__tablename__)
-#         #return convertAttribute(targetDBModel, attributeName, opValue)
-#         return convertAny(targetDBModel, opValue)
-        
-#         # stmt = select(GroupTypeModel).join(GroupTypeModel.groups.property.target).filter(GroupTypeModel.groups.property.target.c.name == "22-5KB")
-#         # type(GroupTypeModel.groups.property) sqlalchemy.orm.relationships.RelationshipProperty
-
-#     def convertAttribute(model, attributeName, where):
-#         woNone = limitDict(where)
-#         #print("convertAttribute", model, attributeName, woNone)
-#         keys = list(woNone.keys())
-#         assert len(keys) == 1, "convertAttribute: only one attribute in where expected"
-#         opName = keys[0]
-#         opValue = woNone[opName]
-
-#         ops = {
-#             "_eq": "__eq__",
-#             "_lt": "__lt__",
-#             "_le": "__le__",
-#             "_gt": "__gt__",
-#             "_ge": "__ge__",
-#             "_in": "in_",
-#             "_like": "like",
-#             "_ilike": "ilike",
-#             "_startswith": "startswith",
-#             "_endswith": "endswith",
-#         }
-
-#         opName = ops.get(opName, None)
-#         # if opName is None:
-#         #     print("op", attributeName, opName, opValue)
-#         #     result = convertRelationship(model, attributeName, woNone, opName, opValue)
-#         # else:
-#         result = convertAttributeOp(model, attributeName, opName, opValue)
-#         return result
-        
-#     def convertAny(model, where):
-        
-#         woNone = limitDict(where)
-#         # print("convertAny", woNone, flush=True)
-#         keys = list(woNone.keys())
-#         # print(keys, flush=True)
-#         # print(woNone, flush=True)
-#         assert len(keys) == 1, "convertAny: only one attribute in where expected"
-#         key = keys[0]
-#         value = woNone[key]
-        
-#         convertors = {
-#             "_and": convertAnd,
-#             "_or": convertOr
-#         }
-#         #print("calling", key, "convertor", value, flush=True)
-#         #print("value is", value, flush=True)
-#         convertor = convertors.get(key, convertAttribute)
-#         convertor = convertors.get(key, None)
-#         modelAttribute = getattr(model, key, None)
-#         if (convertor is None) and (modelAttribute is None):
-#             assert False, f"cannot recognize {model}.{key} on {woNone}"
-#         if (modelAttribute is not None):
-#             property = getattr(modelAttribute, "property", None)
-#             target = getattr(property, "target", None)
-#             # print("modelAttribute", modelAttribute, target)
-#             if target is None:
-#                 result = convertAttribute(model, key, value)
-#             else:
-#                 result = convertRelationship(model, key, where, key, value)
-#         else:
-#             result = convertor(model, key, value)
-#         return result
-    
-#     filterStatement = convertAny(model, limitDict(where))
-#     result = baseStatement.filter(filterStatement)
-#     return result
 
 @cache
 def composeAuthUrl():
@@ -246,107 +126,6 @@ class AuthorizationLoader(DataLoader):
         indexedResult = {key:result for key, result in zip(reducedkeys, results)}
         results = [indexedResult[key] for key in keys]
         return results
-    
-# def createIdLoader(asyncSessionMaker, dbModel) :
-
-#     mainstmt = select(dbModel)
-#     filtermethod = dbModel.id.in_
-#     class Loader(DataLoader):
-#         async def batch_load_fn(self, keys):
-#             #print('batch_load_fn', keys, flush=True)
-#             async with asyncSessionMaker() as session:
-#                 statement = mainstmt.filter(filtermethod(keys))
-#                 rows = await session.execute(statement)
-#                 rows = rows.scalars()
-#                 #return rows
-#                 datamap = {}
-#                 for row in rows:
-#                     datamap[row.id] = row
-#                 result = [datamap.get(id, None) for id in keys]
-#                 return result
-
-#         async def insert(self, entity, extraAttributes={}):
-#             newdbrow = dbModel()
-#             newdbrow = update(newdbrow, entity, extraAttributes)
-#             async with asyncSessionMaker() as session:
-#                 session.add(newdbrow)
-#                 await session.commit()
-#             return newdbrow
-
-#         async def update(self, entity, extraValues={}):
-#             async with asyncSessionMaker() as session:
-#                 statement = mainstmt.filter_by(id=entity.id)
-#                 rows = await session.execute(statement)
-#                 rows = rows.scalars()
-#                 rowToUpdate = next(rows, None)
-
-#                 if rowToUpdate is None:
-#                     return None
-
-#                 dochecks = hasattr(rowToUpdate, 'lastchange')             
-#                 checkpassed = True  
-#                 if (dochecks):
-#                     if (entity.lastchange != rowToUpdate.lastchange):
-#                         result = None
-#                         checkpassed = False                        
-#                     else:
-#                         entity.lastchange = datetime.datetime.now()
-#                 if checkpassed:
-#                     rowToUpdate = update(rowToUpdate, entity, extraValues=extraValues)
-#                     await session.commit()
-#                     result = rowToUpdate
-#                     self.registerResult(result)               
-#             return result
-
-#         async def delete(self, id):
-#             statement = delete(dbModel).where(dbModel.id==id)
-#             async with asyncSessionMaker() as session:
-#                 result = await session.execute(statement)
-#                 await session.commit()
-#                 self.clear(id)
-#                 return result
-
-#         def registerResult(self, result):
-#             self.clear(result.id)
-#             self.prime(result.id, result)
-#             return result
-
-#         def getSelectStatement(self):
-#             return select(dbModel)
-        
-#         def getModel(self):
-#             return dbModel
-        
-#         def getAsyncSessionMaker(self):
-#             return asyncSessionMaker
-        
-#         async def execute_select(self, statement):
-#             async with asyncSessionMaker() as session:
-#                 rows = await session.execute(statement)
-#                 return (
-#                     self.registerResult(row)
-#                     for row in rows.scalars()
-#                 )
-            
-#         async def filter_by(self, **filters):
-#             statement = mainstmt.filter_by(**filters)
-#             return await self.execute_select(statement)
-
-#         async def page(self, skip=0, limit=10, where=None, extendedfilter=None):
-#             statement = mainstmt
-#             if where is not None:
-#                 statement = prepareSelect(dbModel, where)
-#             statement = statement.offset(skip).limit(limit)
-#             if extendedfilter is not None:
-#                 statement = statement.filter_by(**extendedfilter)
-#             logging.info(f"loader.page statement {statement}")
-#             return await self.execute_select(statement)
-            
-#         def set_cache(self, cache_object):
-#             self.cache = True
-#             self._cache = cache_object
-
-#     return Loader(cache=True)
 
 class Loaders:
     authorizations = None
@@ -422,6 +201,123 @@ def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
         
     return Loaders()
 
+async def createLoaders_2(asyncSessionMaker, models=dbmodels):
+    #probably needed, maybe a good idea to find a way to remove it
+    def createLambda(loaderName, DBModel):
+        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
+    
+    attrs = {}
+    for key, DBModel in models.items():
+        attrs[key] = property(cache(createLambda(key, DBModel)))
+    
+    Loaders = type('Loaders', (), attrs)   
+    return Loaders()
+
+async def createLoaders_3(asyncSessionMaker):
+    #for backwards compatibility or whatever, might remove later
+
+    class Loaders:
+        @property
+        @cache
+        def acprogramform_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramFormTypeModel)
+
+        @property
+        @cache
+        def acprogramlanguage_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramLanguageTypeModel)
+
+        @property
+        @cache
+        def acprogramlevel_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramLevelTypeModel)
+
+        @property
+        @cache
+        def acprogramtitle_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramTitleTypeModel)
+
+        @property
+        @cache
+        def acprogramtype_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramTypeModel)
+
+        @property
+        @cache
+        def acclassificationlevel_by_id(self):
+            return createIdLoader(asyncSessionMaker, ClassificationLevelModel)
+
+        @property
+        @cache
+        def acclassificationtype_by_id(self):
+            return createIdLoader(asyncSessionMaker, ClassificationTypeModel)
+
+        @property
+        @cache
+        def aclessontype_by_id(self):
+            return createIdLoader(asyncSessionMaker, LessonTypeModel)
+
+        @property
+        @cache
+        def acprogramgroup_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramGroupModel)
+
+        @property
+        @cache
+        def acprogram_by_id(self):
+            return createIdLoader(asyncSessionMaker, ProgramModel)
+
+        @property
+        @cache
+        def acsubject_by_id(self):
+            return createIdLoader(asyncSessionMaker, SubjectModel)
+
+        @property
+        @cache
+        def acsubject_for_program(self):
+            return createFkeyLoader(asyncSessionMaker, SubjectModel, foreignKeyName="program_id")
+
+        @property
+        @cache
+        def acsemester_for_subject(self):
+            return createFkeyLoader(asyncSessionMaker, SemesterModel, foreignKeyName="subject_id")
+
+        @property
+        @cache
+        def acsemester_by_id(self):
+            return createIdLoader(asyncSessionMaker, SemesterModel)
+
+        @property
+        @cache
+        def actopic_by_id(self):
+            return createIdLoader(asyncSessionMaker, TopicModel)
+
+        @property
+        @cache
+        def actopics_for_semester(self):
+            return createFkeyLoader(asyncSessionMaker, TopicModel, foreignKeyName="semester_id")
+
+        @property
+        @cache
+        def aclesson_by_id(self):
+            return createIdLoader(asyncSessionMaker, LessonModel)
+
+        @property
+        @cache
+        def aclessons_for_topic(self):
+            return createFkeyLoader(asyncSessionMaker, LessonModel, foreignKeyName="topic_id")
+
+        @property
+        @cache
+        def acclassification_by_id(self):
+            return createIdLoader(asyncSessionMaker, ClassificationModel)
+
+        @property
+        @cache
+        def acclassification_for_semester(self):
+            return createFkeyLoader(asyncSessionMaker, ClassificationModel, foreignKeyName="semester_id")
+
+    return Loaders()
 
 def getLoadersFromInfo(info) -> Loaders:
     context = info.context

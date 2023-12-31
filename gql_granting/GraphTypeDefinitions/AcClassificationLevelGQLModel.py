@@ -19,7 +19,7 @@ from .BaseGQLModel import BaseGQLModel
 class AcClassificationLevelGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).classificationlevel
+        loader = getLoadersFromInfo(info).classificationlevels
         return loader
 
     @strawberry.field(description="""primary key""")

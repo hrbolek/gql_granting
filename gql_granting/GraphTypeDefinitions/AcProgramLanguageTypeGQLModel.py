@@ -18,7 +18,7 @@ from .BaseGQLModel import BaseGQLModel
 class AcProgramFormTypeGQLModel:
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).programlanguagetype
+        loader = getLoadersFromInfo(info).programlanguages
         return loader
 
     @strawberry.field(description="primary key")

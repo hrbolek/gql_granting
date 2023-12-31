@@ -23,7 +23,7 @@ AcTopicGQLModel= Annotated["AcTopicGQLModel",strawberry.lazy(".AcTopicGQLModel")
 class AcLessonGQLModel:
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).lesson
+        loader = getLoadersFromInfo(info).lessons
         return loader
 
     @strawberry.field(description="""primary key""")

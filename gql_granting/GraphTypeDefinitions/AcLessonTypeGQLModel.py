@@ -16,7 +16,7 @@ from .BaseGQLModel import BaseGQLModel
 class AcLessonTypeGQLModel:
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).lessontype
+        loader = getLoadersFromInfo(info).lessontypes
         return loader
 
     @strawberry.field(description="primary key")
