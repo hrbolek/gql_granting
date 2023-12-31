@@ -3,11 +3,21 @@ import strawberry
 import strawberry as strawberryA
 #from .AcProgramGQLModel import AcProgramGQLModel
 from contextlib import asynccontextmanager
-from gql_granting.GraphResolvers import resolveProgramForGroup, resolveJSONForProgram
+from gql_granting.utils.GraphResolvers import resolveProgramForGroup, resolveJSONForProgram
 from .AcClassificationGQLModel import AcClassificationGQLModel
 from uuid import UUID
-
 AcProgramGQLModel= Annotated["AcProgramGQLModel",strawberryA.lazy(".AcProgramGQLModel")]
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context["asyncSessionMaker"]
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+def getLoaders(info):
+    return info.context['all']
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
@@ -15,7 +25,7 @@ class GroupGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: UUID):
-        return GroupGQLModel(id=id)
+        return GroupGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
     async def program(
         self, info: strawberryA.types.Info
     ) -> Union["AcProgramGQLModel", None]:
@@ -29,7 +39,7 @@ class UserGQLModel:
     id: UUID = strawberryA.federation.field(external=True)
     @classmethod
     async def resolve_reference(cls, id:UUID):
-        return UserGQLModel(id=id)
+        return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
@@ -37,8 +47,6 @@ class UserGQLModel:
 #         result = await resolveExternalIds(session,self.id)
 #         return result
 
-    def getLoaders(info):
-        return info.context['all']
 
     @strawberryA.field(description="""List of programs which the user is studying""")
     async def study_programs(self, info: strawberryA.types.Info) -> List['AcProgramGQLModel']:

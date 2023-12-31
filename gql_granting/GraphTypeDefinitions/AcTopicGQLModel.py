@@ -1,17 +1,13 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
-
-#from .AcSemesterGQLModel import AcSemesterGQLModel
-#from .AcLessonGQLModel import AcLessonGQLModel
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 AcSemesterGQLModel= Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterGQLModel")]
 AcLessonGQLModel= Annotated["AcLessonGQLModel",strawberry.lazy(".AcLessonGQLModel")]
@@ -20,11 +16,14 @@ AcLessonGQLModel= Annotated["AcLessonGQLModel",strawberry.lazy(".AcLessonGQLMode
     keys=["id"],
     description="""Entity which represents a theme included in semester of subject""",
 )
-class AcTopicGQLModel(BaseGQLModel):
+class AcTopicGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).topics
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).topics
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="""primary key""")
     def id(self) -> UUID:
@@ -61,9 +60,6 @@ class AcTopicGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-
 
 @strawberry.field(description="""Finds a topic by its id""")
 async def actopic_by_id(

@@ -34,7 +34,7 @@ def singleCall(asyncFunc):
     return result
 
 
-from gql_granting.DBFeeder import initDB
+from gql_granting.utils.DBFeeder import initDB
 
 
 @singleCall
@@ -45,7 +45,9 @@ async def RunOnceAndReturnSessionMaker():
     print(f'starting engine for "{connectionString}"')
 
     import os
-    makeDrop = os.environ.get("DEMO", "") == "true"
+    demo = os.environ.get("DEMO", None)
+    # makeDrop = demo in [None, "true"]
+    makeDrop = True
     result = await startEngine(
         connectionstring=connectionString, makeDrop=makeDrop, makeUp=True
     )
@@ -66,7 +68,7 @@ async def RunOnceAndReturnSessionMaker():
 
 from strawberry.asgi import GraphQL
 
-from gql_granting.utils.Dataloaders import createLoaders_3, createLoaders_2
+from gql_granting.utils.Dataloaders import createLoaders
 
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
@@ -87,7 +89,7 @@ class MyGraphQL(GraphQL):
             "asyncSessionMaker": asyncSessionMaker,
             "user": self._user,
             #"all": await createLoaders_3(asyncSessionMaker)
-            "all": await createLoaders_2(asyncSessionMaker)
+            "all": createLoaders(asyncSessionMaker)
         }
 
 from gql_granting.GraphTypeDefinitions import schema

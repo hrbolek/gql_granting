@@ -1,16 +1,16 @@
-import uuid
 import strawberry
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
-
 from .AcClassificationLevelGQLModel import AcClassificationLevelGQLModel
+
+
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".externals")]
 AcSemesterGQLModel= Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterGQLModel")]
@@ -19,11 +19,21 @@ AcSemesterGQLModel= Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterG
     keys=["id"],
     description="""Entity which holds a exam result for a subject semester and user / student""",
 )
-class AcClassificationGQLModel(BaseGQLModel):
+class AcClassificationGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).classifications
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        print("AcClassificationGQLModel.resolve_reference", type(id))
+        if not isinstance(id, UUID):
+            id = UUID(id)
+            
+        loader = getLoaders(info).classifications
+        # print("AcClassificationGQLModel.resolve_reference", loader)
+        result = await loader.load(id)
+        print(result)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+            result.__strawberry_definition__ = cls.__strawberry_definition__
+        return result
 
     @strawberry.field(description="""primary key""")
     def id(self) -> UUID:
@@ -65,9 +75,6 @@ class AcClassificationGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-
 
 @strawberry.field(description="""Lists classifications""")
 async def acclassification_page(

@@ -1,26 +1,26 @@
-import uuid
 import strawberry
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
-
-#UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 @strawberry.federation.type(keys=["id"], description="P, C, LC, S, ...")
-class AcLessonTypeGQLModel(BaseGQLModel):
+class AcLessonTypeGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).lessontypes
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).lessontypes
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="primary key")
-    def id(self) -> uuid.UUID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="name")
@@ -38,13 +38,10 @@ class AcLessonTypeGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-
 
 @strawberry.field(description="""Finds a lesson type by its id""")
 async def aclesson_type_by_id(
-        self, info: strawberry.types.Info, id: uuid.UUID
+        self, info: strawberry.types.Info, id: UUID
     ) -> Union["AcLessonTypeGQLModel", None]:
         result = await AcLessonTypeGQLModel.resolve_reference(info, id)
         return result

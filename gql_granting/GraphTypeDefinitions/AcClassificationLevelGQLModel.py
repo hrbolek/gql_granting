@@ -1,14 +1,14 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
+
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 #UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
 
@@ -16,11 +16,14 @@ from .BaseGQLModel import BaseGQLModel
     keys=["id"],
     description="""Mark which student could get as an exam evaluation""",
 )
-class AcClassificationLevelGQLModel(BaseGQLModel):
+class AcClassificationLevelGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).classificationlevels
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).classificationlevels
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="""primary key""")
     def id(self) -> UUID:

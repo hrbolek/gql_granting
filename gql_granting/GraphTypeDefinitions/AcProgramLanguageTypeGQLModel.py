@@ -1,23 +1,25 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
+from gql_granting.utils.GraphResolvers import resolveLanguageTypeById
 
-#UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 @strawberry.federation.type(keys=["id"], description="Study program language")
-class AcProgramLanguageTypeGQLModel(BaseGQLModel):
+class AcProgramLanguageTypeGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).programlanguages
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).programlanguages
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
 
     @strawberry.field(description="primary key")
     def id(self) -> UUID:
@@ -31,7 +33,7 @@ class AcProgramLanguageTypeGQLModel(BaseGQLModel):
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberry.field(description="date of lastchange")
+    @strawberry.field(description="")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     

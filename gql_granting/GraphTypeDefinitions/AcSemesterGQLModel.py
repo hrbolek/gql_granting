@@ -1,18 +1,15 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
-
-#from .AcTopicGQLModel import AcTopicGQLModel
 from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
-#from .AcClassificationGQLModel import AcClassificationGQLModel
+ 
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 AcClassificationGQLModel= Annotated["AcClassificationGQLModel",strawberry.lazy(".AcClassificationGQLModel")]
 AcTopicGQLModel= Annotated["AcTopicGQLModel",strawberry.lazy(".AcTopicGQLModel")]
@@ -21,14 +18,20 @@ AcSubjectGQLModel=Annotated["AcSubjectGQLModel",strawberry.lazy(".AcSubjectGQLMo
 @strawberry.federation.type(
     keys=["id"], description="""Entity representing each semester in study subject"""
 )
-class AcSemesterGQLModel(BaseGQLModel):
+class AcSemesterGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).semesters
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        if isinstance(id, str):
+             id = UUID(id)
+
+        loader = getLoaders(info).semesters
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> uuid.UUID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""semester number""")
@@ -73,13 +76,10 @@ class AcSemesterGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-
 
 @strawberry.field(description="""Finds a subject semester by its id""")
 async def acsemester_by_id(
-        self, info: strawberry.types.Info, id: uuid.UUID
+        self, info: strawberry.types.Info, id: UUID
     ) -> Union["AcSemesterGQLModel", None]:
         result = await AcSemesterGQLModel.resolve_reference(info, id)
         return result
@@ -98,25 +98,25 @@ async def acsemester_page(
 
 @strawberry.input
 class SemesterInsertGQLModel:
-    subject_id:uuid.UUID
-    classificationtype_id: uuid.UUID
+    subject_id:UUID
+    classificationtype_id: UUID
     order: Optional[int] = 0
     credits: Optional[int] = 0
-    id: Optional[uuid.UUID] = None
+    id: Optional[UUID] = None
     valid: Optional[bool] = True
 
 @strawberry.input
 class SemesterUpdateGQLModel:
-    id: uuid.UUID
+    id: UUID
     lastchange: datetime.datetime
     valid: Optional[bool] = None
     order: Optional[int] = None
     credits: Optional[int] = None
-    classificationtype_id: Optional[uuid.UUID] = None
+    classificationtype_id: Optional[UUID] = None
 
 @strawberry.type
 class SemesterResultGQLModel:
-    id: uuid.UUID = None
+    id: UUID = None
     msg: str = None
 
     @strawberry.field(description="""Result of semester operation""")

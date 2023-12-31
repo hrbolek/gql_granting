@@ -1,20 +1,18 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
-
-#from .AcProgramGQLModel import ProgramUpdateGQLModel
 from .AcProgramFormTypeGQLModel import AcProgramFormTypeGQLModel
 from .AcProgramTitleTypeGQLModel import AcProgramTitleTypeGQLModel
 from .AcProgramLevelTypeGQLModel import AcProgramLevelTypeGQLModel
 from .AcProgramLanguageTypeGQLModel import AcProgramLanguageTypeGQLModel 
+
+def getLoaders(info):    
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 ProgramUpdateGQLModel= Annotated["ProgramUpdateGQLModel",strawberry.lazy(".AcProgramGQLModel")]
 
@@ -22,11 +20,14 @@ ProgramUpdateGQLModel= Annotated["ProgramUpdateGQLModel",strawberry.lazy(".AcPro
     keys=["id"],
     description="""Encapsulation of language, level, type etc. of program. This is intermediate entity for acredited program and its types""",
 )
-class AcProgramTypeGQLModel(BaseGQLModel):
+class AcProgramTypeGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).programtypes
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).programtypes
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="""primary key""")
     def id(self) -> UUID:
@@ -69,9 +70,6 @@ class AcProgramTypeGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-
 
 @strawberry.field(description="""Finds a program type its id""")
 async def program_type_by_id(

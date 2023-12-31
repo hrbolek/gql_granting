@@ -1,19 +1,15 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
 from .externals import GroupGQLModel 
-#from .AcProgramGQLModel import AcProgramGQLModel
-#from .AcSemesterGQLModel import AcSemesterGQLModel
 
-#UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 AcProgramGQLModel = Annotated["AcProgramGQLModel",strawberry.lazy(".AcProgramGQLModel")]
 AcSemesterGQLModel =Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterGQLModel")]
@@ -22,14 +18,17 @@ AcSemesterGQLModel =Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterG
     keys=["id"],
     description="""Entity which connects programs and semesters, includes informations about subjects (divided into semesters)""",
 )
-class AcSubjectGQLModel(BaseGQLModel):
+class AcSubjectGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).subjects
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).subjects
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> uuid.UUID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""time stamp""")
@@ -72,15 +71,11 @@ class AcSubjectGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-def getUser(info):
-    return info.context["user"]
 
 @strawberry.field(description="""Finds a subject by its id""")
 async def acsubject_by_id(
-        self, info: strawberry.types.Info, id: uuid.UUID
-    ) -> typing.Optional[AcSubjectGQLModel]:
+        self, info: strawberry.types.Info, id: UUID
+    ) -> Optional[AcSubjectGQLModel]:
         result = await AcSubjectGQLModel.resolve_reference(info, id)
         return result
 
@@ -101,13 +96,13 @@ async def acsubject_page(
 class SubjectInsertGQLModel:
     name: str
     name_en: str
-    program_id: uuid.UUID
-    id: Optional[uuid.UUID] = None
+    program_id: UUID
+    id: Optional[UUID] = None
     valid: Optional[bool] = True
 
 @strawberry.input
 class SubjectUpdateGQLModel:
-    id: uuid.UUID
+    id: UUID
     lastchange: datetime.datetime
     name: Optional[str] = None
     name_en: Optional[str] = None
@@ -115,7 +110,7 @@ class SubjectUpdateGQLModel:
 
 @strawberry.type
 class SubjectResultGQLModel:
-    id: uuid.UUID = None
+    id: UUID = None
     msg: str = None
 
     @strawberry.field(description="""Result of subject operation""")

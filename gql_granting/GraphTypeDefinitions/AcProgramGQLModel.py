@@ -1,17 +1,15 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
-
 from .AcProgramEditorGQLModel import AcProgramEditorGQLModel
-#from .AcSubjectGQLModel import AcSubjectGQLModel
+
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".externals")]
 AcSubjectGQLModel = Annotated["AcSubjectGQLModel",strawberry.lazy(".AcSubjectGQLModel")]
@@ -21,14 +19,19 @@ GroupGQLModel= Annotated["GroupGQLModel",strawberry.lazy(".externals")]
 @strawberry.federation.type(
     keys=["id"], description="""Entity representing acredited study programs"""
 )
-class AcProgramGQLModel(BaseGQLModel):
+class AcProgramGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).programs
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        if isinstance(id, str):
+             id = UUID(id)
+        loader = getLoaders(info).programs
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> uuid.UUID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""name""")
@@ -78,10 +81,8 @@ class AcProgramGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
 
-from typing import NewType
+from typing import Any, NewType
 
 JSON = strawberry.scalar(
     NewType("JSON", object),
@@ -96,8 +97,8 @@ class ProgramWhereFilter:
 
 @strawberry.field(description="""Finds an program by their id""")
 async def program_by_id(
-        self, info: strawberry.types.Info, id: uuid.UUID #strawberry.ID
-    ) -> typing.Optional[AcProgramGQLModel]:
+        self, info: strawberry.types.Info, id: UUID #strawberry.ID
+    ) -> Optional[AcProgramGQLModel]:
         print(type(id))
         result = await AcProgramGQLModel.resolve_reference(info=info, id=id)
         return result
@@ -117,21 +118,21 @@ async def program_page(
 @strawberry.input(description="Define input for the program" )
 class ProgramInsertGQLModel:
     name: str
-    type_id: uuid.UUID
-    id: Optional[uuid.UUID] = None
+    type_id: UUID
+    id: Optional[UUID] = None
     pass
 
 @strawberry.input(description="Update type of the program")
 class ProgramUpdateGQLModel:
-    id: uuid.UUID
+    id: UUID
     lastchange: datetime.datetime
     name: Optional[str] = None
     name_en: Optional[str] = None
-    type_id: Optional[uuid.UUID] = None
+    type_id: Optional[UUID] = None
 
 @strawberry.type
 class ProgramResultGQLModel:
-    id: uuid.UUID = None
+    id: UUID = None
     msg: str = None
 
     @strawberry.field(description="""Result of user operation""")

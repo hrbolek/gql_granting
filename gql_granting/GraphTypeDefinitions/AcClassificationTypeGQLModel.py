@@ -1,25 +1,27 @@
 import strawberry
-import uuid
-import typing
 import datetime
-import logging
 import asyncio
-from uuid import UUID
+from uuid import UUID 
 from typing import Optional, List, Union, Annotated
 
-from ..utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
-from .BaseGQLModel import BaseGQLModel
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
 #UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
 
 @strawberry.federation.type(
     keys=["id"], description="Classification at the end of semester"
 )
-class AcClassificationTypeGQLModel(BaseGQLModel):
+class AcClassificationTypeGQLModel:
     @classmethod
-    def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).classificationtypes
-        return loader
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+        loader = getLoaders(info).classificationtypes
+        result = await loader.load(id)
+        if result is not None:
+            result.__strawberry_definition__ = cls.__strawberry_definition__  # little hack :)
+        return result
 
     @strawberry.field(description="primary key")
     def id(self) -> UUID:
@@ -40,9 +42,6 @@ class AcClassificationTypeGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
-def getLoaders(info):
-    return info.context['all']
-
 
 @strawberry.field(description="""Lists classifications types""")
 async def acclassification_type_page(
