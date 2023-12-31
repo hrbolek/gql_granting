@@ -15,7 +15,7 @@ from .BaseGQLModel import BaseGQLModel
 @strawberry.federation.type(
     keys=["id"], description="Classification at the end of semester"
 )
-class AcClassificationTypeGQLModel():
+class AcClassificationTypeGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).classificationtypes

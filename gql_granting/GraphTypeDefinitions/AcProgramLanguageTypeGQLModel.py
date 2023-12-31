@@ -13,7 +13,7 @@ from .BaseGQLModel import BaseGQLModel
 #UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
 
 @strawberry.federation.type(keys=["id"], description="Study program language")
-class AcProgramLanguageTypeGQLModel:
+class AcProgramLanguageTypeGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).programlanguages

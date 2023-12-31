@@ -21,7 +21,7 @@ GroupGQLModel= Annotated["GroupGQLModel",strawberry.lazy(".externals")]
 @strawberry.federation.type(
     keys=["id"], description="""Entity representing acredited study programs"""
 )
-class AcProgramGQLModel:
+class AcProgramGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).programs

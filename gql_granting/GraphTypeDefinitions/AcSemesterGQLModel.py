@@ -21,7 +21,7 @@ AcSubjectGQLModel=Annotated["AcSubjectGQLModel",strawberry.lazy(".AcSubjectGQLMo
 @strawberry.federation.type(
     keys=["id"], description="""Entity representing each semester in study subject"""
 )
-class AcSemesterGQLModel:
+class AcSemesterGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).semesters
@@ -53,7 +53,7 @@ class AcSemesterGQLModel:
     async def classification_type(self, info: strawberry.types.Info) -> "AcClassificationTypeGQLModel":
         result = await AcClassificationTypeGQLModel.resolve_reference(info, self.classificationtype_id)
         return result
-        
+
     #might have to look into this one
     @strawberry.field(description="""Final classification of the semester""")
     async def classifications(

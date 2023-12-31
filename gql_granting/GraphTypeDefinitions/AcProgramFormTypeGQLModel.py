@@ -15,7 +15,7 @@ from .BaseGQLModel import BaseGQLModel
 @strawberry.federation.type(
     keys=["id"], description="Program form type (Present, distant, ...)"
 )
-class AcProgramFormTypeGQLModel:
+class AcProgramFormTypeGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).programforms

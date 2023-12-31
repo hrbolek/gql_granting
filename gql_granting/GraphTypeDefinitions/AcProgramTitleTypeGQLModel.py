@@ -12,8 +12,14 @@ from .BaseGQLModel import BaseGQLModel
 
 #UserGQLModel= Annotated["UserGQLModel",strawberry.lazy(".granting")]
 
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
+
+
 @strawberry.federation.type(keys=["id"], description="Bc., Ing., ...")
-class AcProgramTitleTypeGQLModel:
+class AcProgramTitleTypeGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).programtitletypes

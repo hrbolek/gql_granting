@@ -22,7 +22,7 @@ ProgramUpdateGQLModel= Annotated["ProgramUpdateGQLModel",strawberry.lazy(".AcPro
     keys=["id"],
     description="""Encapsulation of language, level, type etc. of program. This is intermediate entity for acredited program and its types""",
 )
-class AcProgramTypeGQLModel:
+class AcProgramTypeGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).programtypes

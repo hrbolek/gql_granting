@@ -22,7 +22,7 @@ AcSemesterGQLModel =Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterG
     keys=["id"],
     description="""Entity which connects programs and semesters, includes informations about subjects (divided into semesters)""",
 )
-class AcSubjectGQLModel:
+class AcSubjectGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).subjects

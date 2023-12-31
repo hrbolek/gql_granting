@@ -20,7 +20,7 @@ AcLessonGQLModel= Annotated["AcLessonGQLModel",strawberry.lazy(".AcLessonGQLMode
     keys=["id"],
     description="""Entity which represents a theme included in semester of subject""",
 )
-class AcTopicGQLModel:
+class AcTopicGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).topics
