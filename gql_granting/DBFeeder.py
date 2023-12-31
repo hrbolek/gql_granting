@@ -408,9 +408,15 @@ async def initDB(asyncSessionMaker):
             ProgramTitleTypeModel,
             ProgramTypeModel,
             LessonTypeModel,
-
             ClassificationLevelModel,
             ClassificationTypeModel,
+
+            ProgramModel,
+            SubjectModel,
+            SemesterModel,
+            TopicModel,
+            LessonModel,
+            ClassificationModel,
         ]
     else:
         dbModels = [
