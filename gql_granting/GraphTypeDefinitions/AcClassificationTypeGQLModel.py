@@ -40,6 +40,9 @@ class AcClassificationTypeGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
+def getLoaders(info):
+    return info.context['all']
+
 
 @strawberry.field(description="""Lists classifications types""")
 async def acclassification_type_page(

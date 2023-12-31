@@ -78,6 +78,8 @@ class AcProgramGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
+def getLoaders(info):
+    return info.context['all']
 
 from typing import NewType
 

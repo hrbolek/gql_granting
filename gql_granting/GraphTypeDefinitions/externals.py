@@ -37,6 +37,8 @@ class UserGQLModel:
 #         result = await resolveExternalIds(session,self.id)
 #         return result
 
+    def getLoaders(info):
+        return info.context['all']
 
     @strawberryA.field(description="""List of programs which the user is studying""")
     async def study_programs(self, info: strawberryA.types.Info) -> List['AcProgramGQLModel']:

@@ -69,6 +69,9 @@ class AcProgramTypeGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
+def getLoaders(info):
+    return info.context['all']
+
 
 @strawberry.field(description="""Finds a program type its id""")
 async def program_type_by_id(

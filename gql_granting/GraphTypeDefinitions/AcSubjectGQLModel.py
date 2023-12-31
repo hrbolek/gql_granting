@@ -72,8 +72,11 @@ class AcSubjectGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
+def getLoaders(info):
+    return info.context['all']
+def getUser(info):
+    return info.context["user"]
 
-import typing
 @strawberry.field(description="""Finds a subject by its id""")
 async def acsubject_by_id(
         self, info: strawberry.types.Info, id: uuid.UUID

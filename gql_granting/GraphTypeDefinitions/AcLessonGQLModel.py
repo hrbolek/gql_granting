@@ -52,6 +52,9 @@ class AcLessonGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
+def getLoaders(info):
+    return info.context['all']
+
 
 @strawberry.field(description="""Finds a lesson by its id""")
 async def aclesson_by_id(

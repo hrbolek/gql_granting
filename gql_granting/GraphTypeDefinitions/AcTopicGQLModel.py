@@ -61,6 +61,9 @@ class AcTopicGQLModel(BaseGQLModel):
 #################################################
 # Query
 #################################################
+def getLoaders(info):
+    return info.context['all']
+
 
 @strawberry.field(description="""Finds a topic by its id""")
 async def actopic_by_id(
