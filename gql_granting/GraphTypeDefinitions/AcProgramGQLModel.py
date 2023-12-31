@@ -76,12 +76,10 @@ class AcProgramGQLModel:
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
 
-from typing import Any, NewType
+from typing import NewType
 
 JSON = strawberry.scalar(
     NewType("JSON", object),
@@ -111,11 +109,8 @@ async def program_page(
         return result
     
 #################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
-from typing import Optional
 
 @strawberry.input(description="Define input for the program" )
 class ProgramInsertGQLModel:

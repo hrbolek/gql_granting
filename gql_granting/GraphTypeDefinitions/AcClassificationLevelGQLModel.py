@@ -26,11 +26,11 @@ class AcClassificationLevelGQLModel(BaseGQLModel):
     def id(self) -> UUID:
         return self.id
 
-    @strawberry.field(description="""name (like A)""")
+    @strawberry.field(description="""name""")
     def name(self) -> str:
         return self.name
 
-    @strawberry.field(description="""name (like A)""")
+    @strawberry.field(description="""english name""")
     def name_en(self) -> str:
         return self.name_en
     

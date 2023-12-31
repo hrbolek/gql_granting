@@ -43,8 +43,6 @@ class AcSemesterGQLModel:
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-
-    # FK###############################################################################################
     @strawberry.field(description="""Subject related to the semester (semester owner)""")
     async def subject(self, info: strawberry.types.Info) -> Optional["AcSubjectGQLModel"]:
         from .AcSubjectGQLModel import AcSubjectGQLModel
@@ -55,7 +53,8 @@ class AcSemesterGQLModel:
     async def classification_type(self, info: strawberry.types.Info) -> "AcClassificationTypeGQLModel":
         result = await AcClassificationTypeGQLModel.resolve_reference(info, self.classificationtype_id)
         return result
-
+        
+    #might have to look into this one
     @strawberry.field(description="""Final classification of the semester""")
     async def classifications(
         self, info: strawberry.types.Info
@@ -72,9 +71,7 @@ class AcSemesterGQLModel:
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
 
 @strawberry.field(description="""Finds a subject semester by its id""")
@@ -92,26 +89,8 @@ async def acsemester_page(
         result = await loader.page(skip=skip, limit=limit)
         return result
 
-
-    
 #################################################
-#
-# Special fields for query
-#
-#################################################
-
-@strawberry.field(description="""Finds a subject semester by its id""")
-async def acsemester_page(
-        self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10
-    ) -> List["AcSemesterGQLModel"]:
-        loader = getLoaders(info).semesters
-        result = await loader.page(skip=skip, limit=limit)
-        return result
-
-#################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
 
 @strawberry.input

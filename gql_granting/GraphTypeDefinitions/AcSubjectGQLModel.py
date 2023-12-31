@@ -70,10 +70,9 @@ class AcSubjectGQLModel:
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
+
 import typing
 @strawberry.field(description="""Finds a subject by its id""")
 async def acsubject_by_id(
@@ -92,9 +91,7 @@ async def acsubject_page(
         return result
     
 #################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
 
 @strawberry.input

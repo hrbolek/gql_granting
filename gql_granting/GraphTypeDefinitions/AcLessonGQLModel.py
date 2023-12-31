@@ -34,13 +34,11 @@ class AcLessonGQLModel:
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-    # FK###############################################################################################
     @strawberry.field(description="""Lesson type""")
     async def type(self, info: strawberry.types.Info) -> "AcLessonTypeGQLModel":
         result = await AcLessonTypeGQLModel.resolve_reference(info, self.type_id)
         return result
 
-    ##################################################################################################
     @strawberry.field(description="""Number of hour of this lesson in the topic""")
     def count(self) -> int:
         return self.count
@@ -52,10 +50,9 @@ class AcLessonGQLModel:
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
+
 @strawberry.field(description="""Finds a lesson by its id""")
 async def aclesson_by_id(
         self, info: strawberry.types.Info, id: uuid.UUID
@@ -72,9 +69,7 @@ async def aclesson_type_page(
         return rows
     
 #################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
     
 @strawberry.input

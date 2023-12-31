@@ -9,18 +9,6 @@ from uuid import UUID
 
 AcProgramGQLModel= Annotated["AcProgramGQLModel",strawberryA.lazy(".AcProgramGQLModel")]
 
-# @asynccontextmanager
-# async def withInfo(info):
-#     asyncSessionMaker = info.context["asyncSessionMaker"]
-#     async with asyncSessionMaker() as session:
-#         try:
-#             yield session
-#         finally:
-#             pass
-
-# def getLoaders(info):
-#     return info.context['all']
-
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
     id: UUID = strawberryA.federation.field(external=True)

@@ -37,7 +37,7 @@ class AcClassificationGQLModel():
     def date(self) -> datetime.datetime:
         return self.date
 
-    @strawberry.field(description="""ORDER OF CLASSI""")
+    @strawberry.field(description="""order of classification""")
     def order(self) -> int:
         return self.order
 
@@ -63,9 +63,7 @@ class AcClassificationGQLModel():
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
 
 @strawberry.field(description="""Lists classifications""")
@@ -85,9 +83,7 @@ async def acclassification_page_by_user(
         return result
 
 #################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
 
 @strawberry.input
@@ -95,7 +91,6 @@ class ClassificationInsertGQLModel:
     semester_id: UUID
     user_id: UUID
     classificationlevel_id: UUID
-    # classificationtype_id: UUID
     order: int
     id: Optional[UUID] = None
 

@@ -36,9 +36,7 @@ class AcLessonTypeGQLModel:
         return self.lastchange
     
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
 
 @strawberry.field(description="""Finds a lesson type by its id""")

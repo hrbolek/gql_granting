@@ -31,15 +31,14 @@ class AcProgramLevelTypeGQLModel:
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberry.field(description="")
+    @strawberry.field(description="date of lastchange")
     def lastchange(self) -> str:
         return self.lastchange
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
+
 @strawberry.field(description="""Finds a program level its id""")
 async def program_level_by_id(
         self, info: strawberry.types.Info, id: UUID

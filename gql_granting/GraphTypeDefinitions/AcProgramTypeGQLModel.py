@@ -67,10 +67,9 @@ class AcProgramTypeGQLModel:
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
+
 @strawberry.field(description="""Finds a program type its id""")
 async def program_type_by_id(
         self, info: strawberry.types.Info, id: UUID
@@ -79,10 +78,9 @@ async def program_type_by_id(
         return result
 
 #################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
+
 @strawberry.type
 @strawberry.input
 class ProgramTypeInsertGQLModel:

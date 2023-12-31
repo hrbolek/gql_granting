@@ -38,9 +38,7 @@ class AcClassificationTypeGQLModel():
         return self.lastchange
     
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
 
 @strawberry.field(description="""Lists classifications types""")

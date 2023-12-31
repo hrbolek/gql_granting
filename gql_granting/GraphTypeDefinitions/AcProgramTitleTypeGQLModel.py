@@ -36,10 +36,9 @@ class AcProgramTitleTypeGQLModel:
         return self.lastchange
     
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
+
 @strawberry.field(description="""Finds a program title by its id""")
 async def program_title_by_id(
         self, info: strawberry.types.Info, id: UUID

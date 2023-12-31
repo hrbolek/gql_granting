@@ -29,7 +29,7 @@ class AcProgramFormTypeGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberry.field(description="name")
+    @strawberry.field(description="english name")
     def name_en(self) -> str:
         return self.name_en
 
@@ -39,9 +39,7 @@ class AcProgramFormTypeGQLModel:
 
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
 
 @strawberry.field(description="""Finds a program from its id""")

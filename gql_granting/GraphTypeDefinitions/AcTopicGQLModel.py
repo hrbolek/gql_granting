@@ -59,10 +59,9 @@ class AcTopicGQLModel:
         return result
 
 #################################################
-#
-# Special fields for query
-#
+# Query
 #################################################
+
 @strawberry.field(description="""Finds a topic by its id""")
 async def actopic_by_id(
         self, info: strawberry.types.Info, id: UUID
@@ -72,9 +71,7 @@ async def actopic_by_id(
 
 
 #################################################
-#
-# Special fields for mutation
-#
+# Mutation
 #################################################
 
 @strawberry.input
