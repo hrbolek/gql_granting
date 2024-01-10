@@ -5,6 +5,19 @@ from .uuid import UUIDColumn, UUIDFKey
 
 
 class ProgramStudentMessages(BaseModel):
+    
+    """Represents messages related to student programs.
+
+    Args:
+        id (ID): A unique identifier for the message.
+        name (str): The name of the message.
+        description (str): Additional details or description of the message.
+        student_id (ID): Foreign key referencing the associated student in the 'acprograms_students' table.
+        program_id (ID): Foreign key referencing the associated program in the 'acprograms' table.
+        date (DateTime): The date and time when the message was created.
+
+    
+    """
     __tablename__ = "acprograms_studentmessages"
     id = UUIDColumn()
     name = Column(String)

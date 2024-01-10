@@ -4,6 +4,19 @@ from .base import BaseModel
 from .uuid import UUIDColumn, UUIDFKey
 
 class ProgramStudentStates(BaseModel):
+    
+    
+    """Represents different states of student enrollment in academic programs.
+
+    Args:
+        id (ID): A unique identifier for the student state.
+        name (str): The name of the student state.
+        name_en (str): The English name of the student state.
+        
+    """
+
+
+
     __tablename__ = "acprograms_studentstates"
     id = UUIDColumn()
     name = Column(String)
