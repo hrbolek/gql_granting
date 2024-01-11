@@ -4,7 +4,15 @@ from .base import BaseModel
 from .uuid import UUIDColumn, UUIDFKey
 
 class SemesterModel(BaseModel):
-    """Aka Mathematics, 2nd semester"""
+    """ Represents an academic semester.
+
+    Args:
+        id (ID): A unique identifier for the semester.
+        order (int): The order or number of the semester.
+        credits (int): The number of credits associated with the semester.
+        subject_id (ID): Foreign key referencing the associated subject in the 'acsubjects' table.
+        classificationtype_id (ID): Foreign key referencing the classification type in the 'acclassificationtypes' table.
+"""
 
     __tablename__ = "acsemesters"
     id = UUIDColumn()
