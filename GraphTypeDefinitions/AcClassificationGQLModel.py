@@ -58,18 +58,21 @@ class AcClassificationGQLModel(BaseGQLModel):
     @strawberry.field(
         description="""Semester""")
     async def semester(self, info: strawberry.types.Info) -> typing.Optional["AcSemesterGQLModel"]:
+        from .AcSemesterGQLModel import AcSemesterGQLModel
         result = await AcSemesterGQLModel.resolve_reference(info, id=self.semester_id)
         return result
 
     @strawberry.field(
         description="""Type""")
     async def type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
+        from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
         result = await AcClassificationTypeGQLModel.resolve_reference(info, id=self.classificationtype_id)
         return result
 
     @strawberry.field(
         description="""Level""")
     async def level(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationLevelGQLModel"]:
+        from .AcClassificationLevelGQLModel import AcClassificationLevelGQLModel
         result = await AcClassificationLevelGQLModel.resolve_reference(info, id=self.classificationlevel_id)
         return result
 

@@ -52,6 +52,7 @@ class AcSemesterGQLModel(BaseGQLModel):
     @strawberry.field(
         description="""Subject related to the semester (semester owner)""")
     async def classification_type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
+        from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
         result = await AcClassificationTypeGQLModel.resolve_reference(info, id = self.classificationtype_id)
         return result
 
