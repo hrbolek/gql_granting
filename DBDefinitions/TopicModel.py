@@ -4,7 +4,16 @@ from .base import BaseModel
 from .uuid import UUIDColumn, UUIDFKey
 
 class TopicModel(BaseModel):
-    """Aka Functions"""
+    """Aka Functions
+    
+    Represents an academic topic.
+
+    Args:
+        id (ID): A unique identifier for the topic.
+        name (str): The name of the topic.
+        name_en (str): The English name of the topic.
+        order (int): The order or sequence of the topic.
+    """
 
     __tablename__ = "actopics"
     id = UUIDColumn()
