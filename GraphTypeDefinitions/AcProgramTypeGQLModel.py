@@ -43,18 +43,20 @@ class AcProgramTypeGQLModel(BaseGQLModel):
 
     @strawberry.field(description="""Bachelor, ...""")
     async def level(self, info: strawberry.types.Info) -> typing.Optional["AcProgramLevelTypeGQLModel"]:
+        from .AcProgramLevelTypeGQLModel import AcProgramLevelTypeGQLModel
         result = await AcProgramLevelTypeGQLModel.resolve_reference(info, self.level_id)
         return result
 
     @strawberry.field(description="""Present, Distant, ...""")
     async def form(self, info: strawberry.types.Info) -> typing.Optional["AcProgramFormTypeGQLModel"]:
+        from .AcProgramFormTypeGQLModel import AcProgramFormTypeGQLModel
         result = await AcProgramFormTypeGQLModel.resolve_reference(info, self.form_id)
         return result
 
     @strawberry.field(description="""Czech, ...""")
     async def language(
-        self, info: strawberry.types.Info
-    ) -> typing.Optional["AcProgramLanguageTypeGQLModel"]:
+        self, info: strawberry.types.Info) -> typing.Optional["AcProgramLanguageTypeGQLModel"]:
+        from .AcProgramLanguageTypeGQLModel import AcProgramLanguageTypeGQLModel
         result = await AcProgramLanguageTypeGQLModel.resolve_reference(info, self.language_id)
         return result
 
