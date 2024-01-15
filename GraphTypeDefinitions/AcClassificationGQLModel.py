@@ -53,7 +53,7 @@ class AcClassificationGQLModel(BaseGQLModel):
         description="""User""")
     async def user(self, info: strawberry.types.Info) -> typing.Optional["UserGQLModel"]:
         from .externals import UserGQLModel
-        return await UserGQLModel.resolve_reference(id=self.user_id)
+        return await UserGQLModel.resolve_reference(info, id=self.user_id)
 
     @strawberry.field(
         description="""Semester""")
@@ -64,9 +64,9 @@ class AcClassificationGQLModel(BaseGQLModel):
 
     @strawberry.field(
         description="""Type""")
-    async def type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
+    async def classification_type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
         from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
-        result = await AcClassificationTypeGQLModel.resolve_reference(info, id=self.classificationtype_id)
+        result = await AcClassificationTypeGQLModel.resolve_reference(info, id = self.classificationtype_id)
         return result
 
     @strawberry.field(
@@ -88,6 +88,7 @@ class ClassificationWhereFilter:
     semester_id: uuid.UUID
     user_id: uuid.UUID
     classificationlevel_id: uuid.UUID
+    classificationtype_id: uuid.UUID
     order: int
 
 from ._GraphResolvers import asPage
@@ -98,7 +99,7 @@ from ._GraphResolvers import asPage
 async def acclassification_by_id(
         self, info: strawberry.types.Info, id: uuid.UUID
     ) -> typing.Optional[AcClassificationGQLModel]:
-        result = await AcClassificationGQLModel.resolve_reference(info=info, id=id)
+        result = await AcClassificationGQLModel.resolve_reference(info, id)
         return result
 
 @strawberry.field(
@@ -133,6 +134,7 @@ class ClassificationInsertGQLModel:
     semester_id: uuid.UUID
     user_id: uuid.UUID
     classificationlevel_id: uuid.UUID
+    classificationtype_id: uuid.UUID
     order: int
     id: typing.Optional[uuid.UUID] = None
 
@@ -141,6 +143,7 @@ class ClassificationUpdateGQLModel:
     id: uuid.UUID
     lastchange: datetime.datetime
     classificationlevel_id: uuid.UUID
+    classificationtype_id: uuid.UUID
 
 @strawberry.type
 class ClassificationResultGQLModel:
