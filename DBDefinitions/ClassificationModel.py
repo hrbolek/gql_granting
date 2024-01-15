@@ -20,7 +20,7 @@ class ClassificationModel(BaseModel):
 
     semester_id = Column(ForeignKey("acsemesters.id"), index=True)
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
-    classificationtype_id = Column(ForeignKey("acclassificationtypes.id"), index=True)
+    # classificationtype_id = Column(ForeignKey("acclassificationtypes.id"), index=True)
     classificationlevel_id = Column(ForeignKey("acclassificationlevels.id"), index=True)
 
     date = Column(DateTime, server_default=sqlalchemy.sql.func.now())

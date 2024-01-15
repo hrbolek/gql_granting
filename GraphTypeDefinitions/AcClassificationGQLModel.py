@@ -62,12 +62,12 @@ class AcClassificationGQLModel(BaseGQLModel):
         result = await AcSemesterGQLModel.resolve_reference(info, id=self.semester_id)
         return result
 
-    @strawberry.field(
-        description="""Type""")
-    async def classification_type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
-        from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
-        result = await AcClassificationTypeGQLModel.resolve_reference(info, id = self.classificationtype_id)
-        return result
+    # @strawberry.field(
+    #     description="""Type""")
+    # async def classification_type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
+    #     from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
+    #     result = await AcClassificationTypeGQLModel.resolve_reference(info, id = self.classificationtype_id)
+    #     return result
 
     @strawberry.field(
         description="""Level""")
@@ -88,7 +88,6 @@ class ClassificationWhereFilter:
     semester_id: uuid.UUID
     user_id: uuid.UUID
     classificationlevel_id: uuid.UUID
-    classificationtype_id: uuid.UUID
     order: int
 
 from ._GraphResolvers import asPage
@@ -134,7 +133,6 @@ class ClassificationInsertGQLModel:
     semester_id: uuid.UUID
     user_id: uuid.UUID
     classificationlevel_id: uuid.UUID
-    classificationtype_id: uuid.UUID
     order: int
     id: typing.Optional[uuid.UUID] = None
 
@@ -143,7 +141,6 @@ class ClassificationUpdateGQLModel:
     id: uuid.UUID
     lastchange: datetime.datetime
     classificationlevel_id: uuid.UUID
-    classificationtype_id: uuid.UUID
 
 @strawberry.type
 class ClassificationResultGQLModel:
