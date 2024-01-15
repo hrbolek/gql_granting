@@ -21,7 +21,7 @@ from GraphTypeDefinitions._GraphResolvers import (
 )
 from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
-#AcProgramGQLModel = typing.Annotated["AcProgramGQLModel",strawberry.lazy(".AcProgramGQLModel")]
+AcProgramGQLModel = typing.Annotated["AcProgramGQLModel",strawberry.lazy(".AcProgramGQLModel")]
 AcSemesterGQLModel = typing.Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterGQLModel")]
 GroupGQLModel= typing.Annotated["GroupGQLModel",strawberry.lazy(".externals")]
 
@@ -40,12 +40,12 @@ class AcSubjectGQLModel(BaseGQLModel):
     name_en = resolve_name_en
     lastchange = resolve_lastchange
 
-    # @strawberry.field(
-    #     description="""Program owing this subjects""")
-    # async def program(self, info: strawberry.types.Info) -> typing.Optional["AcProgramGQLModel"]:
-    #     from .AcProgramGQLModel import AcProgramGQLModel
-    #     result = await AcProgramGQLModel.resolve_reference(info, self.program_id)
-    #     return result
+    @strawberry.field(
+        description="""Program owing this subjects""")
+    async def program(self, info: strawberry.types.Info) -> typing.Optional["AcProgramGQLModel"]:
+        from .AcProgramGQLModel import AcProgramGQLModel
+        result = await AcProgramGQLModel.resolve_reference(info, self.program_id)
+        return result
 
     @strawberry.field(
         description="""Semesters which the subjects in divided into""")
@@ -97,10 +97,6 @@ async def acsubject_page(
         self, info: strawberry.types.Info, skip: int = 0, limit: int = 10, 
         where: typing.Optional[SubjectWhereFilter] = None
     ) -> typing.List[AcSubjectGQLModel]:
-        # wf = None if where is None else strawberry.asdict(where)
-        # loader = getLoadersFromInfo(info).subjects
-        # result = await loader.page(skip, limit, where=wf)
-        # return result
         return getLoadersFromInfo(info).subjects
     
 #################################################

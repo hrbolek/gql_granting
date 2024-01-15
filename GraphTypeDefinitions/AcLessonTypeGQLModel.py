@@ -21,16 +21,14 @@ from GraphTypeDefinitions._GraphResolvers import (
 )
 from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
-@strawberry.federation.type(
-    keys=["id"],
-    description="""Mark which student could get as an exam evaluation""",
-)
-class AcClassificationLevelGQLModel(BaseGQLModel):
+@strawberry.federation.type(keys=["id"], description="P, C, LC, S, ...")
+class AcLessonTypeGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
-        loader = getLoadersFromInfo(info).classificationlevels
+        loader = getLoadersFromInfo(info).lessontypes
         return loader
-    
+
     id = resolve_id
     name = resolve_name
     name_en = resolve_name_en
+    lastchange = resolve_lastchange

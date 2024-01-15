@@ -61,14 +61,7 @@ class AcClassificationGQLModel(BaseGQLModel):
         from .AcSemesterGQLModel import AcSemesterGQLModel
         result = await AcSemesterGQLModel.resolve_reference(info, id=self.semester_id)
         return result
-
-    # @strawberry.field(
-    #     description="""Type""")
-    # async def classification_type(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationTypeGQLModel"]:
-    #     from .AcClassificationTypeGQLModel import AcClassificationTypeGQLModel
-    #     result = await AcClassificationTypeGQLModel.resolve_reference(info, id = self.classificationtype_id)
-    #     return result
-
+        
     @strawberry.field(
         description="""Level""")
     async def level(self, info: strawberry.types.Info) -> typing.Optional["AcClassificationLevelGQLModel"]:
@@ -109,21 +102,8 @@ async def acclassification_page(
         self, info: strawberry.types.Info, skip: int = 0, limit: int = 10,
         where: typing.Optional[ClassificationWhereFilter] = None
     ) -> typing.List[AcClassificationGQLModel]:
-        # wf = None if where is None else strawberry.asdict(where)
-        # loader = getLoadersFromInfo(info).classifications
-        # result = await loader.page(skip, limit, where=wf)
-        # return result    
         return getLoadersFromInfo(info).classifications
     
-
-# @strawberry.field(description="""Lists classifications for the user""")
-# async def acclassification_page_by_user(
-#         self, info: strawberry.types.Info, user_id: UUID, skip: int = 0, limit: int = 10
-#     ) -> List["AcClassificationGQLModel"]:
-#         loader = getLoaders(info).classifications
-#         result = await loader.filter_by(user_id=user_id)
-#         return result
-
 #################################################
 # Mutation
 #################################################

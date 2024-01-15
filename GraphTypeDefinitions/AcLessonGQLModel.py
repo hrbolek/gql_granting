@@ -21,8 +21,8 @@ from GraphTypeDefinitions._GraphResolvers import (
 )
 from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
-AcTopicGQLModel= typing.Annotated["AcTopicGQLModel",strawberry.lazy(".AcTopicGQLModel")]
-#AcLessonTypeGQLModel= Annotated["AcLessonTypeGQLModel",strawberry.lazy(".AcLessonTypeGQLModel")]
+AcTopicGQLModel = typing.Annotated["AcTopicGQLModel",strawberry.lazy(".AcTopicGQLModel")]
+AcLessonTypeGQLModel = typing.Annotated["AcLessonTypeGQLModel",strawberry.lazy(".AcLessonTypeGQLModel")]
 
 @strawberry.federation.type(
     keys=["id"],
@@ -37,10 +37,11 @@ class AcLessonGQLModel(BaseGQLModel):
     id = resolve_id
     lastchange = resolve_lastchange
 
-    # @strawberry.field(description="""Lesson type""")
-    # async def type(self, info: strawberry.types.Info) -> "AcLessonTypeGQLModel":
-    #     result = await AcLessonTypeGQLModel.resolve_reference(info, self.type_id)
-    #     return result
+    @strawberry.field(description="""Lesson type""")
+    async def lesson_type(self, info: strawberry.types.Info) -> typing.Optional["AcLessonTypeGQLModel"]:
+        from .AcLessonTypeGQLModel import AcLessonTypeGQLModel
+        result = await AcLessonTypeGQLModel.resolve_reference(info, self.type_id)
+        return result
 
     @strawberry.field(description="""Number of hour of this lesson in the topic""")
     def count(self) -> int:

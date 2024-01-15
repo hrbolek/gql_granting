@@ -69,6 +69,20 @@ class AcProgramTypeGQLModel(BaseGQLModel):
 # Query
 #################################################
 
+from dataclasses import dataclass 
+from uoishelpers.resolvers import createInputs
+@createInputs
+@dataclass 
+class ProgramTypeWhereFilter:
+    name: str 
+    name_en:str 
+    language_id: uuid.UUID
+    level_id: uuid.UUID
+    form_id: uuid.UUID
+    title_id: uuid.UUID
+
+from ._GraphResolvers import asPage
+
 @strawberry.field(
     description="""Finds a program type its id""",
     permission_classes=[OnlyForAuthentized()])
@@ -77,6 +91,16 @@ async def program_type_by_id(
     ) -> typing.Optional[AcProgramTypeGQLModel]:
         result = await AcProgramTypeGQLModel.resolve_reference(info, id)
         return result
+
+@strawberry.field(
+    description="""Finds all program types""",
+    permission_classes=[OnlyForAuthentized()])
+@asPage
+async def program_page( 
+        self, info: strawberry.types.Info, skip: int = 0, limit: int = 10,
+        where: typing.Optional[ProgramTypeWhereFilter] = None
+    ) -> typing.List[AcProgramTypeGQLModel]:
+        return getLoadersFromInfo(info).programtypes
 
 #################################################
 # Mutation

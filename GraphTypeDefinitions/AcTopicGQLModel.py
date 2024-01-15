@@ -23,7 +23,7 @@ from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
 
 AcSemesterGQLModel = typing.Annotated["AcSemesterGQLModel",strawberry.lazy(".AcSemesterGQLModel")]
-#AcLessonGQLModel = typing.Annotated["AcLessonGQLModel",strawberry.lazy(".AcLessonGQLModel")]
+AcLessonGQLModel = typing.Annotated["AcLessonGQLModel",strawberry.lazy(".AcLessonGQLModel")]
 
 @strawberry.federation.type(
     keys=["id"],
@@ -50,11 +50,11 @@ class AcTopicGQLModel(BaseGQLModel):
         result = await AcSemesterGQLModel.resolve_reference(info, self.semester_id)
         return result
 
-    # @strawberry.field(description="""Lessons for a topic""")
-    # async def lessons(self, info: strawberry.types.Info) -> List["AcLessonGQLModel"]:
-    #     loader = getLoaders(info).lessons
-    #     result = await loader.filter_by(topic_id=self.id)
-    #     return result
+    @strawberry.field(description="""Lessons for a topic""")
+    async def lessons(self, info: strawberry.types.Info) -> typing.List["AcLessonGQLModel"]:
+        loader = getLoadersFromInfo(info).lessons
+        result = await loader.filter_by(topic_id=self.id)
+        return result
 
 #################################################
 # Query
@@ -89,10 +89,6 @@ async def actopic_page(
         self, info: strawberry.types.Info, skip: int = 0, limit: int = 10, 
         where: typing.Optional[TopicWhereFilter] = None
     ) -> typing.List[AcTopicGQLModel]:
-        # wf = None if where is None else strawberry.asdict(where)
-        # loader = getLoadersFromInfo(info).topics
-        # result = await loader.page(skip, limit, where=wf)
-        # return result
         return getLoadersFromInfo(info).topics
 
 #################################################

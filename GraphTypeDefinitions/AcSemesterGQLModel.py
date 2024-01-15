@@ -104,10 +104,6 @@ async def acsemester_page(
         self, info: strawberry.types.Info, skip: int = 0, limit: int = 10,
         where: typing.Optional[SemesterWhereFilter] = None
     ) -> typing.List[AcSemesterGQLModel]:
-        # wf = None if where is None else strawberry.asdict(where)
-        # loader = getLoadersFromInfo(info).semesters
-        # result = await loader.page(skip, limit, where=wf)
-        # return result 
         return getLoadersFromInfo(info).semesters
 
 #################################################

@@ -37,17 +37,3 @@ class AcProgramFormTypeGQLModel(BaseGQLModel):
     lastchange = resolve_lastchange
 
 
-#################################################
-# Query
-#################################################
-
-@strawberry.field(
-    description="""Finds a program from its id""",
-    permission_classes=[OnlyForAuthentized()])
-async def program_form_by_id(
-        self, info: strawberry.types.Info, id: uuid.UUID
-    ) -> typing.Optional[AcProgramFormTypeGQLModel]:
-        result = await AcProgramFormTypeGQLModel.resolve_reference(info, id)
-        return result
-
-

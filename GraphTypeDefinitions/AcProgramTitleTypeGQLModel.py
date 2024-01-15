@@ -34,18 +34,3 @@ class AcProgramTitleTypeGQLModel(BaseGQLModel):
     name = resolve_name
     name_en = resolve_name_en
     lastchange = resolve_lastchange
-
-#################################################
-# Query
-#################################################
-
-@strawberry.field(
-    description="""Finds a program title by its id""",
-    permission_classes=[OnlyForAuthentized()])
-async def program_title_by_id(
-        self, info: strawberry.types.Info, id: uuid.UUID
-    ) -> typing.Optional[AcProgramTitleTypeGQLModel]:
-        result = await AcProgramTitleTypeGQLModel.resolve_reference(info, id)
-        return result
-
-
