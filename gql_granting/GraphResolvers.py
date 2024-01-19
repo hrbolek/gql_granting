@@ -29,6 +29,7 @@ from gql_granting.DBDefinitions import (
     ProgramLevelTypeModel,
     ProgramModel,
     ProgramTitleTypeModel,
+    ProgramStudentModel
 )
 from gql_granting.DBDefinitions import (
     BaseModel,
@@ -148,3 +149,12 @@ async def resolveJSONForProgram(session, id):
 
 
 # ...
+from uoishelpers.dataloaders import prepareSelect
+def create_statement_for_program_students(id, where: dict= None):
+    if where is None:
+        statement = select(ProgramStudentModel)
+    else:    
+        statement = prepareSelect(ProgramStudentModel, where)
+    statement = statement.join(EventGroupModel)
+    statement = statement.filter(EventGroupModel.group_id == id)
+    return statement

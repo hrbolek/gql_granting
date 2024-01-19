@@ -45,7 +45,8 @@ async def RunOnceAndReturnSessionMaker():
     print(f'starting engine for "{connectionString}"')
 
     import os
-    makeDrop = os.environ.get("DEMO", "") == "true"
+    makeDrop = os.environ.get("DEMO", "") == "True"
+    makeDrop = True
     result = await startEngine(
         connectionstring=connectionString, makeDrop=makeDrop, makeUp=True
     )
@@ -66,7 +67,7 @@ async def RunOnceAndReturnSessionMaker():
 
 from strawberry.asgi import GraphQL
 
-from gql_granting.Dataloaders import createLoaders_3, createLoaders
+from gql_granting.Dataloaders import createLoaders
 
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
@@ -75,7 +76,7 @@ class MyGraphQL(GraphQL):
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
             self._session = session
-            self._user = {"id": "?"}
+            self._user = {"id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}
             return await GraphQL.__call__(self, scope, receive, send)
 
     async def get_context(self, request, response):
@@ -86,14 +87,15 @@ class MyGraphQL(GraphQL):
             "session": self._session,
             "asyncSessionMaker": asyncSessionMaker,
             "user": self._user,
-            #"all": await createLoaders_3(asyncSessionMaker)
-            "all": await createLoaders(asyncSessionMaker)
+            # "all": await createLoaders_3(asyncSessionMaker)
+            # "all": createLoaders(asyncSessionMaker),
+            "loaders": createLoaders(asyncSessionMaker)
         }
 
 from gql_granting.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
-graphql_app = MyGraphQL(schema, graphiql=True, allow_queries_via_get=True)
+graphql_app = MyGraphQL(schema, graphql_ide="graphiql", allow_queries_via_get=True)
 
 app = FastAPI()
 app.mount("/gql", graphql_app)
