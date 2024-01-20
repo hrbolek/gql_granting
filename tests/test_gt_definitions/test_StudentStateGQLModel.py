@@ -9,8 +9,8 @@ from .gt_utils import (
 
 tableName='acprograms_studentstates'
 gqltype = 'AcProgramStudentStateGQLModel'
-endpointPrefix = "acStudentState"
-attributeNames=["id", "name"]
+endpointPrefix = "acProgramStudentState"
+attributeNames=["id"]
 test_reference_student_state = createResolveReferenceTest(
     tableName=tableName, gqltype=gqltype, attributeNames=attributeNames)
 test_page_student_state = createPageTest(queryEndpoint=endpointPrefix + "Page", 

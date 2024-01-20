@@ -39,6 +39,7 @@ from ._GraphResolvers import (
 @dataclass
 class ProgramStudentInputFilter:
     student_id: IDType
+    prorgam_id: IDType
     state_id: IDType
     semester: int
     valid: bool
@@ -1136,6 +1137,52 @@ async def student_state_by_id(self, info: strawberry.types.Info, id: IDType) -> 
 # endregion
 
 
+# region ProgramStudentState ById, Page
+
+@strawberry.field(
+    description="""Gets subjects paged / filtered""",
+    #permission_classes=[OnlyForAuthentized(isList=True)]
+    )
+@asPage
+async def student_page(self, info: strawberry.types.Info, 
+                       skip: Optional[int] = 0, limit: Optional[int] = 10, 
+                       where: Optional[ProgramStudentInputFilter] = None) -> List["AcProgramStudentGQLModel"]:
+    return AcProgramStudentGQLModel.getLoader(info)
+
+@strawberry.field(
+    description="""Gets subjects paged / filtered""",
+    #permission_classes=[OnlyForAuthentized(isList=True)]
+    )
+async def student_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramStudentGQLModel"]:
+    return await AcProgramStudentGQLModel.resolve_reference(info=info, id=id)
+# endregion
+
+# region ProgramMessage ById, Page
+
+@createInputs
+@dataclass
+class ProgramMessageInputFilter:
+    student_id: IDType
+
+@strawberry.field(
+    description="""Gets subjects paged / filtered""",
+    permission_classes=[OnlyForAuthentized(isList=True)]
+    )
+@asPage
+async def message_page(self, info: strawberry.types.Info, 
+                       skip: Optional[int] = 0, limit: Optional[int] = 10, 
+                       where: Optional[ProgramMessageInputFilter] = None) -> List["AcProgramMessageGQLModel"]:
+    return AcProgramMessageGQLModel.getLoader(info)
+
+@strawberry.field(
+    description="""Gets subjects paged / filtered""",
+    permission_classes=[OnlyForAuthentized(isList=True)]
+    )
+async def message_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramMessageGQLModel"]:
+    return await AcProgramMessageGQLModel.resolve_reference(info=info, id=id)
+# endregion
+
+
 ###########################################################################################################################
 #
 # zde definujte svuj Query model
@@ -1188,8 +1235,14 @@ class Query:
     ac_lesson_type_by_id = lesson_type_by_id
     ac_lesson_type_page = lesson_type_page
 
-    ac_student_state_by_id = student_state_by_id
-    ac_student_state_page = student_state_page
+    ac_program_student_state_by_id = student_state_by_id
+    ac_program_student_state_page = student_state_page
+
+    ac_program_student_by_id = student_by_id
+    ac_program_student_page = student_page
+
+    ac_program_message_page = message_page
+    ac_program_message_by_id = message_by_id
 
     @strawberry.field(description="""Just container gql test""")
     async def say_hello_granting(
