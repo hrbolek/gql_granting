@@ -1,11 +1,29 @@
 from typing import List
-import typing
-
-import asyncio
-
 from fastapi import FastAPI
+import os
 import strawberry
 from strawberry.fastapi import GraphQLRouter
+
+
+import logging
+import logging.handlers
+import socket
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s.%(msecs)03d\t%(levelname)s:\t%(message)s', 
+    datefmt='%Y-%m-%dT%I:%M:%S')
+SYSLOGHOST = os.getenv("SYSLOGHOST", None)
+if SYSLOGHOST is not None:
+    [address, strport, *_] = SYSLOGHOST.split(':')
+    assert len(_) == 0, f"SYSLOGHOST {SYSLOGHOST} has unexpected structure, try `localhost:514` or similar (514 is UDP port)"
+    port = int(strport)
+    my_logger = logging.getLogger()
+    my_logger.setLevel(logging.INFO)
+    handler = logging.handlers.SysLogHandler(address=(address, port), socktype=socket.SOCK_DGRAM)
+    #handler = logging.handlers.SocketHandler('10.10.11.11', 611)
+    my_logger.addHandler(handler)
+
+
 
 ## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
 ## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
@@ -118,3 +136,48 @@ print("All initialization is done")
 # pokud jste pripraveni testovat GQL funkcionalitu, rozsirte apollo/server.js
 #
 ###########################################################################################################################
+
+
+def envAssertDefined(name, default=None):
+    result = os.getenv(name, None)
+    assert result is not None, f"{name} environment variable must be explicitly defined"
+    return result
+
+DEMO = envAssertDefined("DEMO", None)
+GQLUG_ENDPOINT_URL = envAssertDefined("GQLUG_ENDPOINT_URL", None)
+JWTPUBLICKEYURL = envAssertDefined("JWTPUBLICKEYURL", None)
+JWTRESOLVEUSERPATHURL = envAssertDefined("JWTRESOLVEUSERPATHURL", None)
+
+assert (DEMO == "True") or (DEMO == "False"), "DEMO environment variable can have only `True` or `False` values"
+DEMO = DEMO == "True"
+
+if DEMO:
+    print("####################################################")
+    print("#                                                  #")
+    print("# RUNNING IN DEMO                                  #")
+    print("#                                                  #")
+    print("####################################################")
+
+    logging.info("####################################################")
+    logging.info("#                                                  #")
+    logging.info("# RUNNING IN DEMO                                  #")
+    logging.info("#                                                  #")
+    logging.info("####################################################")
+else:
+    print("####################################################")
+    print("#                                                  #")
+    print("# RUNNING DEPLOYMENT                               #")
+    print("#                                                  #")
+    print("####################################################")
+
+    logging.info("####################################################")
+    logging.info("#                                                  #")
+    logging.info("# RUNNING DEPLOYMENT                               #")
+    logging.info("#                                                  #")
+    logging.info("####################################################")    
+
+logging.info(f"DEMO = {DEMO}")
+logging.info(f"SYSLOGHOST = {SYSLOGHOST}")
+logging.info(f"GQLUG_ENDPOINT_URL = {GQLUG_ENDPOINT_URL}")
+logging.info(f"JWTPUBLICKEYURL = {JWTPUBLICKEYURL}")
+logging.info(f"JWTRESOLVEUSERPATHURL = {JWTRESOLVEUSERPATHURL}")
