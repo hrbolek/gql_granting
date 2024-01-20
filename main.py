@@ -13,9 +13,9 @@ from strawberry.asgi import GraphQL
 import logging
 import logging.handlers
 
-from gql_granting.GraphTypeDefinitions import schema
-from gql_granting.DBDefinitions import startEngine, ComposeConnectionString
-from gql_granting.DBFeeder import initDB
+from src.GraphTypeDefinitions import schema
+from src.DBDefinitions import startEngine, ComposeConnectionString
+from src.DBFeeder import initDB
 from uoishelpers.authenticationMiddleware import createAuthentizationSentinel
 
 # region logging setup
@@ -119,8 +119,8 @@ class Item(BaseModel):
 async def get_context(request: Request):
     asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         
-    #from gql_granting.Dataloaders import createLoadersContext, createUgConnectionContext
-    from gql_granting.Dataloaders import createLoadersContext
+    #from src.Dataloaders import createLoadersContext, createUgConnectionContext
+    from src.Dataloaders import createLoadersContext
     context = createLoadersContext(asyncSessionMaker)
     i = Item(query = "")
     # i.query = ""

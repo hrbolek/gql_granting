@@ -21,7 +21,7 @@
 # #
 # ###########################################################################################################################
 
-# from gql_granting.DBDefinitions import (
+# from src.DBDefinitions import (
 #     BaseModel,
 #     ProgramFormTypeModel,
 #     ProgramGroupModel,
@@ -31,7 +31,7 @@
 #     ProgramTitleTypeModel,
 #     ProgramStudentModel
 # )
-# from gql_granting.DBDefinitions import (
+# from src.DBDefinitions import (
 #     BaseModel,
 #     SubjectModel,
 #     SemesterModel,
@@ -40,7 +40,7 @@
 #     LessonTypeModel,
 #     TopicModel,
 # )
-# from gql_granting.DBDefinitions import ProgramGroupModel
+# from src.DBDefinitions import ProgramGroupModel
 
 # ###########################################################################################################################
 # #

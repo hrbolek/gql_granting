@@ -1,7 +1,7 @@
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 from functools import cache
 
-from gql_granting.DBDefinitions import (
+from src.DBDefinitions import (
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,
     ProgramLevelTypeModel,
