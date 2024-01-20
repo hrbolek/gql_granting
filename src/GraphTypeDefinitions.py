@@ -843,7 +843,7 @@ class ProgramLanguageTypeInputFilter:
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def program_language_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
@@ -852,7 +852,7 @@ async def program_language_type_page(self, info: strawberry.types.Info, skip: Op
 
 @strawberry.field(
     description="""Gets program by id""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def program_language_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramLanguageTypeGQLModel"]:
     return await AcProgramLanguageTypeGQLModel.resolve_reference(info=info, id=id)
@@ -868,7 +868,7 @@ class ProgramTypeInputFilter:
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def program_type_page(self, info: strawberry.types.Info, 
@@ -877,7 +877,7 @@ async def program_type_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def program_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramTypeGQLModel"]:
     return await AcProgramTypeGQLModel.resolve_reference(info=info, id=id)
@@ -893,7 +893,7 @@ class ProgramInputFilter:
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def program_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, where: Optional[ProgramInputFilter] = None) -> List["AcProgramGQLModel"]:
@@ -901,7 +901,7 @@ async def program_page(self, info: strawberry.types.Info, skip: Optional[int] = 
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def program_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramGQLModel"]:
     return await AcProgramGQLModel.resolve_reference(info=info, id=id)
@@ -917,7 +917,7 @@ class SubjectInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def subject_page(self, info: strawberry.types.Info, 
@@ -927,7 +927,7 @@ async def subject_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def subject_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcSubjectGQLModel"]:
     return await AcSubjectGQLModel.resolve_reference(info=info, id=id)
@@ -942,7 +942,7 @@ class SemesterInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def semester_page(self, info: strawberry.types.Info, 
@@ -952,7 +952,7 @@ async def semester_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def semester_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcSemesterGQLModel"]:
     return await AcSemesterGQLModel.resolve_reference(info=info, id=id)
@@ -968,7 +968,7 @@ class TopicInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def topic_page(self, info: strawberry.types.Info, 
@@ -978,7 +978,7 @@ async def topic_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def topic_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcTopicGQLModel"]:
     return await AcTopicGQLModel.resolve_reference(info=info, id=id)
@@ -994,7 +994,7 @@ class LessonInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def lesson_page(self, info: strawberry.types.Info, 
@@ -1004,7 +1004,7 @@ async def lesson_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def lesson_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcLessonGQLModel"]:
     return await AcLessonGQLModel.resolve_reference(info=info, id=id)
@@ -1015,7 +1015,7 @@ async def lesson_by_id(self, info: strawberry.types.Info, id: IDType) -> Optiona
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def classification_page(self, info: strawberry.types.Info, 
@@ -1025,7 +1025,7 @@ async def classification_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def classification_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcClassificationGQLModel"]:
     return await AcClassificationGQLModel.resolve_reference(info=info, id=id)
@@ -1042,7 +1042,7 @@ class ClassificationLevelInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def classification_level_page(self, info: strawberry.types.Info, 
@@ -1052,7 +1052,7 @@ async def classification_level_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def classification_level_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcClassificationLevelGQLModel"]:
     return await AcClassificationLevelGQLModel.resolve_reference(info=info, id=id)
@@ -1068,7 +1068,7 @@ class ClassificationTypeInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def classification_type_page(self, info: strawberry.types.Info, 
@@ -1078,7 +1078,7 @@ async def classification_type_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def classification_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcClassificationTypeGQLModel"]:
     return await AcClassificationTypeGQLModel.resolve_reference(info=info, id=id)
@@ -1094,7 +1094,7 @@ class LessonTypeInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def lesson_type_page(self, info: strawberry.types.Info, 
@@ -1104,7 +1104,7 @@ async def lesson_type_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def lesson_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcLessonTypeGQLModel"]:
     return await AcLessonTypeGQLModel.resolve_reference(info=info, id=id)
@@ -1120,7 +1120,7 @@ class StudentStateInputFilter:
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def student_state_page(self, info: strawberry.types.Info, 
@@ -1130,7 +1130,7 @@ async def student_state_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def student_state_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramStudentStateGQLModel"]:
     return await AcProgramStudentStateGQLModel.resolve_reference(info=info, id=id)
@@ -1141,7 +1141,7 @@ async def student_state_by_id(self, info: strawberry.types.Info, id: IDType) -> 
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def student_page(self, info: strawberry.types.Info, 
@@ -1151,7 +1151,7 @@ async def student_page(self, info: strawberry.types.Info,
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
-    #permission_classes=[OnlyForAuthentized(isList=True)]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 async def student_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramStudentGQLModel"]:
     return await AcProgramStudentGQLModel.resolve_reference(info=info, id=id)

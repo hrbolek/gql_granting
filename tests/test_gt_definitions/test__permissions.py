@@ -391,7 +391,7 @@ queries = {
 }
 
 @pytest.mark.asyncio
-async def test_FillDataViaGQL(FillDataViaGQL, ClientExecutorAdmin, DemoData):
+async def test_FillDataViaGQL(DemoFalse, FillDataViaGQL, ClientExecutorAdmin, DemoData):
     return
     # for tableName, ops in queries.items():
     #     table = DemoData.get(tableName, None)

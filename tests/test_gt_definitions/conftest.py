@@ -1,3 +1,4 @@
+import time
 import logging
 import datetime
 import pytest_asyncio
@@ -400,6 +401,12 @@ async def GQLInsertQueries():
 
 @pytest_asyncio.fixture
 async def FillDataViaGQL(DBModels, DemoData, GQLInsertQueries, ClientExecutorAdmin):
+
+    start_time = time.time()
+    queriesR = 0
+    queriesW = 0
+    
+
     types = [type(""), type(datetime.datetime.now()), type(uuid.uuid1())]
     for DBModel in DBModels:
         tablename = DBModel.__tablename__
@@ -423,10 +430,14 @@ async def FillDataViaGQL(DBModels, DemoData, GQLInsertQueries, ClientExecutorAdm
                     variable_values[key] = f"{value}"
 
             readResponse = await ClientExecutorAdmin(query=queryset["read"], variable_values=variable_values)
+            queriesR = queriesR + 1
             if readResponse["data"]["result"] is not None:
                 logging.info(f"row with id `{variable_values['id']}` already exists in `{tablename}`")
                 continue
             insertResponse = await ClientExecutorAdmin(query=queryset["create"], variable_values=variable_values)
             assert insertResponse.get("errors", None) is None, insertResponse
+            queriesW = queriesW + 1
+
         logging.info(f"{tablename} initialized via gql query")
-    logging.info(f"All WANTED tables are initialized")
+    duration = time.time() - start_time
+    logging.info(f"All WANTED tables are initialized in {duration}, total read queries {queriesR} and write queries {queriesW}")

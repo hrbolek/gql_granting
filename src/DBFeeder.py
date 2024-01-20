@@ -379,7 +379,7 @@ from uoishelpers.feeders import ImportModels
 def get_demodata():
     def datetime_parser(json_dict):
         for (key, value) in json_dict.items():
-            if key in ["startdate", "enddate", "lastchange", "created"]:
+            if key in ["date", "startdate", "enddate", "lastchange", "created"]:
                 if value is None:
                     dateValueWOtzinfo = None
                 else:
@@ -412,19 +412,8 @@ def get_demodata():
 async def initDB(asyncSessionMaker):
 
     defaultNoDemo = "_________"
-    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
-        dbModels = [
-            ProgramFormTypeModel,
-            ProgramLanguageTypeModel,
-            ProgramLevelTypeModel,
-            ProgramTitleTypeModel,
-            ProgramTypeModel,
-            LessonTypeModel,
-
-            ClassificationLevelModel,
-            ClassificationTypeModel,
-        ]
-    else:
+    Demo = os.environ.get("DEMO", None)
+    if Demo in [True, "True"]:
         dbModels = [
             ProgramFormTypeModel,
             ProgramLanguageTypeModel,
@@ -445,6 +434,18 @@ async def initDB(asyncSessionMaker):
             ProgramStudentStateModel,
             ProgramStudentModel,
             ProgramStudentMessageModel
+        ]
+    else:
+        dbModels = [
+            ProgramFormTypeModel,
+            ProgramLanguageTypeModel,
+            ProgramLevelTypeModel,
+            ProgramTitleTypeModel,
+            ProgramTypeModel,
+            LessonTypeModel,
+
+            ClassificationLevelModel,
+            ClassificationTypeModel,
         ]
         
     jsonData = get_demodata()

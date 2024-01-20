@@ -105,6 +105,22 @@
             "mastergroup_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003"
         },
         {
+            "id": "6bbb594e-d0a9-491e-9219-d693db6d37b6",
+            "name": "Garanti programu",
+            "lastchange": "2023-04-19T17:27:12",
+            "valid": true,
+            "grouptype_id": "b1bedec8-931f-11ed-9b95-0242ac110002",
+            "mastergroup_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003"
+        },
+        {
+            "id": "e5d19e4b-4098-4972-960a-4a584bd8ed3f",
+            "name": "Garanti předmětu",
+            "lastchange": "2023-04-19T17:27:12",
+            "valid": true,
+            "grouptype_id": "b1bedf72-931f-11ed-9b95-0242ac110002",
+            "mastergroup_id": "6bbb594e-d0a9-491e-9219-d693db6d37b6"
+        },
+        {
             "id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
             "name": "Dep",
             "lastchange": "2023-04-19T17:27:12",
@@ -1420,7 +1436,9 @@
             "id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
             "type_id": "fd4f0980-9315-11ed-9b95-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
-            "name": "IT Technologie", "name_en": "" 
+            "name": "IT Technologie", "name_en": "",
+            "group_id": "6bbb594e-d0a9-491e-9219-d693db6d37b6",
+            "licenced_group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003"
         }
     ],
     "acprograms_students": [
@@ -1428,7 +1446,8 @@
             "id": "c58fbafe-01c9-42ba-9cce-dd489e77a670",
             "student_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
-            "semester": 1
+            "semester": 1,
+            "state_id": "6c96b893-ca09-4b6f-9fbb-5359c589927b"
         }        
     ],
     "acprograms_studentmessages": [
@@ -1437,7 +1456,8 @@
             "name": "Oznámení o ukončení studia",
             "description": "Oznámení o ukončení studia",
             "student_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
-            "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002"
+            "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
+            "date": "2024-12-24T08:00:00"
             
 
         }
@@ -1447,13 +1467,15 @@
             "id": "ce250a68-b095-11ed-9bd8-0242ac110002",
             "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
-            "name": "Programování", "name_en": "" 
+            "name": "Programování", "name_en": "",
+            "group_id": "e5d19e4b-4098-4972-960a-4a584bd8ed3f"
         },
         {
             "id": "3ed497ea-ab40-4e94-a93e-9d9627497652",
             "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
-            "name": "Databáze", "name_en": "" 
+            "name": "Databáze", "name_en": "",
+            "group_id": "e5d19e4b-4098-4972-960a-4a584bd8ed3f"
         }
     ],
     "acsemesters": [
@@ -1520,18 +1542,20 @@
     "acclassifications": [
         {
             "id": "ce250bd0-b095-11ed-9bd8-0242ac110002", 
-            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "student_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
             "classificationlevel_id": "5faea396-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
+            "date": "2023-04-19T08:00:00",
             "order": 1
         },
         {
             "id": "ce250bd1-b095-11ed-9bd8-0242ac110002", 
-            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "student_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
             "classificationlevel_id": "5faea21a-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
+            "date": "2023-04-19T08:00:00",
             "order": 2
         }
     ],
