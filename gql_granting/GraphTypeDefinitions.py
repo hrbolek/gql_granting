@@ -1104,6 +1104,33 @@ async def lesson_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Op
     return await AcLessonTypeGQLModel.resolve_reference(info=info, id=id)
 # endregion
 
+# region StudentState ById, Page
+
+@createInputs
+@dataclass
+class StudentStateInputFilter:
+    # name: str
+    pass
+
+@strawberry.field(
+    description="""Gets subjects paged / filtered""",
+    #permission_classes=[OnlyForAuthentized(isList=True)]
+    )
+@asPage
+async def student_state_page(self, info: strawberry.types.Info, 
+                       skip: Optional[int] = 0, limit: Optional[int] = 10, 
+                       where: Optional[StudentStateInputFilter] = None) -> List["AcProgramStudentStateGQLModel"]:
+    return getLoadersFromInfo(info).acprograms_studentstates
+
+@strawberry.field(
+    description="""Gets subjects paged / filtered""",
+    #permission_classes=[OnlyForAuthentized(isList=True)]
+    )
+async def student_state_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramStudentStateGQLModel"]:
+    return await AcProgramStudentStateGQLModel.resolve_reference(info=info, id=id)
+# endregion
+
+
 ###########################################################################################################################
 #
 # zde definujte svuj Query model
@@ -1155,6 +1182,9 @@ class Query:
 
     ac_lesson_type_by_id = lesson_type_by_id
     ac_lesson_type_page = lesson_type_page
+
+    ac_student_state_by_id = student_state_by_id
+    ac_student_state_page = student_state_page
 
     @strawberry.field(description="""Just container gql test""")
     async def say_hello_granting(
@@ -1946,7 +1976,7 @@ class StudentStateResultGQLModel:
     msg: str = None
 
     @strawberry.field(description="""Result of studentstate operation""")
-    async def studentstate(self, info: strawberry.types.Info) -> Optional[AcProgramStudentStateGQLModel]:
+    async def student_state(self, info: strawberry.types.Info) -> Optional[AcProgramStudentStateGQLModel]:
         result = await AcProgramStudentStateGQLModel.resolve_reference(info, self.id)
         return result
 
