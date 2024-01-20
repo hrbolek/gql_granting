@@ -190,17 +190,19 @@ import requests
 def ReadAllRoles():
     GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
     assert GQLUG_ENDPOINT_URL is not None, "Bad Configuration, missing GQLUG_ENDPOINT_URL env"
-    gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
 
     query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
     variables = {}
 
-    respJson = gqlproxy.post(query=query, variables=variables)
+    json = {"query": query, "variables": variables}
+    response = requests.post(url=GQLUG_ENDPOINT_URL, json=json)
+    respJson = response.json()
+
     assert respJson.get("errors", None) is None, respJson["errors"]
     respdata = respJson.get("data", None)
-    assert respdata is not None, "during roles reading roles have not been readed"
+    assert respdata is not None, "during roles reading, roles have not been readed"
     roles = respdata.get("roles", None)
-    assert roles is not None, "during roles reading roles have not been readed"
+    assert roles is not None, "during roles reading, roles have not been readed"
     print("roles", roles)
     roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
     return [*roles]
@@ -276,6 +278,7 @@ def RolesToList(roles: str = ""):
 
 @cache
 def OnlyForAuthentized(isList=False):
+    from ._GraphResolvers import getUserFromInfo
     class OnlyForAuthentized(strawberry.permission.BasePermission):
         message = "User is not authenticated"
 
@@ -283,7 +286,6 @@ def OnlyForAuthentized(isList=False):
             self, source, info: strawberry.types.Info, **kwargs
         ) -> bool:
             if self.isDEMO:
-                print("DEMO Enabled, not for production")
                 return True
             
             user = getUserFromInfo(info)
@@ -300,15 +302,18 @@ def OnlyForAuthentized(isList=False):
         @cached_property
         def isDEMO(self):
             DEMO = os.getenv("DEMO", None)
+            if DEMO:
+                print("DEMO Enabled, not for production")
             return True if DEMO == "True" else False
             
     return OnlyForAuthentized
 
 @cache
 def RoleBasedPermission(roles: str = "", whatreturn=[]):
+    from ._GraphResolvers import getUserFromInfo
     roleIdsNeeded = RolesToList(roles)
 
-    from .externals import RBACObjectGQLModel
+    from .GraphTypeDefinitionsExt import RBACObjectGQLModel
     class RolebasedPermission(BasePermission):
         message = "User has not appropriate roles"
 

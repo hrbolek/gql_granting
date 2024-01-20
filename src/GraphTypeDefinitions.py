@@ -8,6 +8,9 @@ from uoishelpers.resolvers import createInputs
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".GraphTypeDefinitionsExt")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".GraphTypeDefinitionsExt")]
 
+from ._GraphPermissions import (
+    OnlyForAuthentized
+)
 from ._GraphResolvers import (
     IDType,
     getLoadersFromInfo,
@@ -64,7 +67,7 @@ class AcProgramGQLModel:
 
     @strawberry.field(
             description="""Bachelor, ...""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def type(self, info: strawberry.types.Info) -> Optional["AcProgramTypeGQLModel"]:
         result = await AcProgramTypeGQLModel.resolve_reference(info, self.type_id)
@@ -72,7 +75,7 @@ class AcProgramGQLModel:
 
     @strawberry.field(
             description="""subjects in the program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def subjects(self, info: strawberry.types.Info) -> List["AcSubjectGQLModel"]:
         loader = getLoadersFromInfo(info).subjects
@@ -81,7 +84,7 @@ class AcProgramGQLModel:
 
     @strawberry.field(
             description="""subjects in the program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def students(self, info: strawberry.types.Info, 
         skip: Optional[int] = 0,
@@ -100,7 +103,7 @@ class AcProgramGQLModel:
 
     @strawberry.field(
             description="""group defining grants of this program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def grants_group(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
         from .GraphTypeDefinitionsExt import GroupGQLModel
@@ -108,7 +111,7 @@ class AcProgramGQLModel:
 
     @strawberry.field(
             description="""group which has got licence to teach this program (faculty or university)""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def licenced_group(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
         from .GraphTypeDefinitionsExt import GroupGQLModel
@@ -157,7 +160,7 @@ class AcProgramTypeGQLModel:
 
     @strawberry.field(
             description="""Bachelor, ...""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def level(self, info: strawberry.types.Info) -> Optional["AcProgramLevelTypeGQLModel"]:
         result = await AcProgramLevelTypeGQLModel.resolve_reference(info, self.level_id)
@@ -165,7 +168,7 @@ class AcProgramTypeGQLModel:
 
     @strawberry.field(
             description="""Present, Distant, ...""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def form(self, info: strawberry.types.Info) -> Optional["AcProgramFormTypeGQLModel"]:
         result = await AcProgramFormTypeGQLModel.resolve_reference(info, self.form_id)
@@ -173,7 +176,7 @@ class AcProgramTypeGQLModel:
 
     @strawberry.field(
             description="""Czech, ...""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def language(
         self, info: strawberry.types.Info
@@ -183,7 +186,7 @@ class AcProgramTypeGQLModel:
 
     @strawberry.field(
             description="""Bc., Ing., ...""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def title(self, info: strawberry.types.Info) -> Optional["AcProgramTitleTypeGQLModel"]:
         result = await AcProgramTitleTypeGQLModel.resolve_reference(info, self.title_id)
@@ -209,28 +212,28 @@ class AcProgramMessageGQLModel:
 
     @strawberry.field(
             description="""label of the message""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def name(self) -> Optional[str]:
         return self.name
 
     @strawberry.field(
             description="""extended content of the message""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def description(self) -> Optional[str]:
         return self.description
 
     @strawberry.field(
             description="""datetime of the message""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def date(self) -> Optional[datetime.datetime]:
         return self.date
 
     @strawberry.field(
             description="""student of the program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def student(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
         from .GraphTypeDefinitionsExt import UserGQLModel
@@ -238,7 +241,7 @@ class AcProgramMessageGQLModel:
 
     @strawberry.field(
             description="""student of the program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def program(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
         return await AcProgramGQLModel.resolve_reference(info, id=self.program_id)
@@ -273,14 +276,14 @@ class AcProgramStudentGQLModel:
 
     @strawberry.field(
             description="""semester which student of the program is in""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def semester(self, info: strawberry.types.Info) -> Optional[int]:
         return self.semester if self.semester else 0
 
     @strawberry.field(
             description="""student of the program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def student(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
         from .GraphTypeDefinitionsExt import UserGQLModel
@@ -288,7 +291,7 @@ class AcProgramStudentGQLModel:
     
     @strawberry.field(
             description="""messages sent to the student regarding the program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def messages(self, info: strawberry.types.Info, 
         skip: Optional[int] = 0,
@@ -310,7 +313,7 @@ class AcProgramStudentGQLModel:
     
     @strawberry.field(
             description="""student state in this program""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def state(self, info: strawberry.types.Info) -> Optional["AcProgramStudentStateGQLModel"]:
         return await AcProgramStudentStateGQLModel.resolve_reference(info=info, id=self.state_id)
@@ -462,7 +465,7 @@ class AcSubjectGQLModel:
 
     @strawberry.field(
             description="""Program owing this subjects""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def program(self, info: strawberry.types.Info) -> "AcProgramGQLModel":
         result = await AcProgramGQLModel.resolve_reference(info, self.program_id)
@@ -470,7 +473,7 @@ class AcSubjectGQLModel:
 
     @strawberry.field(
             description="""Semesters which the subjects in divided into""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def semesters(
         self, info: strawberry.types.Info
@@ -481,7 +484,7 @@ class AcSubjectGQLModel:
 
     @strawberry.field(
             description="""group defining grants of this subject""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def grants(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
         from .GraphTypeDefinitionsExt import GroupGQLModel
@@ -521,14 +524,14 @@ class AcSemesterGQLModel:
 
     @strawberry.field(
             description="""semester number""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     def order(self) -> int:
         return self.order
 
     @strawberry.field(
             description="""Subject related to the semester (semester owner)""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def subject(self, info: strawberry.types.Info) -> Optional["AcSubjectGQLModel"]:
         result = await AcSubjectGQLModel.resolve_reference(info, self.subject_id)
@@ -536,7 +539,7 @@ class AcSemesterGQLModel:
 
     @strawberry.field(
             description="""Subject related to the semester (semester owner)""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def classification_type(self, info: strawberry.types.Info) -> Optional["AcClassificationTypeGQLModel"]:
         result = await AcClassificationTypeGQLModel.resolve_reference(info, self.classificationtype_id)
@@ -544,7 +547,7 @@ class AcSemesterGQLModel:
 
     @strawberry.field(
             description="""Final classification of the semester""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def classifications(
         self, info: strawberry.types.Info,
@@ -565,7 +568,7 @@ class AcSemesterGQLModel:
 
     @strawberry.field(
             description="""topics""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def topics(self, info: strawberry.types.Info) -> List["AcTopicGQLModel"]:
         loader = getLoadersFromInfo(info).topics
@@ -597,14 +600,14 @@ class AcTopicGQLModel:
 
     @strawberry.field(
             description="""order (1)""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     def order(self) -> Union[int, None]:
         return self.order
 
     @strawberry.field(
             description="""Semester of subject which owns the topic""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def semester(self, info: strawberry.types.Info) -> Optional["AcSemesterGQLModel"]:
         result = await AcSemesterGQLModel.resolve_reference(info, self.semester_id)
@@ -612,7 +615,7 @@ class AcTopicGQLModel:
 
     @strawberry.field(
             description="""Lessons for a topic""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def lessons(self, info: strawberry.types.Info) -> List["AcLessonGQLModel"]:
         loader = getLoadersFromInfo(info).lessons
@@ -643,7 +646,7 @@ class AcLessonGQLModel:
 
     @strawberry.field(
             description="""Lesson type""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def type(self, info: strawberry.types.Info) -> Optional["AcLessonTypeGQLModel"]:
         result = await AcLessonTypeGQLModel.resolve_reference(info, self.type_id)
@@ -651,14 +654,14 @@ class AcLessonGQLModel:
 
     @strawberry.field(
             description="""Number of hour of this lesson in the topic""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     def count(self) -> int:
         return self.count
 
     @strawberry.field(
             description="""The topic which owns this lesson""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def topic(self, info: strawberry.types.Info) -> Optional["AcTopicGQLModel"]:
         result = await AcTopicGQLModel.resolve_reference(info, self.topic_id)
@@ -688,21 +691,21 @@ class AcClassificationGQLModel:
 
     @strawberry.field(
             description="""datetime of classification""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     def date(self) -> datetime.datetime:
         return self.date
 
     @strawberry.field(
             description="""ORDER OF CLASSI""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     def order(self) -> Optional[int]:
         return self.order
 
     @strawberry.field(
             description="""User""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def student(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
         from .GraphTypeDefinitionsExt import UserGQLModel
@@ -710,7 +713,7 @@ class AcClassificationGQLModel:
 
     @strawberry.field(
             description="""Semester""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def semester(self, info: strawberry.types.Info) -> Optional["AcSemesterGQLModel"]:
         result = await AcSemesterGQLModel.resolve_reference(info, id=self.semester_id)
@@ -718,7 +721,7 @@ class AcClassificationGQLModel:
 
     @strawberry.field(
             description="""Level""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def level(self, info: strawberry.types.Info) -> Optional["AcClassificationLevelGQLModel"]:
         result = await AcClassificationLevelGQLModel.resolve_reference(info, id=self.classificationlevel_id)
@@ -764,7 +767,7 @@ class ProgramTitleTypeInputFilter:
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    permission_classes=[]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def program_title_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
@@ -773,7 +776,7 @@ async def program_title_type_page(self, info: strawberry.types.Info, skip: Optio
 
 @strawberry.field(
     description="""Gets program by id""",
-    permission_classes=[]
+    permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_title_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramTitleTypeGQLModel"]:
     return await AcProgramTitleTypeGQLModel.resolve_reference(info=info, id=id)
@@ -789,7 +792,7 @@ class ProgramLevelTypeInputFilter:
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    permission_classes=[]
+    permission_classes=[OnlyForAuthentized(isList=False)]
     )
 @asPage
 async def program_level_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
@@ -798,7 +801,7 @@ async def program_level_type_page(self, info: strawberry.types.Info, skip: Optio
 
 @strawberry.field(
     description="""Gets program by id""",
-    permission_classes=[]
+    permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_level_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramLevelTypeGQLModel"]:
     return await AcProgramLevelTypeGQLModel.resolve_reference(info=info, id=id)
@@ -814,7 +817,7 @@ class ProgramFormTypeInputFilter:
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
-    permission_classes=[]
+    permission_classes=[OnlyForAuthentized(isList=True)]
     )
 @asPage
 async def program_form_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
@@ -823,7 +826,7 @@ async def program_form_type_page(self, info: strawberry.types.Info, skip: Option
 
 @strawberry.field(
     description="""Gets program by id""",
-    permission_classes=[]
+    permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_form_type_by_id(self, info: strawberry.types.Info, id: IDType) -> Optional["AcProgramFormTypeGQLModel"]:
     return await AcProgramFormTypeGQLModel.resolve_reference(info=info, id=id)
@@ -1236,7 +1239,7 @@ class ProgramResultGQLModel:
 
     @strawberry.field(
             description="""Object of operations""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def program(self, info: strawberry.types.Info) -> Union[AcProgramGQLModel, None]:
         result = await AcProgramGQLModel.resolve_reference(info, self.id)
@@ -1245,7 +1248,7 @@ class ProgramResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new study program""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_insert(self, info: strawberry.types.Info, program: ProgramInsertGQLModel) -> ProgramResultGQLModel:
     program.rbacobject = program.group_id
@@ -1253,7 +1256,7 @@ async def program_insert(self, info: strawberry.types.Info, program: ProgramInse
 
 @strawberry.mutation(
         description="""Update thestudy program""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_update(self, info: strawberry.types.Info, program: ProgramUpdateGQLModel) -> ProgramResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programs, program, ProgramResultGQLModel(msg="ok", id=program.id))
@@ -1292,7 +1295,7 @@ class ProgramTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def program_type(self, info: strawberry.types.Info) -> Union[AcProgramTypeGQLModel, None]:
         result = await AcProgramTypeGQLModel.resolve_reference(info, self.id)
@@ -1300,14 +1303,14 @@ class ProgramTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of study program""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_type_insert(self, info: strawberry.types.Info, program_type: ProgramTypeInsertGQLModel) -> ProgramTypeResultGQLModel:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programtypes, program_type, ProgramTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of study program""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_type_update(self, info: strawberry.types.Info, program_type: ProgramTypeUpdateGQLModel) -> ProgramTypeResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programtypes, program_type, ProgramTypeResultGQLModel(msg="ok", id=program_type.id))
@@ -1338,7 +1341,7 @@ class ProgramLanguageTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def program_language_type(self, info: strawberry.types.Info) -> Optional[AcProgramLanguageTypeGQLModel]:
         result = await AcProgramLanguageTypeGQLModel.resolve_reference(info, self.id)
@@ -1346,14 +1349,14 @@ class ProgramLanguageTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of language""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_language_type_insert(self, info: strawberry.types.Info, language_type: ProgramLanguageTypeInsertGQLModel) -> Optional[ProgramLanguageTypeResultGQLModel]:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programlanguages, language_type, ProgramLanguageTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of language""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_language_type_update(self, info: strawberry.types.Info, language_type: ProgramLanguageTypeUpdateGQLModel) -> Optional[ProgramLanguageTypeResultGQLModel]:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programlanguages, language_type, ProgramLanguageTypeResultGQLModel(msg="ok", id=language_type.id))
@@ -1383,7 +1386,7 @@ class ProgramTitleTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def program_title_type(self, info: strawberry.types.Info) -> Optional[AcProgramTitleTypeGQLModel]:
         result = await AcProgramTitleTypeGQLModel.resolve_reference(info, self.id)
@@ -1391,14 +1394,14 @@ class ProgramTitleTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of title""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_title_type_insert(self, info: strawberry.types.Info, title_type: ProgramTitleTypeInsertGQLModel) -> Optional[ProgramTitleTypeResultGQLModel]:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programtitletypes, title_type, ProgramTitleTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of title""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_title_type_update(self, info: strawberry.types.Info, title_type: ProgramTitleTypeUpdateGQLModel) -> Optional[ProgramTitleTypeResultGQLModel]:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programtitletypes, title_type, ProgramTitleTypeResultGQLModel(msg="ok", id=title_type.id))
@@ -1429,7 +1432,7 @@ class ProgramLevelTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def program_level_type(self, info: strawberry.types.Info) -> Optional[AcProgramLevelTypeGQLModel]:
         result = await AcProgramLevelTypeGQLModel.resolve_reference(info, self.id)
@@ -1437,14 +1440,14 @@ class ProgramLevelTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of level""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_level_type_insert(self, info: strawberry.types.Info, level_type: ProgramLevelTypeInsertGQLModel) -> Optional[ProgramLevelTypeResultGQLModel]:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programleveltypes, level_type, ProgramLevelTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of level""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_level_type_update(self, info: strawberry.types.Info, level_type: ProgramLevelTypeUpdateGQLModel) -> Optional[ProgramLevelTypeResultGQLModel]:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programleveltypes, level_type, ProgramLevelTypeResultGQLModel(msg="ok", id=level_type.id))
@@ -1475,7 +1478,7 @@ class ProgramFormTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def program_form_type(self, info: strawberry.types.Info) -> Optional[AcProgramFormTypeGQLModel]:
         result = await AcProgramFormTypeGQLModel.resolve_reference(info, self.id)
@@ -1483,14 +1486,14 @@ class ProgramFormTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of form""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_form_type_insert(self, info: strawberry.types.Info, form_type: ProgramFormTypeInsertGQLModel) -> Optional[ProgramFormTypeResultGQLModel]:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programforms, form_type, ProgramFormTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of form""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_form_type_update(self, info: strawberry.types.Info, form_type: ProgramFormTypeUpdateGQLModel) -> Optional[ProgramFormTypeResultGQLModel]:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programforms, form_type, ProgramFormTypeResultGQLModel(msg="ok", id=form_type.id))
@@ -1526,7 +1529,7 @@ class ProgramMessageResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def message(self, info: strawberry.types.Info) -> Optional[AcProgramMessageGQLModel]:
         result = await AcProgramMessageGQLModel.resolve_reference(info, self.id)
@@ -1534,14 +1537,14 @@ class ProgramMessageResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of form""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_message_insert(self, info: strawberry.types.Info, message: ProgramMessageInsertGQLModel) -> Optional[ProgramMessageResultGQLModel]:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programmessages, message, ProgramMessageResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of form""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_message_update(self, info: strawberry.types.Info, message: ProgramMessageUpdateGQLModel) -> Optional[ProgramMessageResultGQLModel]:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programmessages, message, ProgramMessageResultGQLModel(msg="ok", id=message.id))
@@ -1579,7 +1582,7 @@ class ProgramStudentResultGQLModel:
 
     @strawberry.field(
             description="""Result of user operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def student(self, info: strawberry.types.Info) -> Optional[AcProgramStudentGQLModel]:
         result = await AcProgramStudentGQLModel.resolve_reference(info, self.id)
@@ -1587,14 +1590,14 @@ class ProgramStudentResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of form""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_student_insert(self, info: strawberry.types.Info, student: ProgramStudentInsertGQLModel) -> Optional[ProgramStudentResultGQLModel]:
     return await encapsulateInsert(info, getLoadersFromInfo(info).programstudents, student, ProgramStudentResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of form""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_student_update(self, info: strawberry.types.Info, student: ProgramStudentUpdateGQLModel) -> Optional[ProgramStudentResultGQLModel]:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).programstudents, student, ProgramStudentResultGQLModel(msg="ok", id=student.id))
@@ -1630,7 +1633,7 @@ class SubjectResultGQLModel:
 
     @strawberry.field(
             description="""Result of subject operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def subject(self, info: strawberry.types.Info) -> Union[AcSubjectGQLModel, None]:
         result = await AcSubjectGQLModel.resolve_reference(info, self.id)
@@ -1638,7 +1641,7 @@ class SubjectResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new type of study program""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_subject_insert(self, info: strawberry.types.Info, subject: SubjectInsertGQLModel) -> SubjectResultGQLModel:
     subject.rbacobject = subject.group_id
@@ -1646,7 +1649,7 @@ async def program_subject_insert(self, info: strawberry.types.Info, subject: Sub
 
 @strawberry.mutation(
         description="""Update the type of study program""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_subject_update(self, info: strawberry.types.Info, subject: SubjectUpdateGQLModel) -> SubjectResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).subjects, subject, SubjectResultGQLModel(msg="ok", id=subject.id))
@@ -1682,7 +1685,7 @@ class SemesterResultGQLModel:
 
     @strawberry.field(
             description="""Result of semester operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def semester(self, info: strawberry.types.Info) -> Union[AcSemesterGQLModel, None]:
         result = await AcSemesterGQLModel.resolve_reference(info, self.id)
@@ -1690,7 +1693,7 @@ class SemesterResultGQLModel:
     
 @strawberry.mutation(
         description="""Adds new semester""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_semester_insert(self, info: strawberry.types.Info, semester: SemesterInsertGQLModel) -> SemesterResultGQLModel:
     loader = getLoadersFromInfo(info).subjects
@@ -1701,7 +1704,7 @@ async def program_semester_insert(self, info: strawberry.types.Info, semester: S
 
 @strawberry.mutation(
         description="""Update the semester""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_semester_update(self, info: strawberry.types.Info, semester: SemesterUpdateGQLModel) -> SemesterResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).semesters, semester, SemesterResultGQLModel(msg="ok", id=semester.id))
@@ -1732,7 +1735,7 @@ class LessonTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of lessontype operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def lesson_type(self, info: strawberry.types.Info) -> Optional[AcLessonTypeGQLModel]:
         result = await AcLessonTypeGQLModel.resolve_reference(info, self.id)
@@ -1740,14 +1743,14 @@ class LessonTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new lessontypetype""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_type_insert(self, info: strawberry.types.Info, lesson_type: LessonTypeInsertGQLModel) -> LessonTypeResultGQLModel:
     return await encapsulateInsert(info, getLoadersFromInfo(info).lessontypes, lesson_type, LessonTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the lessontype""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_type_update(self, info: strawberry.types.Info, lesson_type: LessonTypeUpdateGQLModel) -> LessonTypeResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).lessontypes, lesson_type, LessonTypeResultGQLModel(msg="ok", id=lesson_type.id))
@@ -1778,7 +1781,7 @@ class ClassificationTypeResultGQLModel:
 
     @strawberry.field(
             description="""Result of classificationtype operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def classification_type(self, info: strawberry.types.Info) -> Union[AcClassificationTypeGQLModel, None]:
         result = await AcClassificationTypeGQLModel.resolve_reference(info, self.id)
@@ -1786,14 +1789,14 @@ class ClassificationTypeResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new classificationtypetype""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_type_insert(self, info: strawberry.types.Info, classification_type: ClassificationTypeInsertGQLModel) -> ClassificationTypeResultGQLModel:
     return await encapsulateInsert(info, getLoadersFromInfo(info).classificationtypes, classification_type, ClassificationTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the classificationtype""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_type_update(self, info: strawberry.types.Info, classification_type: ClassificationTypeUpdateGQLModel) -> ClassificationTypeResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).classificationtypes, classification_type, ClassificationTypeResultGQLModel(msg="ok", id=classification_type.id))
@@ -1829,7 +1832,7 @@ class ClassificationResultGQLModel:
 
     @strawberry.field(
             description="""Result of classification operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def classification(self, info: strawberry.types.Info) -> Union[AcClassificationGQLModel, None]:
         result = await AcClassificationGQLModel.resolve_reference(info, self.id)
@@ -1837,14 +1840,14 @@ class ClassificationResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new classification""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_insert(self, info: strawberry.types.Info, classification: ClassificationInsertGQLModel) -> ClassificationResultGQLModel:
     return await encapsulateInsert(info, getLoadersFromInfo(info).classifications, classification, ClassificationResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the classification""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_update(self, info: strawberry.types.Info, classification: ClassificationUpdateGQLModel) -> ClassificationResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).classifications, classification, ClassificationResultGQLModel(msg="ok", id=classification.id))
@@ -1878,7 +1881,7 @@ class TopicResultGQLModel:
 
     @strawberry.field(
             description="""Result of topic operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def topic(self, info: strawberry.types.Info) -> Union[AcTopicGQLModel, None]:
         result = await AcTopicGQLModel.resolve_reference(info, self.id)
@@ -1886,7 +1889,7 @@ class TopicResultGQLModel:
     
 @strawberry.mutation(
         description="""Adds new topic""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_topic_insert(self, info: strawberry.types.Info, topic: TopicInsertGQLModel) -> TopicResultGQLModel:
     loader = getLoadersFromInfo(info).semesters
@@ -1897,7 +1900,7 @@ async def program_topic_insert(self, info: strawberry.types.Info, topic: TopicIn
 
 @strawberry.mutation(
         description="""Update the topic""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_topic_update(self, info: strawberry.types.Info, topic: TopicUpdateGQLModel) -> TopicResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).topics, topic, TopicResultGQLModel(msg="ok", id=topic.id))
@@ -1929,7 +1932,7 @@ class LessonResultGQLModel:
 
     @strawberry.field(
             description="""Result of lesson operation""",
-            permission_classes=[]
+            permission_classes=[OnlyForAuthentized(isList=False)]
     )
     async def lesson(self, info: strawberry.types.Info) -> Union[AcLessonGQLModel, None]:
         result = await AcLessonGQLModel.resolve_reference(info, self.id)
@@ -1937,7 +1940,7 @@ class LessonResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new lesson""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_insert(self, info: strawberry.types.Info, lesson: LessonInsertGQLModel) -> LessonResultGQLModel:
     loader = getLoadersFromInfo(info).topics
@@ -1949,7 +1952,7 @@ async def program_lesson_insert(self, info: strawberry.types.Info, lesson: Lesso
 
 @strawberry.mutation(
         description="""Update the lesson""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_update(self, info: strawberry.types.Info, lesson: LessonUpdateGQLModel) -> LessonResultGQLModel:
     return await encapsulateUpdate(info, getLoadersFromInfo(info).lessons, lesson, LessonResultGQLModel(msg="ok", id=lesson.id))
@@ -1984,7 +1987,7 @@ class StudentStateResultGQLModel:
 
 @strawberry.mutation(
         description="""Adds new studentstate""",
-        permission_classes=[]
+        permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_student_state_insert(self, info: strawberry.types.Info, student_state: StudentStateInsertGQLModel) -> StudentStateResultGQLModel:
     return await encapsulateInsert(info, getLoadersFromInfo(info).acprograms_studentstates, student_state, StudentStateResultGQLModel(msg="ok", id=None))

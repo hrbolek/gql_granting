@@ -38,9 +38,9 @@ class RBACObjectGQLModel:
         authorizedroles = await loader.load(id)
         return authorizedroles
 
-    @classmethod
-    async def resolve_all_roles(cls, info: strawberry.types.Info):
-        return []
+    # @classmethod
+    # async def resolve_all_roles(cls, info: strawberry.types.Info):
+    #     return []
     
 
     
