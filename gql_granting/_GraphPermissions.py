@@ -189,6 +189,7 @@ import requests
 
 def ReadAllRoles():
     GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
+    assert GQLUG_ENDPOINT_URL is not None, "Bad Configuration, missing GQLUG_ENDPOINT_URL env"
     gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
 
     query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
