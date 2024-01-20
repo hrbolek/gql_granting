@@ -32,6 +32,9 @@ test_insert_program = createFrontendQuery(
                 students { id }
                 grantsGroup { id }
                 licencedGroup { id }
+                createdby { id }
+                changedby { id }
+                rbacobject { id }
             }
         }
     }""",

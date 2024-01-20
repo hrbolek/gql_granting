@@ -19,6 +19,7 @@ from ._GraphResolvers import (
     resolve_created,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
 
     asPage
     )
@@ -59,6 +60,7 @@ class AcProgramGQLModel:
     changedby = resolve_changedby
     created = resolve_created
     lastchange = resolve_lastchange
+    rbacobject = resolve_rbacobject
 
     @strawberry.field(
             description="""Bachelor, ...""",
