@@ -34,6 +34,9 @@ test_insert_program_subject = createFrontendQuery(
                 lastchange
                 name
                 nameEn
+                program { id }
+                semesters { id }
+                grants { id }
             }
         }
     }""",

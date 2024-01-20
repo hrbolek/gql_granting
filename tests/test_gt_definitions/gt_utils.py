@@ -10,13 +10,13 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
         def testResult(resp):
             print("response", resp)
             errors = resp.get("errors", None)
-            assert errors is None
+            assert errors is None, f"Error during byId Execution {errors}"
             
             respdata = resp.get("data", None)
-            assert respdata is not None
+            assert respdata is not None, f"Empty response, check loader and datatable"
             
             respdata = respdata[queryEndpoint]
-            assert respdata is not None
+            assert respdata is not None, f"{queryEndpoint} returns None {resp} as result of query for {query} with {variable_values}"
 
             for att in attributeNames:
                 assert respdata[att] == f'{datarow[att]}'
@@ -91,10 +91,10 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
             respdata = respdata.get('_entities', None)
             assert respdata is not None
 
-            assert len(respdata) == 1
+            assert len(respdata) == 1, f"got no data, is defined proper loader? test at proper table? ({tableName})"
             respdata = respdata[0]
-
-            assert respdata['id'] == rowid
+            assert respdata is not None, f"Seems database table {tableName} is not initialized for test (conftest.py / Demodata?), also test loader"
+            assert respdata['id'] == rowid, f"got id {respdata['id']} != {rowid}"
 
         schemaExecutor = SchemaExecutorDemo
         clientExecutor = ClientExecutorDemo

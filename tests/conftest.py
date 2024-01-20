@@ -33,6 +33,8 @@ def DBModels():
         ClassificationTypeModel,
         ClassificationLevelModel,
 
+        LessonTypeModel,
+
         SubjectModel,
         SemesterModel,
         TopicModel,
@@ -58,6 +60,7 @@ def DBModels():
         ClassificationTypeModel,
         ClassificationLevelModel,
 
+        LessonTypeModel,
         SubjectModel,
         SemesterModel,
         TopicModel,

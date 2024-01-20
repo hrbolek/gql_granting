@@ -30,6 +30,13 @@ test_insert_program_semester = createFrontendQuery(
             result: semester {
                 id
                 lastchange
+                order
+
+                subject { id }
+                classifications { id }
+                classificationType { id }
+                topics { id }
+
             }
         }
     }""",

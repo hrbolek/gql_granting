@@ -365,7 +365,9 @@ from gql_granting.DBDefinitions import (
     ClassificationModel,
     ClassificationTypeModel,
 
-
+    ProgramStudentStateModel,
+    ProgramStudentModel,
+    ProgramStudentMessageModel
 )
 
 import asyncio
@@ -440,6 +442,9 @@ async def initDB(asyncSessionMaker):
             LessonModel,
             ClassificationModel,
 
+            ProgramStudentStateModel,
+            ProgramStudentModel,
+            ProgramStudentMessageModel
         ]
         
     jsonData = get_demodata()

@@ -32,6 +32,10 @@ test_insert_program_topic = createFrontendQuery(
                 lastchange
                 name
                 nameEn
+
+                order
+                semester { id }
+                lessons { id }
             }
         }
     }""",
