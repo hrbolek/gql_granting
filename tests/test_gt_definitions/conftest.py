@@ -6,7 +6,11 @@ import uuid
 
 queries = {
     "acprograms": {
-        "read": """query($id: UUID!){ result: ById(id: $id) { id } }""",
+        "read": """query($id: UUID!){ result: acProgramById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acProgramById(id: $id) { 
+            id type { id } subjects {id } students { id } grantsGroup { id } licencedGroup { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: Page(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $type_id: UUID!, $group_id: UUID!, $licenced_group_id: UUID!) {
         result: programInsert(program: {id: $id, name: $name, typeId: $type_id, groupId: $group_id, licencedGroupId: $licenced_group_id}) {
@@ -30,6 +34,10 @@ queries = {
     }, 
     "acclassifications": {
         "read": """query($id: UUID!){ result: acClassificationById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acClassificationById(id: $id) { 
+            id date order student { id } semester { id } level { id }
+          }}""",
         "readp": """query($skip: Int, $limit: Int){ result: acClassificationPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $date: DateTime!, $order: Int!
             $student_id: UUID!, $semester_id: UUID! 
@@ -57,6 +65,10 @@ queries = {
 
     "acclassificationlevels": {
         "read": """query($id: UUID!){ result: acClassificationLevelById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acClassificationLevelById(id: $id) {
+             id 
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acClassificationLevelPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation (
             $id: UUID!, $name: String!, $name_en: String
@@ -78,6 +90,7 @@ queries = {
 
     "acclassificationtypes": {
         "read": """query($id: UUID!){ result: acClassificationTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acClassificationTypeById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acClassificationTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation (
             $id: UUID!, $name: String!, $name_en: String
@@ -98,6 +111,10 @@ queries = {
     }, 
     "aclessons": {
         "read": """query($id: UUID!){ result: acLessonById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acLessonById(id: $id) { 
+            id type { id } count topic { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acLessonPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $topic_id: UUID!, $type_id: UUID! ) {
         result: programLessonInsert(lesson: {
@@ -119,6 +136,7 @@ queries = {
     },     
     "aclessontypes": {
         "read": """query($id: UUID!){ result: acLessonTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acLessonTypeById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acLessonTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation (
             $id: UUID!, $name: String!, $name_en: String
@@ -139,6 +157,7 @@ queries = {
     },         
     "acprogramforms": {
         "read": """query($id: UUID!){ result: acProgramFormTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acProgramFormTypeById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramFormTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $name_en: String) {
         result: programFormTypeInsert(formType: {id: $id, name: $name, nameEn: $name_en}) {
@@ -153,31 +172,36 @@ queries = {
         }
     }"""
     },             
-    "acprograms": {
-        "read": """query($id: UUID!){ result: acProgramById(id: $id) { id } }""",
-        "readp": """query($skip: Int, $limit: Int){ result: acProgramPage(skip: $skip, limit: $limit) { id } }""",
-        "create": """mutation ($id: UUID!, $name: String!, $type_id: UUID!, $group_id: UUID!, $licenced_group_id: UUID!) {
-        result: programInsert(program: {id: $id, name: $name, typeId: $type_id, groupId: $group_id, licencedGroupId: $licenced_group_id}) {
-            id
-            msg
-            result: program {
-                id
-                name
-                nameEn
-                type { id }
-                subjects { id }
-                students { id }
-                grantsGroup { id }
-                licencedGroup { id }
-                createdby { id }
-                changedby { id }
-                rbacobject { id }
-            }
-        }
-    }"""
-    },             
+    # "acprograms": {
+    #     "read": """query($id: UUID!){ result: acProgramById(id: $id) { id } }""",
+    #     "readext": """query($id: UUID!){ 
+    #       result: acProgramById(id: $id) { 
+    #         id type { id } subjects { id } students { id } grantsGroup { id }
+    #       } }""",
+    #     "readp": """query($skip: Int, $limit: Int){ result: acProgramPage(skip: $skip, limit: $limit) { id } }""",
+    #     "create": """mutation ($id: UUID!, $name: String!, $type_id: UUID!, $group_id: UUID!, $licenced_group_id: UUID!) {
+    #     result: programInsert(program: {id: $id, name: $name, typeId: $type_id, groupId: $group_id, licencedGroupId: $licenced_group_id}) {
+    #         id
+    #         msg
+    #         result: program {
+    #             id
+    #             name
+    #             nameEn
+    #             type { id }
+    #             subjects { id }
+    #             students { id }
+    #             grantsGroup { id }
+    #             licencedGroup { id }
+    #             createdby { id }
+    #             changedby { id }
+    #             rbacobject { id }
+    #         }
+    #     }
+    # }"""
+    # },             
     "acprogramlanguages": {
         "read": """query($id: UUID!){ result: acProgramLanguageTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acProgramLanguageTypeById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramLanguageTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $name_en: String) {
         result: programLanguageTypeInsert(languageType: {id: $id, name: $name, nameEn: $name_en}) {
@@ -194,6 +218,7 @@ queries = {
     },             
     "acprogramlevels": {
         "read": """query($id: UUID!){ result: acProgramLevelTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acProgramLevelTypeById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramLevelTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $name_en: String) {
         result: programLevelTypeInsert(levelType: {id: $id, name: $name, nameEn: $name_en}) {
@@ -210,6 +235,10 @@ queries = {
     },
     "acprograms_studentmessages": {
         "read": """query($id: UUID!){ result: acProgramMessageById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acProgramMessageById(id: $id) { 
+            id description date student { id } program { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramMessagePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation (
             $id: UUID!, $name: String!, $description: String
@@ -239,6 +268,10 @@ queries = {
     },
     "acprograms_students": {
         "read": """query($id: UUID!){ result: acProgramStudentById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acProgramStudentById(id: $id) { 
+            id semester student { id } messages { id } state { id } program { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramStudentPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation (
             $id: UUID!, $student_id: UUID!, $program_id: UUID!,
@@ -262,6 +295,7 @@ queries = {
     },                     
     "acprogramtitles": {
         "read": """query($id: UUID!){ result: acProgramTitleTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acProgramTitleTypeById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramTitleTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $name_en: String) {
         result: programTitleTypeInsert(titleType: {id: $id, name: $name, nameEn: $name_en}) {
@@ -278,6 +312,10 @@ queries = {
     },                     
     "acprogramtypes": {
         "read": """query($id: UUID!){ result: acProgramTypeById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acProgramTypeById(id: $id) { 
+            id level { id } form { id } language { id } title { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramTypePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $name_en: String, 
         $title_id: UUID!, $form_id: UUID!, $language_id: UUID!, $level_id: UUID!) {
@@ -303,6 +341,10 @@ queries = {
     },                     
     "acsemesters": {
         "read": """query($id: UUID!){ result: acSemesterById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acSemesterById(id: $id) { 
+            id order subject { id } classificationType { id } classifications { id } topics { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acSemesterPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $subject_id: UUID!, $classificationtype_id: UUID!) {
         result: programSemesterInsert(semester: {
@@ -327,6 +369,7 @@ queries = {
     },                         
     "acprograms_studentstates": {
         "read": """query($id: UUID!){ result: acProgramStudentStateById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ result: acProgramStudentStateById(id: $id) { id } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acProgramStudentStatePage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation (
             $id: UUID!, $name: String!, $name_en: String
@@ -347,6 +390,10 @@ queries = {
     },                         
     "acsubjects": {
         "read": """query($id: UUID!){ result: acSubjectById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acSubjectById(id: $id) { 
+            id program { id } semesters { id } grants { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acSubjectPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $name_en: String, 
             $program_id: UUID!, $group_id: UUID!
@@ -371,6 +418,10 @@ queries = {
     },                         
     "actopics": {
         "read": """query($id: UUID!){ result: acTopicById(id: $id) { id } }""",
+        "readext": """query($id: UUID!){ 
+          result: acTopicById(id: $id) { 
+            id order semester { id } lessons { id }
+          } }""",
         "readp": """query($skip: Int, $limit: Int){ result: acTopicPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $semester_id: UUID!, $name: String!, $name_en: String) {
         result: programTopicInsert(topic: {
@@ -429,7 +480,8 @@ async def FillDataViaGQL(DBModels, DemoData, GQLInsertQueries, ClientExecutorAdm
                 elif type(value) in types:
                     variable_values[key] = f"{value}"
 
-            readResponse = await ClientExecutorAdmin(query=queryset["read"], variable_values=variable_values)
+            # readResponse = await ClientExecutorAdmin(query=queryset["read"], variable_values=variable_values)
+            readResponse = await ClientExecutorAdmin(query=queryset["readext"], variable_values=variable_values)
             queriesR = queriesR + 1
             if readResponse["data"]["result"] is not None:
                 logging.info(f"row with id `{variable_values['id']}` already exists in `{tablename}`")

@@ -120,7 +120,7 @@ class AcProgramGQLModel:
 
 # endregion
     
-# region ProgramType Model
+# region ProgramLevelType Model
 @strawberry.federation.type(keys=["id"], description="bachelor, ...")
 class AcProgramLevelTypeGQLModel:
     @classmethod
@@ -211,12 +211,7 @@ class AcProgramMessageGQLModel:
     created = resolve_created
     lastchange = resolve_lastchange
 
-    @strawberry.field(
-            description="""label of the message""",
-            permission_classes=[OnlyForAuthentized(isList=False)]
-            )
-    async def name(self) -> Optional[str]:
-        return self.name
+    name = resolve_name
 
     @strawberry.field(
             description="""extended content of the message""",
@@ -318,6 +313,13 @@ class AcProgramStudentGQLModel:
             )
     async def state(self, info: strawberry.types.Info) -> Optional["AcProgramStudentStateGQLModel"]:
         return await AcProgramStudentStateGQLModel.resolve_reference(info=info, id=self.state_id)
+
+    @strawberry.field(
+            description="""program""",
+            permission_classes=[OnlyForAuthentized(isList=False)]
+            )
+    async def program(self, info: strawberry.types.Info) -> Optional["AcProgramGQLModel"]:
+        return await AcProgramGQLModel.resolve_reference(info=info, id=self.program_id)
 
 # endregion
     
