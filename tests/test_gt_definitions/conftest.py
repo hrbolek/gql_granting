@@ -11,7 +11,7 @@ queries = {
           result: acProgramById(id: $id) { 
             id type { id } subjects {id } students { id } grantsGroup { id } licencedGroup { id }
           } }""",
-        "readp": """query($skip: Int, $limit: Int){ result: Page(skip: $skip, limit: $limit) { id } }""",
+        "readp": """query($skip: Int, $limit: Int){ result: acProgramPage(skip: $skip, limit: $limit) { id } }""",
         "create": """mutation ($id: UUID!, $name: String!, $type_id: UUID!, $group_id: UUID!, $licenced_group_id: UUID!) {
         result: programInsert(program: {id: $id, name: $name, typeId: $type_id, groupId: $group_id, licencedGroupId: $licenced_group_id}) {
             id

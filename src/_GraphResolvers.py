@@ -183,10 +183,9 @@ async def encapsulateUpdate(info, loader, entity, result):
     entity.changedby = id
 
     row = await loader.update(entity)
-    result.id = entity.id
+    result.id = entity.id if result.id is None else result.id 
     result.msg = "ok" if row is not None else "fail"
     return result
-
 
 # def asInsert(field):
 #     def decorator(field):
