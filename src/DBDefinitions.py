@@ -92,7 +92,7 @@ class ProgramStudentMessageModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     description = Column(String)
-    student_id = Column(ForeignKey("acprograms_students.id"), index=True)
+    student_id = UUIDFKey(nullable=False)
     program_id = Column(ForeignKey("acprograms.id"), index=True)
     date = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
