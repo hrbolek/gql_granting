@@ -6,6 +6,7 @@ import logging
 import fastapi
 import uvicorn
 from pydantic import BaseModel
+import sqlalchemy
 from uuid import uuid1 as uuid
 import random
 import pytest_asyncio
@@ -103,7 +104,17 @@ async def SQLite(Async_Session_Maker, DemoData, DBModels):
         DBModels=DBModels,
         jsonData=DemoData,
     )    
-    logging.info(f"database loaded (SQLite)")
+    logging.info(f"(SQLite), initilized models {DBModels} / {[DBModel.__tablename__ for DBModel in DBModels]}")
+
+    for DBModel in DBModels:
+        tableName = DBModel.__tablename__
+
+        statement2 = sqlalchemy.text(f"SELECT id FROM {tableName}")
+        async with Async_Session_Maker() as session:
+            rows = await session.execute(statement2)
+            row = rows.first()
+            assert row is not None, f"table {tableName} is empty"
+
     return Async_Session_Maker
 
 @pytest.fixture
@@ -194,6 +205,7 @@ def QueriesFile():
 def DemoTrue(monkeypatch):
     print("setting env DEMO to True")
     monkeypatch.setenv("DEMO", "True")
+    monkeypatch.setenv("DEMODATA", "True")
     # import main
     # main.DEMO = True
     yield
@@ -203,6 +215,7 @@ def DemoTrue(monkeypatch):
 def DemoFalse(monkeypatch):
     print("setting env DEMO to False")
     monkeypatch.setenv("DEMO", "False")
+    monkeypatch.setenv("DEMODATA", "True")
     # import main
     # main.DEMO = True
     yield

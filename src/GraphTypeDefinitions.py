@@ -23,6 +23,9 @@ from ._GraphResolvers import (
     resolve_createdby,
     resolve_changedby,
     resolve_rbacobject,
+    
+    create_self_scalar_resolver,
+    create_self_vector_resolver,
 
     asPage
     )
@@ -53,7 +56,7 @@ class ProgramStudentInputFilter:
 class AcProgramGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programs
+        return getLoadersFromInfo(info).acprograms
 
     resolve_reference = resolve_reference
     id = resolve_id
@@ -79,7 +82,7 @@ class AcProgramGQLModel:
             permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def subjects(self, info: strawberry.types.Info) -> List["AcSubjectGQLModel"]:
-        loader = getLoadersFromInfo(info).subjects
+        loader = AcSubjectGQLModel.getLoader(info)
         result = await loader.filter_by(program_id=self.id)
         return result
 
@@ -95,7 +98,7 @@ class AcProgramGQLModel:
         desc: Optional[bool] = None
         ) -> List["AcProgramStudentGQLModel"]:
         wheredict = None if where is None else strawberry.asdict(where)
-        loader = getLoadersFromInfo(info).programstudents
+        loader = AcProgramStudentGQLModel.getLoader(info)
         rows = await loader.page(skip=skip, limit=limit, where=wheredict, extendedfilter={"program_id": self.id}, orderby=orderby, desc=desc)
         # userawaitables = (UserGQLModel.resolve_reference(row.student_id) for row in rows)
         # result = await asyncio.gather(*userawaitables)
@@ -125,7 +128,7 @@ class AcProgramGQLModel:
 class AcProgramLevelTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programleveltypes
+        return getLoadersFromInfo(info).acprogramlevels
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -147,7 +150,7 @@ class AcProgramLevelTypeGQLModel:
 class AcProgramTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programtypes
+        return getLoadersFromInfo(info).acprogramtypes
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -201,7 +204,7 @@ class AcProgramTypeGQLModel:
 class AcProgramMessageGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programmessages
+        return getLoadersFromInfo(info).acprograms_studentmessages
 
     resolve_reference = resolve_reference
     id = resolve_id
@@ -260,7 +263,7 @@ class ProgramMessagesInputFilter:
 class AcProgramStudentGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programstudents
+        return getLoadersFromInfo(info).acprograms_students
 
     resolve_reference = resolve_reference
     id = resolve_id
@@ -298,7 +301,7 @@ class AcProgramStudentGQLModel:
         ) -> List["AcProgramMessageGQLModel"]:
 
         wheredict = None if where is None else strawberry.asdict(where)
-        loader = getLoadersFromInfo(info).programmessages
+        loader = AcProgramMessageGQLModel.getLoader(info)
         results = await loader.page(
             skip=skip, limit=limit, orderby=orderby, desc=desc,
             where=wheredict, 
@@ -351,7 +354,7 @@ class AcProgramStudentStateGQLModel:
 class AcProgramFormTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programforms
+        return getLoadersFromInfo(info).acprogramforms
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -373,7 +376,7 @@ class AcProgramFormTypeGQLModel:
 class AcProgramLanguageTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programlanguages
+        return getLoadersFromInfo(info).acprogramlanguages
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -392,7 +395,7 @@ class AcProgramLanguageTypeGQLModel:
 class AcProgramTitleTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).programtitletypes
+        return getLoadersFromInfo(info).acprogramtitles
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -413,7 +416,7 @@ class AcProgramTitleTypeGQLModel:
 class AcClassificationTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).classificationtypes
+        return getLoadersFromInfo(info).acclassificationtypes
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -432,7 +435,7 @@ class AcClassificationTypeGQLModel:
 class AcLessonTypeGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).lessontypes
+        return getLoadersFromInfo(info).aclessontypes
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -454,7 +457,7 @@ class AcLessonTypeGQLModel:
 class AcSubjectGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).subjects
+        return getLoadersFromInfo(info).acsubjects
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -481,7 +484,7 @@ class AcSubjectGQLModel:
     async def semesters(
         self, info: strawberry.types.Info
     ) -> List["AcSemesterGQLModel"]:
-        loader = getLoadersFromInfo(info).semesters
+        loader = AcSemesterGQLModel.getLoader(info)
         result = await loader.filter_by(subject_id=self.id)
         return result
 
@@ -513,7 +516,7 @@ class ClassificationInputFilter:
 class AcSemesterGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).semesters
+        return getLoadersFromInfo(info).acsemesters
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -562,7 +565,7 @@ class AcSemesterGQLModel:
     ) -> List["AcClassificationGQLModel"]:
         #loader = getLoadersFromInfo(info).acclassification_for_semester
         wheredict = None if where is None else strawberry.asdict(where)
-        loader = getLoadersFromInfo(info).classifications
+        loader = AcClassificationGQLModel.getLoader(info)
         result = await loader.page(
             skip = skip, limit = limit, orderby = orderby, desc = desc,
             where = wheredict, extendedfilter={"semester_id": self.id}
@@ -574,7 +577,7 @@ class AcSemesterGQLModel:
             permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def topics(self, info: strawberry.types.Info) -> List["AcTopicGQLModel"]:
-        loader = getLoadersFromInfo(info).topics
+        loader = AcTopicGQLModel.getLoader(info)
         result = await loader.filter_by(semester_id=self.id)
         return result
 
@@ -589,7 +592,7 @@ class AcSemesterGQLModel:
 class AcTopicGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).topics
+        return getLoadersFromInfo(info).actopics
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -621,7 +624,7 @@ class AcTopicGQLModel:
             permission_classes=[OnlyForAuthentized(isList=True)]
             )
     async def lessons(self, info: strawberry.types.Info) -> List["AcLessonGQLModel"]:
-        loader = getLoadersFromInfo(info).lessons
+        loader = AcLessonGQLModel.getLoader(info)
         result = await loader.filter_by(topic_id=self.id)
         return result
 
@@ -635,7 +638,7 @@ class AcTopicGQLModel:
 class AcLessonGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).lessons
+        return getLoadersFromInfo(info).aclessons
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -680,7 +683,7 @@ class AcLessonGQLModel:
 class AcClassificationGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).classifications
+        return getLoadersFromInfo(info).acclassifications
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -740,7 +743,7 @@ class AcClassificationGQLModel:
 class AcClassificationLevelGQLModel:
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info).classificationlevels
+        return getLoadersFromInfo(info).acclassificationlevels
         
     resolve_reference = resolve_reference
     id = resolve_id
@@ -775,7 +778,7 @@ class ProgramTitleTypeInputFilter:
 @asPage
 async def program_title_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[ProgramTitleTypeInputFilter] = None) -> List["AcProgramTitleTypeGQLModel"]:
-    return getLoadersFromInfo(info).programtitletypes
+    return AcProgramTitleTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets program by id""",
@@ -800,7 +803,7 @@ class ProgramLevelTypeInputFilter:
 @asPage
 async def program_level_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[ProgramLevelTypeInputFilter] = None) -> List["AcProgramLevelTypeGQLModel"]:
-    return getLoadersFromInfo(info).programleveltypes
+    return AcProgramLevelTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets program by id""",
@@ -825,7 +828,7 @@ class ProgramFormTypeInputFilter:
 @asPage
 async def program_form_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[ProgramFormTypeInputFilter] = None) -> List["AcProgramFormTypeGQLModel"]:
-    return getLoadersFromInfo(info).programforms
+    return AcProgramFormTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets program by id""",
@@ -850,7 +853,7 @@ class ProgramLanguageTypeInputFilter:
 @asPage
 async def program_language_type_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[ProgramLanguageTypeInputFilter] = None) -> List["AcProgramLanguageTypeGQLModel"]:
-    return getLoadersFromInfo(info).programlanguages
+    return AcProgramLanguageTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets program by id""",
@@ -875,7 +878,7 @@ class ProgramTypeInputFilter:
 @asPage
 async def program_type_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, where: Optional[ProgramTypeInputFilter] = None) -> List["AcProgramTypeGQLModel"]:
-    return getLoadersFromInfo(info).programtypes
+    return AcProgramTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
@@ -899,7 +902,7 @@ class ProgramInputFilter:
     )
 @asPage
 async def program_page(self, info: strawberry.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10, where: Optional[ProgramInputFilter] = None) -> List["AcProgramGQLModel"]:
-    return getLoadersFromInfo(info).programs
+    return AcProgramGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets program paged / filtered""",
@@ -925,7 +928,7 @@ class SubjectInputFilter:
 async def subject_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[SubjectInputFilter] = None) -> List["AcSubjectGQLModel"]:
-    return getLoadersFromInfo(info).subjects
+    return AcSubjectGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -950,7 +953,7 @@ class SemesterInputFilter:
 async def semester_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[SemesterInputFilter] = None) -> List["AcSemesterGQLModel"]:
-    return getLoadersFromInfo(info).semesters
+    return AcSemesterGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -976,7 +979,7 @@ class TopicInputFilter:
 async def topic_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[TopicInputFilter] = None) -> List["AcTopicGQLModel"]:
-    return getLoadersFromInfo(info).topics
+    return AcTopicGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1002,7 +1005,7 @@ class LessonInputFilter:
 async def lesson_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[LessonInputFilter] = None) -> List["AcLessonGQLModel"]:
-    return getLoadersFromInfo(info).lessons
+    return AcLessonGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1023,7 +1026,7 @@ async def lesson_by_id(self, info: strawberry.types.Info, id: IDType) -> Optiona
 async def classification_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[TopicInputFilter] = None) -> List["AcClassificationGQLModel"]:
-    return getLoadersFromInfo(info).classifications
+    return AcClassificationGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1050,7 +1053,7 @@ class ClassificationLevelInputFilter:
 async def classification_level_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[TopicInputFilter] = None) -> List["AcClassificationLevelGQLModel"]:
-    return getLoadersFromInfo(info).classificationlevels
+    return AcClassificationLevelGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1076,7 +1079,7 @@ class ClassificationTypeInputFilter:
 async def classification_type_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[TopicInputFilter] = None) -> List["AcClassificationTypeGQLModel"]:
-    return getLoadersFromInfo(info).classificationtypes
+    return AcClassificationTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1102,7 +1105,7 @@ class LessonTypeInputFilter:
 async def lesson_type_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[TopicInputFilter] = None) -> List["AcLessonTypeGQLModel"]:
-    return getLoadersFromInfo(info).lessontypes
+    return AcLessonTypeGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1128,7 +1131,7 @@ class StudentStateInputFilter:
 async def student_state_page(self, info: strawberry.types.Info, 
                        skip: Optional[int] = 0, limit: Optional[int] = 10, 
                        where: Optional[StudentStateInputFilter] = None) -> List["AcProgramStudentStateGQLModel"]:
-    return getLoadersFromInfo(info).acprograms_studentstates
+    return AcProgramStudentStateGQLModel.getLoader(info)
 
 @strawberry.field(
     description="""Gets subjects paged / filtered""",
@@ -1307,14 +1310,14 @@ class ProgramResultGQLModel:
     )
 async def program_insert(self, info: strawberry.types.Info, program: ProgramInsertGQLModel) -> ProgramResultGQLModel:
     program.rbacobject = program.group_id
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programs, program, ProgramResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramGQLModel.getLoader(info), program, ProgramResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update thestudy program""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_update(self, info: strawberry.types.Info, program: ProgramUpdateGQLModel) -> ProgramResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programs, program, ProgramResultGQLModel(msg="ok", id=program.id))
+    return await encapsulateUpdate(info, AcProgramGQLModel.getLoader(info), program, ProgramResultGQLModel(msg="ok", id=program.id))
 
 # endregion
 
@@ -1361,14 +1364,14 @@ class ProgramTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_type_insert(self, info: strawberry.types.Info, program_type: ProgramTypeInsertGQLModel) -> ProgramTypeResultGQLModel:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programtypes, program_type, ProgramTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramTypeGQLModel.getLoader(info), program_type, ProgramTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of study program""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_type_update(self, info: strawberry.types.Info, program_type: ProgramTypeUpdateGQLModel) -> ProgramTypeResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programtypes, program_type, ProgramTypeResultGQLModel(msg="ok", id=program_type.id))
+    return await encapsulateUpdate(info, AcProgramTypeGQLModel.getLoader(info), program_type, ProgramTypeResultGQLModel(msg="ok", id=program_type.id))
 # endregion
 
 # region ProgramLanguageType CU
@@ -1407,14 +1410,14 @@ class ProgramLanguageTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_language_type_insert(self, info: strawberry.types.Info, language_type: ProgramLanguageTypeInsertGQLModel) -> Optional[ProgramLanguageTypeResultGQLModel]:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programlanguages, language_type, ProgramLanguageTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramLanguageTypeGQLModel.getLoader(info), language_type, ProgramLanguageTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of language""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_language_type_update(self, info: strawberry.types.Info, language_type: ProgramLanguageTypeUpdateGQLModel) -> Optional[ProgramLanguageTypeResultGQLModel]:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programlanguages, language_type, ProgramLanguageTypeResultGQLModel(msg="ok", id=language_type.id))
+    return await encapsulateUpdate(info, AcProgramLanguageTypeGQLModel.getLoader(info), language_type, ProgramLanguageTypeResultGQLModel(msg="ok", id=language_type.id))
 # endregion
 
 # region ProgramTitleType CU
@@ -1452,14 +1455,14 @@ class ProgramTitleTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_title_type_insert(self, info: strawberry.types.Info, title_type: ProgramTitleTypeInsertGQLModel) -> Optional[ProgramTitleTypeResultGQLModel]:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programtitletypes, title_type, ProgramTitleTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramTitleTypeGQLModel.getLoader(info), title_type, ProgramTitleTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of title""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_title_type_update(self, info: strawberry.types.Info, title_type: ProgramTitleTypeUpdateGQLModel) -> Optional[ProgramTitleTypeResultGQLModel]:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programtitletypes, title_type, ProgramTitleTypeResultGQLModel(msg="ok", id=title_type.id))
+    return await encapsulateUpdate(info, AcProgramTitleTypeGQLModel.getLoader(info), title_type, ProgramTitleTypeResultGQLModel(msg="ok", id=title_type.id))
 # endregion
 
 # region ProgramLevelType CU
@@ -1498,14 +1501,14 @@ class ProgramLevelTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_level_type_insert(self, info: strawberry.types.Info, level_type: ProgramLevelTypeInsertGQLModel) -> Optional[ProgramLevelTypeResultGQLModel]:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programleveltypes, level_type, ProgramLevelTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramLevelTypeGQLModel.getLoader(info), level_type, ProgramLevelTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of level""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_level_type_update(self, info: strawberry.types.Info, level_type: ProgramLevelTypeUpdateGQLModel) -> Optional[ProgramLevelTypeResultGQLModel]:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programleveltypes, level_type, ProgramLevelTypeResultGQLModel(msg="ok", id=level_type.id))
+    return await encapsulateUpdate(info, AcProgramLevelTypeGQLModel.getLoader(info), level_type, ProgramLevelTypeResultGQLModel(msg="ok", id=level_type.id))
 # endregion
 
 # region ProgramFormType CU
@@ -1544,14 +1547,14 @@ class ProgramFormTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_form_type_insert(self, info: strawberry.types.Info, form_type: ProgramFormTypeInsertGQLModel) -> Optional[ProgramFormTypeResultGQLModel]:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programforms, form_type, ProgramFormTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramFormTypeGQLModel.getLoader(info), form_type, ProgramFormTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of form""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_form_type_update(self, info: strawberry.types.Info, form_type: ProgramFormTypeUpdateGQLModel) -> Optional[ProgramFormTypeResultGQLModel]:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programforms, form_type, ProgramFormTypeResultGQLModel(msg="ok", id=form_type.id))
+    return await encapsulateUpdate(info, AcProgramFormTypeGQLModel.getLoader(info), form_type, ProgramFormTypeResultGQLModel(msg="ok", id=form_type.id))
 
 # endregion
 
@@ -1595,14 +1598,14 @@ class ProgramMessageResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_message_insert(self, info: strawberry.types.Info, message: ProgramMessageInsertGQLModel) -> Optional[ProgramMessageResultGQLModel]:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programmessages, message, ProgramMessageResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramMessageGQLModel.getLoader(info), message, ProgramMessageResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of form""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_message_update(self, info: strawberry.types.Info, message: ProgramMessageUpdateGQLModel) -> Optional[ProgramMessageResultGQLModel]:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programmessages, message, ProgramMessageResultGQLModel(msg="ok", id=message.id))
+    return await encapsulateUpdate(info, AcProgramMessageGQLModel.getLoader(info), message, ProgramMessageResultGQLModel(msg="ok", id=message.id))
 
 # endregion
 
@@ -1648,14 +1651,14 @@ class ProgramStudentResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_student_insert(self, info: strawberry.types.Info, student: ProgramStudentInsertGQLModel) -> Optional[ProgramStudentResultGQLModel]:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).programstudents, student, ProgramStudentResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramStudentGQLModel.getLoader(info), student, ProgramStudentResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of form""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_student_update(self, info: strawberry.types.Info, student: ProgramStudentUpdateGQLModel) -> Optional[ProgramStudentResultGQLModel]:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).programstudents, student, ProgramStudentResultGQLModel(msg="ok", id=student.id))
+    return await encapsulateUpdate(info, AcProgramStudentGQLModel.getLoader(info), student, ProgramStudentResultGQLModel(msg="ok", id=student.id))
 
 # endregion
 
@@ -1700,14 +1703,14 @@ class SubjectResultGQLModel:
     )
 async def program_subject_insert(self, info: strawberry.types.Info, subject: SubjectInsertGQLModel) -> SubjectResultGQLModel:
     subject.rbacobject = subject.group_id
-    return await encapsulateInsert(info, getLoadersFromInfo(info).subjects, subject, SubjectResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcSubjectGQLModel.getLoader(info), subject, SubjectResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the type of study program""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_subject_update(self, info: strawberry.types.Info, subject: SubjectUpdateGQLModel) -> SubjectResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).subjects, subject, SubjectResultGQLModel(msg="ok", id=subject.id))
+    return await encapsulateUpdate(info, AcSubjectGQLModel.getLoader(info), subject, SubjectResultGQLModel(msg="ok", id=subject.id))
 
 # endregion
 
@@ -1751,18 +1754,18 @@ class SemesterResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_semester_insert(self, info: strawberry.types.Info, semester: SemesterInsertGQLModel) -> SemesterResultGQLModel:
-    loader = getLoadersFromInfo(info).subjects
+    loader = AcSubjectGQLModel.getLoader(info)
     subject = await loader.load(semester.subject_id)
-    assert subject is not None, "Subject does not exists, Insert Failed"
+    assert subject is not None, f"Subject[id={semester.subject_id}] does not exists, Insert Failed"
     semester.rbacobject = subject.rbacobject
-    return await encapsulateInsert(info, getLoadersFromInfo(info).semesters, semester, SemesterResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcSemesterGQLModel.getLoader(info), semester, SemesterResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the semester""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_semester_update(self, info: strawberry.types.Info, semester: SemesterUpdateGQLModel) -> SemesterResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).semesters, semester, SemesterResultGQLModel(msg="ok", id=semester.id))
+    return await encapsulateUpdate(info, AcSemesterGQLModel.getLoader(info), semester, SemesterResultGQLModel(msg="ok", id=semester.id))
 
 # endregion
 
@@ -1801,14 +1804,14 @@ class LessonTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_type_insert(self, info: strawberry.types.Info, lesson_type: LessonTypeInsertGQLModel) -> LessonTypeResultGQLModel:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).lessontypes, lesson_type, LessonTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcLessonTypeGQLModel.getLoader(info), lesson_type, LessonTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the lessontype""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_type_update(self, info: strawberry.types.Info, lesson_type: LessonTypeUpdateGQLModel) -> LessonTypeResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).lessontypes, lesson_type, LessonTypeResultGQLModel(msg="ok", id=lesson_type.id))
+    return await encapsulateUpdate(info, AcLessonTypeGQLModel.getLoader(info), lesson_type, LessonTypeResultGQLModel(msg="ok", id=lesson_type.id))
 
 # endregion
 
@@ -1847,14 +1850,14 @@ class ClassificationTypeResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_type_insert(self, info: strawberry.types.Info, classification_type: ClassificationTypeInsertGQLModel) -> ClassificationTypeResultGQLModel:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).classificationtypes, classification_type, ClassificationTypeResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcClassificationTypeGQLModel.getLoader(info), classification_type, ClassificationTypeResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the classificationtype""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_type_update(self, info: strawberry.types.Info, classification_type: ClassificationTypeUpdateGQLModel) -> ClassificationTypeResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).classificationtypes, classification_type, ClassificationTypeResultGQLModel(msg="ok", id=classification_type.id))
+    return await encapsulateUpdate(info, AcClassificationTypeGQLModel.getLoader(info), classification_type, ClassificationTypeResultGQLModel(msg="ok", id=classification_type.id))
 
 # endregion
 
@@ -1898,14 +1901,14 @@ class ClassificationResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_insert(self, info: strawberry.types.Info, classification: ClassificationInsertGQLModel) -> ClassificationResultGQLModel:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).classifications, classification, ClassificationResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcClassificationGQLModel.getLoader(info), classification, ClassificationResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the classification""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_classification_update(self, info: strawberry.types.Info, classification: ClassificationUpdateGQLModel) -> ClassificationResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).classifications, classification, ClassificationResultGQLModel(msg="ok", id=classification.id))
+    return await encapsulateUpdate(info, AcClassificationGQLModel.getLoader(info), classification, ClassificationResultGQLModel(msg="ok", id=classification.id))
 
 # endregion
 
@@ -1947,18 +1950,18 @@ class TopicResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_topic_insert(self, info: strawberry.types.Info, topic: TopicInsertGQLModel) -> TopicResultGQLModel:
-    loader = getLoadersFromInfo(info).semesters
+    loader = AcSemesterGQLModel.getLoader(info)
     semester = await loader.load(topic.semester_id)
     assert semester is not None, "Semester does not exists, Insert Failed"
     topic.rbacobject = semester.rbacobject
-    return await encapsulateInsert(info, getLoadersFromInfo(info).topics, topic, TopicResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcTopicGQLModel.getLoader(info), topic, TopicResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the topic""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_topic_update(self, info: strawberry.types.Info, topic: TopicUpdateGQLModel) -> TopicResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).topics, topic, TopicResultGQLModel(msg="ok", id=topic.id))
+    return await encapsulateUpdate(info, AcTopicGQLModel.getLoader(info), topic, TopicResultGQLModel(msg="ok", id=topic.id))
 
 # endregion
 
@@ -1998,19 +2001,19 @@ class LessonResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_insert(self, info: strawberry.types.Info, lesson: LessonInsertGQLModel) -> LessonResultGQLModel:
-    loader = getLoadersFromInfo(info).topics
+    loader = AcTopicGQLModel.getLoader(info)
     topic = await loader.load(lesson.topic_id)
     assert topic is not None, "Topic does not exists, Insert Failed"
     lesson.rbacobject = topic.rbacobject
 
-    return await encapsulateInsert(info, getLoadersFromInfo(info).lessons, lesson, LessonResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcLessonGQLModel.getLoader(info), lesson, LessonResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(
         description="""Update the lesson""",
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_lesson_update(self, info: strawberry.types.Info, lesson: LessonUpdateGQLModel) -> LessonResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).lessons, lesson, LessonResultGQLModel(msg="ok", id=lesson.id))
+    return await encapsulateUpdate(info, AcLessonGQLModel.getLoader(info), lesson, LessonResultGQLModel(msg="ok", id=lesson.id))
 # endregion
 
 # region StudentState CU
@@ -2045,11 +2048,11 @@ class StudentStateResultGQLModel:
         permission_classes=[OnlyForAuthentized(isList=False)]
     )
 async def program_student_state_insert(self, info: strawberry.types.Info, student_state: StudentStateInsertGQLModel) -> StudentStateResultGQLModel:
-    return await encapsulateInsert(info, getLoadersFromInfo(info).acprograms_studentstates, student_state, StudentStateResultGQLModel(msg="ok", id=None))
+    return await encapsulateInsert(info, AcProgramStudentStateGQLModel.getLoader(info), student_state, StudentStateResultGQLModel(msg="ok", id=None))
 
 @strawberry.mutation(description="""Update the studentstate""")
 async def program_student_state_update(self, info: strawberry.types.Info, student_state: StudentStateUpdateGQLModel) -> StudentStateResultGQLModel:
-    return await encapsulateUpdate(info, getLoadersFromInfo(info).acprograms_studentstates, student_state, StudentStateResultGQLModel(msg="ok", id=student_state.id))
+    return await encapsulateUpdate(info, AcProgramStudentStateGQLModel.getLoader(info), student_state, StudentStateResultGQLModel(msg="ok", id=student_state.id))
 
 # endregion
 

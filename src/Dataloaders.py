@@ -7,6 +7,7 @@ from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 
 
 from src.DBDefinitions import (
+    BaseModel, 
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,
     ProgramLevelTypeModel,
@@ -242,6 +243,26 @@ def createLoaders(asyncSessionMaker, models=dbmodels):
         attrs[key] = property(cache(createLambda(key, DBModel)))
     
     attrs["authorizations"] = property(cache(lambda self: AuthorizationLoader()))
+    Loaders = type('Loaders', (), attrs)   
+    return Loaders()
+
+def createLoadersContext(asyncSessionMaker):
+    return {
+        "loaders": createLoaders(asyncSessionMaker)
+    }
+
+def createLoaders(asyncSessionMaker):
+
+    def createLambda(loaderName, DBModel):
+        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
+
+    attrs = {}
+
+    for DBModel in BaseModel.registry.mappers:
+        cls = DBModel.class_
+        attrs[cls.__tablename__] = property(cache(createLambda(asyncSessionMaker, cls)))
+    
+    # attrs["authorizations"] = property(cache(lambda self: AuthorizationLoader()))
     Loaders = type('Loaders', (), attrs)   
     return Loaders()
 

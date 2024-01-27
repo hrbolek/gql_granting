@@ -96,6 +96,33 @@ async def resolve_rbacobject(self, info: strawberry.types.Info) -> typing.Option
     result = None if self.rbacobject is None else await RBACObjectGQLModel.resolve_reference(info, self.rbacobject)
     return result
 
+
+def create_self_scalar_resolver(GQLType, **kwargs):
+    items = list(kwargs.items())
+    assert len(items) == 1, f"expected exactly one item in params of create_scalar_resolver, see {kwargs}"
+    key, attribute = items[0]
+    assert key == "id", f"expected id in params of create_scalar_resolver, see {kwargs}"
+    async def resolver(self, info: strawberry.types.Info) -> typing.Optional[GQLType]:
+        assert hasattr(self, attribute), f"self ({self}) has no attribute {attribute}"
+        id = getattr(self, attribute)
+        result = await GQLType.resolve_reference(info, id=id)
+        return result
+    return resolver
+
+def create_self_vector_resolver(GQLType, **kwargs):
+    items = list(kwargs.items())
+    assert len(items) == 1, f"expected exactly one item in params of create_vector_resolver, see {kwargs}"
+    key, attribute = items[0]
+    async def resolver(self, info: strawberry.types.Info) -> typing.List[GQLType]:
+        assert hasattr(self, attribute), f"self ({self}) has no attribute {attribute}"
+        attributevalue = getattr(self, attribute)
+        loader = GQLType.getLoader(info)
+        params = {key: attributevalue}
+        result = await loader.filter_by(**params)
+        return result
+    return resolver
+
+
 resolve_result_id: IDType = strawberry.field(description="primary key of CU operation object")
 resolve_result_msg: str = strawberry.field(description="""Should be `ok` if descired state has been reached, otherwise `fail`.
 For update operation fail should be also stated when bad lastchange has been entered.""")

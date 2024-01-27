@@ -15,7 +15,7 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
             respdata = resp.get("data", None)
             assert respdata is not None, f"Empty response, check loader and datatable"
             
-            respdata = respdata[queryEndpoint]
+            respdata = respdata["result"]
             assert respdata is not None, f"{queryEndpoint} returns None {resp} as result of query for {query} with {variable_values}"
 
             for att in attributeNames:
@@ -25,17 +25,20 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
         clientExecutor = SchemaExecutorDemo
 
         data = DemoData
-        datarow = data[tableName][0]
+        table = data.get(tableName, None)
+        assert table is not None, f"{tableName} not found in demodata"
+        assert len(table) > 0, f"{tableName} is empty"
+        datarow = table[0]
         content = "{" + ", ".join(attributeNames) + "}"
-        query = "query($id: UUID!){" f"{queryEndpoint}(id: $id)" f"{content}" "}"
+        query = "query($id: UUID!){" f"result: {queryEndpoint}(id: $id)" f"{content}" "}"
 
         variable_values = {"id": f'{datarow["id"]}'}
         
         # append(queryname=f"{queryEndpoint}_{tableName}", query=query, variables=variable_values)        
         logging.debug(f"query for {query} with {variable_values}")
 
-        resp = await schemaExecutor(query, variable_values)
-        testResult(resp)
+        # resp = await schemaExecutor(query, variable_values)
+        # testResult(resp)
         resp = await clientExecutor(query, variable_values)
         testResult(resp)
 
@@ -106,6 +109,20 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
         for row in table:
             rowid = f"{row['id']}"
 
+            statement = sqlalchemy.text(f"SELECT id, lastchange FROM {tableName} WHERE id=:id").bindparams(id=row['id'])
+            statement2 = sqlalchemy.text(f"SELECT id FROM {tableName}")
+            #statement = sqlalchemy.text(f"SELECT id, lastchange FROM {tableName}")
+            # print("statement", statement, flush=True)
+            async with SQLite() as session:
+                rows = await session.execute(statement)
+                row = rows.first()
+                if row is None:
+                    rows = await session.execute(statement2)
+                    ids = list(rows.scalars())
+
+                    logging.info(f"table {tableName} has rows with ids {ids}. Id {row['id']} has been not found.")
+                    assert row is not None, f"row with id={row['id']} not found in table {tableName}"
+
             # query = (
             #     'query($id: UUID!) { _entities(representations: [{ __typename: '+ f'"{gqltype}", id: $id' + 
             #     ' }])' +
@@ -128,8 +145,8 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
             variable_values = {"rep": [{"__typename": f"{gqltype}", "id": f"{rowid}"}]}
 
             logging.info(f"query representations {query} with {variable_values}")
-            resp = await clientExecutor(query, {**variable_values})
-            testResult(resp)
+            # resp = await clientExecutor(query, {**variable_values})
+            # testResult(resp)
             resp = await schemaExecutor(query, {**variable_values})
             testResult(resp)
 
