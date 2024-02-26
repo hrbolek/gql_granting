@@ -7,7 +7,7 @@ import json
 import pytest
 import re
 
-from GraphTypeDefinitions import schema
+from gql_granting.GraphTypeDefinitions import schema
 
 from .shared import (
     prepare_demodata,

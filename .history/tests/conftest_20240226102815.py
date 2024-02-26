@@ -196,7 +196,7 @@ def DemoFalse(monkeypatch):
 
 @pytest.fixture
 def SchemaExecutor(SQLite, Info):
-    from GraphTypeDefinitions import schema
+    from gql_granting.GraphTypeDefinitions import schema
     async def Execute(query, variable_values={}):
         result = await schema.execute(query=query, variable_values=variable_values, context_value=Info.context)
         value = {"data": result.data} 
@@ -458,11 +458,11 @@ async def AuthorizationHeaders(AccessToken):
 @pytest.fixture
 def FastAPIClient(SQLite):
     from fastapi.testclient import TestClient
-    import DBDefinitions
+    import gql_granting.DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"   
-    DBDefinitions.ComposeConnectionString = ComposeCString
+    gql_granting.DBDefinitions.ComposeConnectionString = ComposeCString
 
     import main
     client = TestClient(main.app, raise_server_exceptions=False)   
@@ -471,11 +471,11 @@ def FastAPIClient(SQLite):
 @pytest.fixture
 def FastAPIClient2():
     from fastapi.testclient import TestClient
-    import DBDefinitions
+    import gql_granting.DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"   
-    DBDefinitions.ComposeConnectionString = ComposeCString
+    gql_granting.DBDefinitions.ComposeConnectionString = ComposeCString
 
     import main
     client = TestClient(main.app, raise_server_exceptions=False)   
@@ -497,11 +497,11 @@ def FastAPIClient2():
 @pytest.fixture
 def FastAPIClient3():
     from fastapi.testclient import TestClient
-    import DBDefinitions
+    import gql_granting.DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"   
-    DBDefinitions.ComposeConnectionString = ComposeCString
+    gql_granting.DBDefinitions.ComposeConnectionString = ComposeCString
 
     import main
     client = TestClient(main.app, raise_server_exceptions=False)   

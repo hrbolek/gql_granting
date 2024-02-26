@@ -9,7 +9,7 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from GraphTypeDefinitions import schema
+from gql_granting.GraphTypeDefinitions import schema
 
 from shared import (
     prepare_demodata,
