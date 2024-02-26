@@ -1,5 +1,5 @@
 import pytest
-from GraphTypeDefinitions import schema
+from gql_granting.GraphTypeDefinitions import schema
 import datetime
 # from ..shared import (
 #     prepare_demodata,
