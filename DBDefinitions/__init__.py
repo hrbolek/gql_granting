@@ -17,6 +17,7 @@ from .ProgramTypeModel import ProgramTypeModel
 from .SemesterModel import SemesterModel
 from .SubjectModel import SubjectModel
 from .TopicModel import TopicModel
+from .uuid import UUIDColumn
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

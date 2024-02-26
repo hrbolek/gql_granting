@@ -1,14 +1,11 @@
 import logging
 import json
-import os
-
-os.environ.setdefault("DEMO", "True")
 
 def createGQLClient():
 
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
-    import DBDefinitions
+    from gql_granting import DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"

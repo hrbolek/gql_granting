@@ -2,30 +2,16 @@ import sqlalchemy
 import sys
 import asyncio
 import logging
-import os
-
 # setting path
-#sys.path.append("../gql_forms")
 
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
-os.environ.setdefault("DEMO", "True")
 
-from DBDefinitions import (
-    BaseModel,
-    FormModel,
-    FormTypeModel,
-    FormCategoryModel,
-    PartModel,
-    SectionModel,
-    ItemModel,
-    ItemTypeModel,
-    ItemCategoryModel,
-    RequestModel,
-    HistoryModel
-)
-
+from DBDefinitions import BaseModel
+from DBDefinitions import ProgramModel, ProgramLevelTypeModel, ProgramFormTypeModel, ProgramLanguageTypeModel, ProgramTitleTypeModel, ProgramTypeModel
+from DBDefinitions import SemesterModel, SubjectModel, TopicModel, LessonModel, LessonTypeModel
+from DBDefinitions import ClassificationLevelModel, ClassificationModel, ClassificationTypeModel
 
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine
@@ -43,9 +29,7 @@ async def prepare_in_memory_sqllite():
 
     return async_session_maker
 
-
 from utils.DBFeeder import get_demodata
-
 
 async def prepare_demodata(async_session_maker):
     data = get_demodata()
@@ -54,56 +38,23 @@ async def prepare_demodata(async_session_maker):
 
     await ImportModels(
         async_session_maker,
-        [
-            FormModel,
-            FormTypeModel,
-            FormCategoryModel,
-            PartModel,
-            SectionModel,
-            ItemModel,
-            ItemTypeModel,
-            ItemCategoryModel,
-            RequestModel,
-            HistoryModel
+        [           
+            ProgramModel, ProgramLevelTypeModel, ProgramFormTypeModel, ProgramLanguageTypeModel, ProgramTitleTypeModel, ProgramTypeModel,
+            SemesterModel, SubjectModel, TopicModel, LessonModel, LessonTypeModel,
+            ClassificationLevelModel, ClassificationModel, ClassificationTypeModel        
         ],
         data,
     )
 
 
-from utils.Dataloaders import createLoadersContext
-from utils.gql_ug_proxy import createProxy
-def createContext(asyncSessionMaker, withuser=True):
-    loadersContext = createLoadersContext(asyncSessionMaker)
-    user = {
-        "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
-        "name": "John",
-        "surname": "Newbie",
-        "email": "john.newbie@world.com"
+from utils.Dataloaders import  createLoaders
+
+
+def createContext(asyncSessionMaker):
+    return {
+        "asyncSessionMaker": asyncSessionMaker,
+        "all": createLoaders(asyncSessionMaker),
     }
-    if withuser:
-        loadersContext["user"] = user
-
-    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
-    proxy = createProxy(GQLUG_ENDPOINT_URL)
-    loadersContext["ug_connection"] = proxy.connection(authorizationToken=None)
-    
-    return loadersContext
-
-def createInfo(asyncSessionMaker, withuser=True):
-    class Request():
-        @property
-        def headers(self):
-            return {"Authorization": "Bearer 2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}
-        
-    class Info():
-        @property
-        def context(self):
-            context = createContext(asyncSessionMaker, withuser=withuser)
-            context["request"] = Request()
-            return context
-        
-    return Info()
-
 
 from GraphTypeDefinitions import schema
 

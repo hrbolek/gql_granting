@@ -6,73 +6,73 @@ import uuid
 @pytest_asyncio.fixture
 async def GQLInsertQueries():
     result = {
-        "forms": {
+        "acprograms": {
             "create": """
-mutation ($id: UUID!, $name: String!, $type_id: UUID!, $name_en: String!) {
-  formInsert(
-    form: {id: $id, name: $name, typeId: $type_id, nameEn: $name_en}
+mutation ($typeId: UUID!, $name: String!) {
+  programInsert(
+    program: {typeId: $typeId, name: $name}
   ) {
     id
     msg
   }
 }""",
-            "read": """query($id: UUID!){ result: formById(id: $id) { id }}""",
+            "read": """query($id: UUID!){ result: programById(id: $id) { id }}""",
 },
-        "formsections": {"create": """
-mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $form_id: UUID!) {
-  formSectionInsert(
-    section: {id: $id, name: $name, order: $order, nameEn: $name_en, formId: $form_id}
+        "acprogramtypes": {"create": """
+mutation ($formId: UUID!, $name: String!,$languageId: UUID!,$levelId:UUID!,$nameEn:String!,$titleId:UUID!) {
+  programTypeInsert(
+    programType: {formId: $formId, name: $name,languageId: $languageId,levelId:$levelId,nameEn:$nameEn,titleId:$titleId}
   ) {
     id
     msg
   }
 }""",
-            "read": """query($id: UUID!){ result: formSectionById(id: $id) { id }}""",
+            "read": """query($id: UUID!){ result: programTypeById(id: $id) { id }}""",
 },
-        "formparts":{"create": """
-mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $section_id: UUID!) {
-  formPartInsert(
-    part: {id: $id, name: $name, order: $order, nameEn: $name_en, sectionId: $section_id}
-  ) {
-    id
-    msg
-  }
-}""",
-            "read": """query($id: UUID!){ result: formPartById(id: $id) { id }}""",
-},
-        "formitems": {"create": """
-mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $part_id: UUID!) {
-  formItemInsert(
-    item: {id: $id, name: $name, order: $order, nameEn: $name_en, partId: $part_id}
-  ) {
-    id
-    msg
-  }
-}""",
-            "read": """query($id: UUID!){ result: formItemById(id: $id) { id }}""",
-},
-        "formrequests": {"create": """
-mutation ($id: UUID!, $name: String!) {
-  formRequestInsert(
-    request: {id: $id, name:$name }
-  ) {
-    id
-    msg
-  }
-}""",
-            "read": """query($id: UUID!){ result: requestById(id: $id) { id }}""",
-},
-        "formhistories": {"create": """
-mutation ($id: UUID!, $name: String!, $form_id: UUID!, $request_id: UUID!) {
-  formHistoryInsert(
-    history: {id: $id, name:$name, requestId: $request_id, formId: $form_id}
-  ) {
-    id
-    msg
-  }
-}""",
-            "read": """query($id: UUID!){ result: formHistoryById(id: $id) { id }}""",
-},
+#         "formparts":{"create": """
+# mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $section_id: UUID!) {
+#   formPartInsert(
+#     part: {id: $id, name: $name, order: $order, nameEn: $name_en, sectionId: $section_id}
+#   ) {
+#     id
+#     msg
+#   }
+# }""",
+#             "read": """query($id: UUID!){ result: formPartById(id: $id) { id }}""",
+# },
+#         "formitems": {"create": """
+# mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $part_id: UUID!) {
+#   formItemInsert(
+#     item: {id: $id, name: $name, order: $order, nameEn: $name_en, partId: $part_id}
+#   ) {
+#     id
+#     msg
+#   }
+# }""",
+#             "read": """query($id: UUID!){ result: formItemById(id: $id) { id }}""",
+# },
+#         "formrequests": {"create": """
+# mutation ($id: UUID!, $name: String!) {
+#   formRequestInsert(
+#     request: {id: $id, name:$name }
+#   ) {
+#     id
+#     msg
+#   }
+# }""",
+#             "read": """query($id: UUID!){ result: requestById(id: $id) { id }}""",
+# },
+#         "formhistories": {"create": """
+# mutation ($id: UUID!, $name: String!, $form_id: UUID!, $request_id: UUID!) {
+#   formHistoryInsert(
+#     history: {id: $id, name:$name, requestId: $request_id, formId: $form_id}
+#   ) {
+#     id
+#     msg
+#   }
+# }""",
+#             "read": """query($id: UUID!){ result: formHistoryById(id: $id) { id }}""",
+# },
 
     }
     

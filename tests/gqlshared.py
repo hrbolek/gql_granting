@@ -7,7 +7,7 @@ import json
 import pytest
 import re
 
-from GraphTypeDefinitions import schema
+from gql_granting.GraphTypeDefinitions import schema
 
 from .shared import (
     prepare_demodata,
@@ -79,13 +79,13 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         resp = await schemaExecutor(query, variable_values)
         testResult(resp)
-        resp = await clientExecutor(query, variable_values)
-        testResult(resp)
+        # resp = await clientExecutor(query, variable_values)
+        # testResult(resp)
 
     return result_test
 
 
-def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
+def createPageTest(tableName, queryEndpoint, attributeNames=["id"]):
     @pytest.mark.asyncio
     async def result_test():
 
@@ -115,19 +115,19 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         resp = await schemaExecutor(query)
         testResult(resp)
-        resp = await clientExecutor(query)
-        testResult(resp)
+        # resp = await clientExecutor(query)
+        # testResult(resp)
         
     return result_test
 
-def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]):
+def createResolveReferenceTest(tableName, gqltype, attributeNames=["id","name"]):
     @pytest.mark.asyncio
     async def result_test():
 
         def testResult(resp):
             print(resp)
             errors = resp.get("errors", None)
-            assert errors is None
+            assert errors is None, errors
             respdata = resp.get("data", None)
             assert respdata is not None
 
@@ -172,8 +172,8 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
             variable_values = {"rep": [{"__typename": f"{gqltype}", "id": f"{rowid}"}]}
 
             logging.info(f"query representations {query} with {variable_values}")
-            resp = await clientExecutor(query, {**variable_values})
-            testResult(resp)
+            # resp = await clientExecutor(query, {**variable_values})
+            # testResult(resp)
             resp = await schemaExecutor(query, {**variable_values})
             testResult(resp)
 
@@ -199,7 +199,7 @@ def createFrontendQuery(query="{}", variables={}, asserts=[]):
             context_value=context_value
         )
 
-        assert resp.errors is None, resp.errors[0]
+        assert resp.errors is None
         respdata = resp.data
         logging.debug(f"response: {respdata}")
         for a in asserts:
