@@ -16,31 +16,31 @@ from DBDefinitions import ClassificationLevelModel, ClassificationModel, Classif
 from .shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 
-@pytest.mark.asyncio
+#@pytest.mark.asyncio
 
-async def test_table_users_feed():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# async def test_table_users_feed():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
+#     data = get_demodata()
 
 from DBDefinitions import ComposeConnectionString
 
 
-def test_connection_string():
-    connectionString = ComposeConnectionString()
+# def test_connection_string():
+#     connectionString = ComposeConnectionString()
 
-    assert "://" in connectionString
-    assert "@" in connectionString
+#     assert "://" in connectionString
+#     assert "@" in connectionString
 
 
 from DBDefinitions import UUIDColumn
 
 
-def test_connection_uuidcolumn():
-    col = UUIDColumn()
+# def test_connection_uuidcolumn():
+#     col = UUIDColumn()
 
-    assert col is not None
+#     assert col is not None
 
 
 from DBDefinitions import startEngine

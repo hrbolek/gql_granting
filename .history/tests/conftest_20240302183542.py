@@ -112,7 +112,7 @@ def Request(AuthorizationHeaders):
 
 @pytest.fixture
 def Context(AdminUser, SQLite, LoadersContext, Request):
-    from utils.gql_ug_proxy import get_ug_connection
+    from gql_granting.gql_ug_proxy import get_ug_connection
     
     Async_Session_Maker = SQLite
     return {

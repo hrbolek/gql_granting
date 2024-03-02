@@ -19,7 +19,7 @@ test_reference_classifications = createResolveReferenceTest(tableName='acclassif
 test_query_classification_page = createPageTest(tableName="acclassifications", queryEndpoint="acclassificationPage", attributeNames=["id"])
 
 test_classification_insert = createFrontendQuery(query="""
-    mutation($order: Int!, $semesterId: UUID!, $userId: UUID!, $classificationlevelId: UUID!) { 
+    mutation($order: Int!, $semesterId: UUID!, $userId: UUID!, $classificationlevelId: UUID!,$classificationlevelId: UUID!) { 
         result: classificationInsert(classification: {order: $order, semesterId: $semesterId, userId: $userId, classificationlevelId: $classificationlevelId}) { 
             id 
             msg

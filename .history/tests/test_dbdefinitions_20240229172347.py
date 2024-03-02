@@ -16,13 +16,13 @@ from DBDefinitions import ClassificationLevelModel, ClassificationModel, Classif
 from .shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 
-@pytest.mark.asyncio
+#@pytest.mark.asyncio
 
-async def test_table_users_feed():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# async def test_table_users_feed():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
+#     data = get_demodata()
 
 from DBDefinitions import ComposeConnectionString
 

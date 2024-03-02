@@ -19,8 +19,8 @@ test_reference_classifications = createResolveReferenceTest(tableName='acclassif
 test_query_classification_page = createPageTest(tableName="acclassifications", queryEndpoint="acclassificationPage", attributeNames=["id"])
 
 test_classification_insert = createFrontendQuery(query="""
-    mutation($order: Int!, $semesterId: UUID!, $userId: UUID!, $classificationlevelId: UUID!) { 
-        result: classificationInsert(classification: {order: $order, semesterId: $semesterId, userId: $userId, classificationlevelId: $classificationlevelId}) { 
+    mutation($order: Int!, $semesterId: UUID!, $userId: UUID!, $classificationlevelId: UUID!,$classificationlevelId: UUID!) { 
+        result: classificationInsert(classification: {order: $order, semesterId: $semesterId, userId: $userId, classificationlevelId: $classificationlevelId, classificationlevelId: $classificationlevelId}) { 
             id 
             msg
             classification {
@@ -32,7 +32,7 @@ test_classification_insert = createFrontendQuery(query="""
         }
     }
     """, 
-    variables={"semesterId": "ce250af4-b095-11ed-9bd8-0242ac110002", "order": 2, "userId":"2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "classificationlevelId": "5fae9dd8-b095-11ed-9bd8-0242ac110002"},
+    variables={"semesterId": "ce250af4-b095-11ed-9bd8-0242ac110002", "order": 2, "userId":"2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "classificationlevelId": "5fae9dd8-b095-11ed-9bd8-0242ac110002","classificationlevelId":"a00a0642-b095-11ed-9bd8-0242ac110002"},
     asserts=[]
 )
 
