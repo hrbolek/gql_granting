@@ -16,4 +16,4 @@ from .gt_utils import (
 )
 test_reference_classification_types = createResolveReferenceTest(tableName='acclassificationtypes', gqltype='AcClassificationTypeGQLModel', attributeNames=["id"])
 #test_query_classification_type_by_id = createByIdTest(tableName="acclassificationtypes", queryEndpoint="classificationTypeById",attributeNames=["id"])
-#test_query_classification_type_page = createPageTest(tableName="acclassificationtypes", queryEndpoint="acclassificationTypePage")
+test_query_classification_type_page = createPageTest(tableName="acclassificationtypes", queryEndpoint="acclassificationTypePage")

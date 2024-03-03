@@ -18,7 +18,6 @@ from .gt_utils import (
 test_reference_lessons = createResolveReferenceTest(tableName='aclessons', gqltype='AcLessonGQLModel', attributeNames=["id"])
 test_query_lesson_by_id = createByIdTest(tableName="aclessons", queryEndpoint="aclessonById", attributeNames=["id"])
 
-#TOHLE JE PŮVODNÍ VERZE
 # test_lesson_insert = createFrontendQuery(query="""
 #     mutation($topicId: UUID!, $typeId: UUID!) { 
 #         result: lessonInsert(lesson: {topicId: $topicId, typeId: $typeId}) { 
@@ -35,7 +34,6 @@ test_query_lesson_by_id = createByIdTest(tableName="aclessons", queryEndpoint="a
 #     asserts=[]
 # )
 
-#TOHLE JE UPRAVENÁ VERZE TOHO NAD TÍMHLE. 
 # test_lesson_insert = createFrontendQuery(query="""
 #     mutation($topicId: UUID!) { 
 #         result: lessonInsert(lesson: {topicId: $topicId}) { 

@@ -38,7 +38,7 @@ test_query_program_type_by_id = createByIdTest(tableName="acprogramtypes", query
 #     asserts=[]
 # )
 
-
+#TOHLE JE PŮVODNÍ OD TOHO POD TÍMHLE
 # test_program_type_update = createUpdateQuery(
 #     query="""
 #         mutation($id: UUID!, $lastchange: DateTime!) {
@@ -55,3 +55,20 @@ test_query_program_type_by_id = createByIdTest(tableName="acprogramtypes", query
 #     variables={"id": "fd4f0980-9315-11ed-9b95-0242ac110002", "lastchange": datetime.datetime.now().isoformat()},
 #     tableName="acprogramtypes"
 # )
+
+test_program_type_update = createUpdateQuery(
+    query="""
+        mutation($id: UUID!) {
+            programTypeUpdate(programType: {id: $id}) {
+                id
+                msg
+                programType {
+                    id
+                    
+                }
+            }
+        }
+    """,
+    variables={"id": "fd4f0980-9315-11ed-9b95-0242ac110002"},
+    tableName="acprogramtypes"
+)

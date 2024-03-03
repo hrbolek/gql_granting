@@ -18,7 +18,6 @@ from .gt_utils import (
 test_reference_lessons = createResolveReferenceTest(tableName='aclessons', gqltype='AcLessonGQLModel', attributeNames=["id"])
 test_query_lesson_by_id = createByIdTest(tableName="aclessons", queryEndpoint="aclessonById", attributeNames=["id"])
 
-#TOHLE JE PŮVODNÍ VERZE
 # test_lesson_insert = createFrontendQuery(query="""
 #     mutation($topicId: UUID!, $typeId: UUID!) { 
 #         result: lessonInsert(lesson: {topicId: $topicId, typeId: $typeId}) { 
@@ -35,22 +34,21 @@ test_query_lesson_by_id = createByIdTest(tableName="aclessons", queryEndpoint="a
 #     asserts=[]
 # )
 
-#TOHLE JE UPRAVENÁ VERZE TOHO NAD TÍMHLE. 
-# test_lesson_insert = createFrontendQuery(query="""
-#     mutation($topicId: UUID!) { 
-#         result: lessonInsert(lesson: {topicId: $topicId}) { 
-#             id
-#             msg
-#             lesson {
-#                 topic { id }
+test_lesson_insert = createFrontendQuery(query="""
+    mutation($topicId: UUID!) { 
+        result: lessonInsert(lesson: {topicId: $topicId}) { 
+            id
+            msg
+            lesson {
+                topic { id }
                 
-#             }
-#         }
-#     }
-#     """, 
-#     variables={"id": "ccde3a8b-81d0-4e2b-9aac-42e0eb2255b3", "name": "new lesson", "topicId": "ce250b44-b095-11ed-9bd8-0242ac110002"},
-#     asserts=[]
-# )
+            }
+        }
+    }
+    """, 
+    variables={"id": "ccde3a8b-81d0-4e2b-9aac-42e0eb2255b3", "name": "new lesson", "topicId": "ce250b44-b095-11ed-9bd8-0242ac110002"},
+    asserts=[]
+)
 
 test_lesson_update = createUpdateQuery(
     query="""
