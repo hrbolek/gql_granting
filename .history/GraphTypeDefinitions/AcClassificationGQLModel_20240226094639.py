@@ -153,6 +153,7 @@ async def classification_update(self, info: strawberry.types.Info, classificatio
         result = ClassificationResultGQLModel()
         result.msg = "ok"
         result.id = classification.id
-        result.msg = "ok" if (row is not None) else "fail"
+        if row is None:
+            result.msg = "fail"
             
         return result

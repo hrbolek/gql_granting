@@ -26,11 +26,13 @@ test_program_insert = createFrontendQuery(query="""
             msg
             program {
                 id
-                grants{id}
                 name
                 type { id }                          
-                students{id}
-                subjects {id}
+                subjects {
+                    id
+                    students{id}
+                    grants{id}
+                }
             }
         }
     }

@@ -136,6 +136,7 @@ async def lesson_update(self, info: strawberry.types.Info, lesson: LessonUpdateG
         result = LessonResultGQLModel()
         result.msg = "ok"
         result.id = lesson.id
-        result.msg = "ok" if (row is not None) else "fail"
+        if row is None:
+            result.msg = "fail"
             
         return result

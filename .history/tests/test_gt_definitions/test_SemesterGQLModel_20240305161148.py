@@ -29,10 +29,16 @@ test_semester_insert = createFrontendQuery(query="""
             id
             lastchange
             order
-            subject{id}
-            topics {id}
-            classifications {id}
-            classificationType {id}
+            subject
+            topics {
+                id
+            }
+            classifications {
+                id
+            }
+            classificationType {
+                id
+            }
             }
         }
         }

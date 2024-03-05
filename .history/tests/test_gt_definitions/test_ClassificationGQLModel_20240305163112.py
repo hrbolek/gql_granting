@@ -24,11 +24,11 @@ test_classification_insert = createFrontendQuery(query="""
             id 
             msg
             classification {
-                date
                 order
                 user { id }
                 semester { id }
-                level {id}                                 
+                date {id}
+                level{id}                                 
                 
             }
         }

@@ -155,7 +155,8 @@ async def program_update(self, info: strawberry.types.Info, program: ProgramUpda
         result = ProgramResultGQLModel()
         result.msg = "ok"
         result.id = program.id
-        result.msg = "ok" if (row is not None) else "fail"
+        if row is None:
+            result.msg = "fail"
             
         return result
 

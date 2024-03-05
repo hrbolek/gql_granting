@@ -29,8 +29,11 @@ test_program_insert = createFrontendQuery(query="""
                 grants{id}
                 name
                 type { id }                          
-                students{id}
-                subjects {id}
+                subjects {
+                    id
+                    students{id}
+                    
+                }
             }
         }
     }

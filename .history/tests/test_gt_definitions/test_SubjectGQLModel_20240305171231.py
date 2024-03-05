@@ -28,7 +28,6 @@ test_subject_insert = createFrontendQuery(query="""
                 name
                 program { id }
                 grants{id}
-                semesters{id}
             }
         }
     }

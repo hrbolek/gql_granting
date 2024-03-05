@@ -149,6 +149,7 @@ async def subject_update(self, info: strawberry.types.Info, subject: SubjectUpda
         result = SubjectResultGQLModel()
         result.msg = "ok"
         result.id = subject.id
-        result.msg = "ok" if (row is not None) else "fail"
+        if row is None:
+            result.msg = "fail"
             
         return result

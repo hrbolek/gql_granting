@@ -26,7 +26,7 @@ test_topic_insert = createFrontendQuery(query="""
             msg
             topic {
                 semester { id }
-                order
+                order{id}
                 lessons{id}
             }
         }

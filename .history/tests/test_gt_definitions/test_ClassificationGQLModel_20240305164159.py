@@ -20,11 +20,10 @@ test_query_classification_page = createPageTest(tableName="acclassifications", q
 
 test_classification_insert = createFrontendQuery(query="""
     mutation($order: Int!, $semesterId: UUID!, $userId: UUID!, $classificationlevelId: UUID!) { 
-        result: classificationInsert(classification: {order: $order, semesterId: $semesterId, userId: $userId, classificationlevelId: $classificationlevelId}) { 
+        result: classificationInsert(classification: {order: $order, semesterId: $semesterId, userId: $userId, classificationlevelId: $classificationlevelId, date: $date, level: $level}) { 
             id 
             msg
             classification {
-                date
                 order
                 user { id }
                 semester { id }
