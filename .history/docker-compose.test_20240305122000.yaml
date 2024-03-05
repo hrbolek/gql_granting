@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   gql_projects:
-    image: gql_granting
+    image: gql_projects
     build:
       # context definuje cestu k popisu
       context: ./
