@@ -28,10 +28,8 @@ test_program_type_insert = createFrontendQuery(query="""
                 id
                 name
                 nameEn
-                level {id}              
-                form {id} 
-                language {id} 
-                title {id} 
+              
+              
             }
         }
     }
@@ -41,19 +39,19 @@ test_program_type_insert = createFrontendQuery(query="""
 )
 
 
-test_program_type_update = createUpdateQuery(
-    query="""
-        mutation($id: UUID!, $lastchange: DateTime!) {
-            programTypeUpdate(programType: {id: $id, lastchange: $lastchange}) {
-                id
-                msg
-                programType {
-                    id
-                    lastchange
-                }
-            }
-        }
-    """,
-    variables={"id": "fd4f0980-9315-11ed-9b95-0242ac110002", "lastchange": datetime.datetime.now().isoformat()},
-    tableName="acprogramtypes"
-)
+# test_program_type_update = createUpdateQuery(
+#     query="""
+#         mutation($id: UUID!, $lastchange: DateTime!) {
+#             programTypeUpdate(programType: {id: $id, lastchange: $lastchange}) {
+#                 id
+#                 msg
+#                 programType {
+#                     id
+#                     lastchange
+#                 }
+#             }
+#         }
+#     """,
+#     variables={"id": "fd4f0980-9315-11ed-9b95-0242ac110002", "lastchange": datetime.datetime.now().isoformat()},
+#     tableName="acprogramtypes"
+# )

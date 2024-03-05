@@ -60,11 +60,9 @@ class AcProgramTypeGQLModel(BaseGQLModel):
         result = await AcProgramLanguageTypeGQLModel.resolve_reference(info, self.language_id)
         return result
 
-    @strawberry.field(
-        description="""topics""")
-    async def title(self, info: strawberry.types.Info) -> typing.List["AcProgramTitleTypeGQLModel"]:
-        loader = getLoadersFromInfo(info).programtitletypes
-        result = await loader.filter_by(id=self.title_id)
+    @strawberry.field(description="""Bc., Ing., ...""")
+    async def title(self, info: strawberry.types.Info) -> typing.Optional["AcProgramTitleTypeGQLModel"]:
+        result = await AcProgramTitleTypeGQLModel.resolve_reference(info, self.title_id)
         return result
 
 #################################################

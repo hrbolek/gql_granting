@@ -26,12 +26,12 @@ test_lesson_insert = createFrontendQuery(query="""
             msg
             lesson {
                 topic { id }
-                lessonType { id }
+                type { id }
             }
         }
     }
     """, 
-    variables={"topicId": "ce250b44-b095-11ed-9bd8-0242ac110002", "typeId": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002"},
+    variables={"id": "ccde3a8b-81d0-4e2b-9aac-42e0eb2255b3", "name": "new lesson", "topicId": "ce250b44-b095-11ed-9bd8-0242ac110002", "typeId": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002"},
     asserts=[]
 )
 

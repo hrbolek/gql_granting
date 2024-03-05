@@ -24,7 +24,7 @@ from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 AcClassificationGQLModel= typing.Annotated["AcClassificationGQLModel",strawberry.lazy(".AcClassificationGQLModel")]
 AcClassificationTypeGQLModel = typing.Annotated["AcClassificationTypeGQLModel",strawberry.lazy(".AcClassificationTypeGQLModel")]
 AcTopicGQLModel = typing.Annotated["AcTopicGQLModel",strawberry.lazy(".AcTopicGQLModel")]
-AcSubjectGQLModel = typing.Annotated["AcSubjectGQLModel",strawberry.lazy(".AcSubjectGQLModel")]
+
 @strawberry.federation.type(
     keys=["id"], description="""Entity representing each semester in study subject"""
 )
@@ -69,14 +69,6 @@ class AcSemesterGQLModel(BaseGQLModel):
         loader = getLoadersFromInfo(info).topics
         result = await loader.filter_by(semester_id=self.id)
         return result
-    
-    @strawberry.field(
-        description="""topics""")
-    async def subject(self, info: strawberry.types.Info) -> typing.List["AcSubjectGQLModel"]:
-        loader = getLoadersFromInfo(info).subjects
-        result = await loader.filter_by(id=self.subject_id)
-        return result
-
 
 #################################################
 # Query

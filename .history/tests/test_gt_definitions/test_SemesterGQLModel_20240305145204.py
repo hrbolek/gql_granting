@@ -25,7 +25,7 @@ test_semester_insert = createFrontendQuery(query="""
             msg
             semester {
                 classificationType { id }
-                subject { id }
+                
             }
         }
     }

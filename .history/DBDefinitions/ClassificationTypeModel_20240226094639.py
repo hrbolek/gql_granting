@@ -16,7 +16,6 @@ class ClassificationTypeModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
-    
     #classificationsemesters = relationship('SemesterModel', back_populates='classifications', uselist = False)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())

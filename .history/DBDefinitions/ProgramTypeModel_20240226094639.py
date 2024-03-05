@@ -23,5 +23,4 @@ class ProgramTypeModel(BaseModel):
     language_id = Column(ForeignKey("acprogramlanguages.id"), index=True)
     level_id = Column(ForeignKey("acprogramlevels.id"), index=True)
     title_id = Column(ForeignKey("acprogramtitles.id"), index=True)
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     # combination

@@ -74,7 +74,7 @@ class AcSemesterGQLModel(BaseGQLModel):
         description="""topics""")
     async def subject(self, info: strawberry.types.Info) -> typing.List["AcSubjectGQLModel"]:
         loader = getLoadersFromInfo(info).subjects
-        result = await loader.filter_by(id=self.subject_id)
+        result = await loader.filter_by(semester_id=self.subject_id)
         return result
 
 

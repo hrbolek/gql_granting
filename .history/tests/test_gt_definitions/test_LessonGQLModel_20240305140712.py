@@ -26,7 +26,7 @@ test_lesson_insert = createFrontendQuery(query="""
             msg
             lesson {
                 topic { id }
-                lessonType { id }
+                type { id }
             }
         }
     }

@@ -60,11 +60,9 @@ class AcProgramTypeGQLModel(BaseGQLModel):
         result = await AcProgramLanguageTypeGQLModel.resolve_reference(info, self.language_id)
         return result
 
-    @strawberry.field(
-        description="""topics""")
-    async def title(self, info: strawberry.types.Info) -> typing.List["AcProgramTitleTypeGQLModel"]:
-        loader = getLoadersFromInfo(info).programtitletypes
-        result = await loader.filter_by(id=self.title_id)
+    @strawberry.field(description="""Bc., Ing., ...""")
+    async def title(self, info: strawberry.types.Info) -> typing.Optional["AcProgramTitleTypeGQLModel"]:
+        result = await AcProgramTitleTypeGQLModel.resolve_reference(info, self.title_id)
         return result
 
 #################################################
@@ -155,11 +153,13 @@ async def program_type_insert(self, info: strawberry.types.Info, program_type: P
     description="""Update the study program type""",
     permission_classes=[OnlyForAuthentized()])
 async def program_type_update(self, info: strawberry.types.Info, program_type: ProgramTypeUpdateGQLModel) -> ProgramTypeResultGQLModel:
-        loader = getLoadersFromInfo(info).programtypes
+        loader = getLoaders(info).programtypes
         row = await loader.update(program_type)
         result = ProgramTypeResultGQLModel()
         result.msg = "ok"
         result.id = program_type.id
-        result.msg = "ok" if (row is not None) else "fail"
+        if row is None:
+            result.msg = "fail"
+             
         return result
     

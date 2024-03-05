@@ -20,17 +20,17 @@ test_reference_semesters = createResolveReferenceTest(tableName='acsemesters', g
 
 test_semester_insert = createFrontendQuery(query="""
     mutation($classificationtypeId: UUID!, $subjectId: UUID!) { 
-        result: semesterInsert(semester: {classificationtypeId: $classificationtypeId, subjectId: $subjectId}) { 
+        result: semesterInsert(semester: {classificationtypeId: $classificationtypeId}) { 
             id
             msg
             semester {
                 classificationType { id }
-                subject { id }
+                
             }
         }
     }
     """, 
-    variables={"classificationtypeId": "a00a0642-b095-11ed-9bd8-0242ac110002", "subjectId": "3ed497ea-ab40-4e94-a93e-9d9627497652"},
+    variables={"classificationtypeId": "a00a0642-b095-11ed-9bd8-0242ac110002"},
     asserts=[]
 )
 

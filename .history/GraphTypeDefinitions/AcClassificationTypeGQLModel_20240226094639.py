@@ -35,5 +35,3 @@ class AcClassificationTypeGQLModel(BaseGQLModel):
     name = resolve_name
     name_en = resolve_name_en
     lastchange = resolve_lastchange
-
-

@@ -4,14 +4,10 @@ import datetime
 import typing
 import logging
 
-from .BaseGQLModel import IDType #uuid.UUID
+from .BaseGQLModel import IDType
 
 UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy(".externals")]
 GroupGQLModel = typing.Annotated["GroupGQLModel", strawberry.lazy(".externals")]
-
-@strawberry.field(description="""Entity primary key""")
-def resolve_ordervalue(self) -> int:
-    return self.ordervalue
 
 @strawberry.field(description="""Entity primary key""")
 def resolve_id(self) -> IDType:
