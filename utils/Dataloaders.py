@@ -79,7 +79,7 @@ class AuthorizationLoader(DataLoader):
     def setTokenByInfo(self, info):
         self.authorizationToken = ""
 
-    async def _load(self, id):
+"""     async def _load(self, id):
         variables = {"id": f"{id}"}
         if self.authorizationToken != "":
             headers = {"authorization": f"Bearer {self.authorizationToken}"}
@@ -125,7 +125,7 @@ class AuthorizationLoader(DataLoader):
         results = await asyncio.gather(*awaitables)
         indexedResult = {key:result for key, result in zip(reducedkeys, results)}
         results = [indexedResult[key] for key in keys]
-        return results
+        return results """
 
 class Loaders:
     authorizations = None
