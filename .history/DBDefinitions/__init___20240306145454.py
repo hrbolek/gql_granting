@@ -26,7 +26,7 @@ import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
-import os
+
 # async def startEngine(connectionstring, makeDrop=False, makeUp=True):
 #     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
 #     asyncEngine = create_async_engine(connectionstring)
@@ -69,7 +69,7 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
     return async_sessionMaker
 
 
-
+import os
 
 
 def ComposeConnectionString():

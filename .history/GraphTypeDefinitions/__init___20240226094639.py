@@ -57,9 +57,8 @@ class Query:
     aclesson_by_id = aclesson_by_id
     aclesson_page = aclesson_page
     
-    from .AcProgramTypeGQLModel import program_type_by_id, program_type_page
+    from .AcProgramTypeGQLModel import program_type_by_id
     program_type_by_id = program_type_by_id
-    program_type_page = program_type_page
 
     from .AcProgramGQLModel import program_by_id, program_page
     program_by_id = program_by_id

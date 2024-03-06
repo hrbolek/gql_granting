@@ -17,9 +17,9 @@ from .gt_utils import (
 )
 
 test_reference_topics = createResolveReferenceTest(tableName='actopics', gqltype='AcTopicGQLModel', attributeNames=["id"])
-test_page_topic = createPageTest(tableName="actopics", queryEndpoint="actopicPage")
 test_query_topic_by_id = createByIdTest(tableName="actopics", queryEndpoint="actopicById")
 
+test_page_topic = createPageTest(tableName="actopics", queryEndpoint="actopicPage")
 
 
 test_topic_insert = createFrontendQuery(query="""

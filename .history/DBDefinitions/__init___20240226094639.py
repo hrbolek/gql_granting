@@ -21,28 +21,11 @@ from .uuid import UUIDColumn
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import sqlalchemy
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
-import os
-# async def startEngine(connectionstring, makeDrop=False, makeUp=True):
-#     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
-#     asyncEngine = create_async_engine(connectionstring)
 
-#     async with asyncEngine.begin() as conn:
-#         if makeDrop:
-#             await conn.run_sync(BaseModel.metadata.drop_all)
-#             print("BaseModel.metadata.drop_all finished")
-#         if makeUp:
-#             await conn.run_sync(BaseModel.metadata.create_all)
-#             print("BaseModel.metadata.create_all finished")
-
-#     async_sessionMaker = sessionmaker(
-#         asyncEngine, expire_on_commit=False, class_=AsyncSession
-#     )
-#     return async_sessionMaker
 async def startEngine(connectionstring, makeDrop=False, makeUp=True):
     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
     asyncEngine = create_async_engine(connectionstring)
@@ -52,24 +35,16 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print("BaseModel.metadata.drop_all finished")
         if makeUp:
-            try:
-                await conn.run_sync(BaseModel.metadata.create_all)
-                print("BaseModel.metadata.create_all finished")
-            except sqlalchemy.exc.NoReferencedTableError as e:
-                print("Caught NoReferencedTableError:", e)
-                print("Unable automatically to create tables")
-                return None
-    
-    if not makeUp:
-        return None  # Ensure to return None when makeUp=False
-    
+            await conn.run_sync(BaseModel.metadata.create_all)
+            print("BaseModel.metadata.create_all finished")
+
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
 
 
-
+import os
 
 
 def ComposeConnectionString():

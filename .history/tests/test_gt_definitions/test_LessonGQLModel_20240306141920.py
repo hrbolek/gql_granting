@@ -18,7 +18,7 @@ from .gt_utils import (
 test_reference_lessons = createResolveReferenceTest(tableName='aclessons', gqltype='AcLessonGQLModel', attributeNames=["id"])
 
 test_page_lessons = createPageTest(tableName='aclessons',
-                                   queryEndpoint='aclessonPage', attributeNames=["id"])
+                                   gqltype='aclessonPage', attributeNames=["id"])
 
 test_query_lesson_by_id = createByIdTest(tableName="aclessons", queryEndpoint="aclessonById", attributeNames=["id"])
 

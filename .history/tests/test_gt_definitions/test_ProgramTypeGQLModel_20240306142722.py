@@ -16,7 +16,7 @@ from .gt_utils import (
 )
 
 test_reference_programs = createResolveReferenceTest(tableName='acprogramtypes', gqltype='AcProgramTypeGQLModel', attributeNames=["id"])
-test_page_program = createPageTest(tableName="acprogramtypes", queryEndpoint="programTypePage")
+createPageTest(tableName="acprogramtypes", queryEndpoint="programTypePage")
 
 test_query_program_type_by_id = createByIdTest(tableName="acprogramtypes", queryEndpoint="programTypeById")
 

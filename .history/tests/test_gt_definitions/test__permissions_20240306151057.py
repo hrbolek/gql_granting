@@ -186,23 +186,6 @@ import pytest
 #     errors = result.get("errors", None)
 #     assert errors is None, result
 
-@pytest.mark.asyncio
-async def test_low_role_say_hello(DemoFalse, OAuthServer, ClientExecutorNoDemo, Env_GQLUG_ENDPOINT_URL_8123):
-    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
-    logging.info(f"test_low_role GQLUG_ENDPOINT_URL: \n{GQLUG_ENDPOINT_URL}")
-    DEMO = os.environ.get("DEMO", None)
-    logging.info(f"test_low_role DEMO: {DEMO}")
-    query = """
-    query($id: UUID!) { 
-        result: sayHelloForms(id: $id) 
-    }
-    """
-    variable_values = {"id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}
-    result = await ClientExecutorNoDemo(query=query, variable_values=variable_values)
-    logging.info(f"test_low_role_say_hello: \n {result}")
-    print(result)
-    errors = result.get("errors", None)
-    assert errors is None, result
 
 
 
@@ -279,3 +262,65 @@ async def test_low_role_say_hello(DemoFalse, OAuthServer, ClientExecutorNoDemo, 
 #     assert data.get("result", None) is not None, data
 #     assert data["result"].get("id", None) == variable_values["id"], data
         
+
+
+import logging
+import os
+import uuid
+
+from .gt_utils import createFrontendQuery
+
+def uuidstr():
+    return f"{uuid.uuid1()}"
+
+
+# def test_raise(AccessToken):
+#     print(AccessToken)
+#     assert False
+
+import pytest
+
+
+@pytest.mark.asyncio
+async def test_low_role_say_hello(DemoFalse, OAuthServer, ClientExecutorNoDemo, Env_GQLUG_ENDPOINT_URL_8123):
+    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
+    logging.info(f"test_low_role GQLUG_ENDPOINT_URL: \n{GQLUG_ENDPOINT_URL}")
+    DEMO = os.environ.get("DEMO", None)
+    logging.info(f"test_low_role DEMO: {DEMO}")
+    query = """
+    query($id: UUID!) { 
+        result: sayHelloForms(id: $id) 
+    }
+    """
+    variable_values = {"id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}
+    result = await ClientExecutorNoDemo(query=query, variable_values=variable_values)
+    logging.info(f"test_low_role_say_hello: \n {result}")
+    print(result)
+    errors = result.get("errors", None)
+    assert errors is None, result
+
+
+
+
+@pytest.mark.asyncio
+async def test_demo_role(DemoFalse, ClientExecutorAdmin, FillDataViaGQL, Context, Env_GQLUG_ENDPOINT_URL_8124):
+    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
+    logging.info(f"test_low_role GQLUG_ENDPOINT_URL: \n{GQLUG_ENDPOINT_URL}")
+    DEMO = os.environ.get("DEMO", None)
+    logging.info(f"test_low_role DEMO: {DEMO}")
+    query = """
+    query($id: UUID!) { 
+        result: programById(id: $id) { 
+            id           
+        }
+    }
+    """
+    variable_values = {"id": "2766fc9a-b095-11ed-9bd8-0242ac110002"}
+    result = await ClientExecutorAdmin(query=query, variable_values=variable_values)
+    logging.info(f"test_demo_role result: \n {result}")
+    print(result)
+    errors = result.get("errors", None)
+    data = result.get("data", None)
+    assert errors is None, result
+    assert data["result"] is not None, data
+    assert data["result"]["id"] == variable_values["id"], data

@@ -18,7 +18,7 @@ from .gt_utils import (
 test_reference_classifications = createResolveReferenceTest(tableName='acclassifications', gqltype='AcClassificationGQLModel', attributeNames=["id"])
 test_query_classification_page = createPageTest(tableName="acclassifications", queryEndpoint="acclassificationPage", attributeNames=["id"])
 test_by_id_class = createByIdTest(tableName="acclassifications", 
-                                  queryEndpoint="acclassificationById", attributeNames=["id"])
+                                  queryEndpoint="acclassificationPage")
 
 test_classification_insert = createFrontendQuery(query="""
     mutation($order: Int!, $semesterId: UUID!, $userId: UUID!, $classificationlevelId: UUID!) { 

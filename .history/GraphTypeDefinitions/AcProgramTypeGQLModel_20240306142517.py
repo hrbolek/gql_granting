@@ -98,7 +98,7 @@ async def program_type_by_id(
     description="""Finds all program types""",
     permission_classes=[OnlyForAuthentized()])
 @asPage
-async def program_type_page( 
+async def program_page( 
         self, info: strawberry.types.Info, skip: int = 0, limit: int = 10,
         where: typing.Optional[ProgramTypeWhereFilter] = None
     ) -> typing.List[AcProgramTypeGQLModel]:

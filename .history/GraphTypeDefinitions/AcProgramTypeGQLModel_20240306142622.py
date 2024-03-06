@@ -62,7 +62,7 @@ class AcProgramTypeGQLModel(BaseGQLModel):
 
     @strawberry.field(
         description="""topics""")
-    async def title(self, info: strawberry.types.Info) -> typing.List["AcProgramTitleTypeGQLModel"]:
+    async def subject(self, info: strawberry.types.Info) -> typing.List["AcProgramTitleTypeGQLModel"]:
         loader = getLoadersFromInfo(info).programtitletypes
         result = await loader.filter_by(id=self.title_id)
         return result
