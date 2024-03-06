@@ -118,14 +118,14 @@ class AuthorizationLoader(DataLoader):
     #     return [*roles]
 
 
-    # async def batch_load_fn(self, keys):
-    #     #print('batch_load_fn', keys, flush=True)
-    #     reducedkeys = set(keys)
-    #     awaitables = (self._load(key) for key in reducedkeys)
-    #     results = await asyncio.gather(*awaitables)
-    #     indexedResult = {key:result for key, result in zip(reducedkeys, results)}
-    #     results = [indexedResult[key] for key in keys]
-    #     return results
+    async def batch_load_fn(self, keys):
+        #print('batch_load_fn', keys, flush=True)
+        reducedkeys = set(keys)
+        awaitables = (self._load(key) for key in reducedkeys)
+        results = await asyncio.gather(*awaitables)
+        indexedResult = {key:result for key, result in zip(reducedkeys, results)}
+        results = [indexedResult[key] for key in keys]
+        return results
 
 class Loaders:
     authorizations = None
