@@ -6,7 +6,7 @@ from aiodataloader import DataLoader
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 
 
-from src.DBDefinitions import (
+from DBDefinitions import (
     BaseModel, 
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,

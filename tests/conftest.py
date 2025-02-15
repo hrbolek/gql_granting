@@ -19,7 +19,7 @@ serversTestscope = "function"
 
 @pytest.fixture
 def DBModels():
-    from src.DBDefinitions import (
+    from DBDefinitions import (
         ProgramFormTypeModel,
         ProgramTitleTypeModel,
         ProgramLanguageTypeModel,
@@ -81,7 +81,7 @@ async def Async_Session_Maker(DBModels):
     from sqlalchemy.ext.asyncio import create_async_engine
     from sqlalchemy.ext.asyncio import AsyncSession
     from sqlalchemy.orm import sessionmaker
-    from src.DBDefinitions import BaseModel
+    from DBDefinitions import BaseModel
     asyncEngine = create_async_engine("sqlite+aiosqlite:///:memory:")
     # asyncEngine = create_async_engine("sqlite+aiosqlite:///data.sqlite")
     async with asyncEngine.begin() as conn:
@@ -119,7 +119,7 @@ async def SQLite(Async_Session_Maker, DemoData, DBModels):
 
 @pytest.fixture
 def LoadersContext(SQLite):
-    from src.Dataloaders import createLoadersContext
+    from Dataloaders import createLoadersContext
     context = createLoadersContext(SQLite)
     return context
 
@@ -485,11 +485,11 @@ async def AuthorizationHeaders(AccessToken):
 @pytest.fixture
 def FastAPIClient(SQLite):
     from fastapi.testclient import TestClient
-    import src.DBDefinitions
+    import DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"   
-    src.DBDefinitions.ComposeConnectionString = ComposeCString
+    DBDefinitions.ComposeConnectionString = ComposeCString
 
     import main
     client = TestClient(main.app, raise_server_exceptions=False)   
@@ -498,11 +498,11 @@ def FastAPIClient(SQLite):
 @pytest.fixture
 def FastAPIClient2():
     from fastapi.testclient import TestClient
-    import src.DBDefinitions
+    import DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"   
-    src.DBDefinitions.ComposeConnectionString = ComposeCString
+    DBDefinitions.ComposeConnectionString = ComposeCString
 
     import main
     client = TestClient(main.app, raise_server_exceptions=False)   
@@ -524,11 +524,11 @@ def FastAPIClient2():
 @pytest.fixture
 def FastAPIClient3():
     from fastapi.testclient import TestClient
-    import src.DBDefinitions
+    import DBDefinitions
 
     def ComposeCString():
         return "sqlite+aiosqlite:///:memory:"   
-    src.DBDefinitions.ComposeConnectionString = ComposeCString
+    DBDefinitions.ComposeConnectionString = ComposeCString
 
     import main
     client = TestClient(main.app, raise_server_exceptions=False)   

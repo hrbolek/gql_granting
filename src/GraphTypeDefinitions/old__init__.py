@@ -8,10 +8,10 @@ from uoishelpers.resolvers import createInputs
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".GraphTypeDefinitionsExt")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".GraphTypeDefinitionsExt")]
 
-from ._GraphPermissions import (
+from .._GraphPermissions import (
     OnlyForAuthentized
 )
-from ._GraphResolvers import (
+from .._GraphResolvers import (
     IDType,
     getLoadersFromInfo,
     resolve_reference,
@@ -110,7 +110,7 @@ class AcProgramGQLModel:
             permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def grants_group(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
-        from .GraphTypeDefinitionsExt import GroupGQLModel
+        from ..GraphTypeDefinitionsExt import GroupGQLModel
         return await GroupGQLModel.resolve_reference(info=info, id=self.group_id)
 
     @strawberry.field(
@@ -118,7 +118,7 @@ class AcProgramGQLModel:
             permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def licenced_group(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
-        from .GraphTypeDefinitionsExt import GroupGQLModel
+        from ..GraphTypeDefinitionsExt import GroupGQLModel
         return await GroupGQLModel.resolve_reference(info=info, id=self.group_id)
 
 # endregion
@@ -235,7 +235,7 @@ class AcProgramMessageGQLModel:
             permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def student(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
-        from .GraphTypeDefinitionsExt import UserGQLModel
+        from ..GraphTypeDefinitionsExt import UserGQLModel
         return await UserGQLModel.resolve_reference(info, id=self.student_id)
 
     @strawberry.field(
@@ -285,7 +285,7 @@ class AcProgramStudentGQLModel:
             permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def student(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
-        from .GraphTypeDefinitionsExt import UserGQLModel
+        from ..GraphTypeDefinitionsExt import UserGQLModel
         return await UserGQLModel.resolve_reference(info, id=self.student_id)
     
     @strawberry.field(
@@ -493,7 +493,7 @@ class AcSubjectGQLModel:
             permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def grants(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
-        from .GraphTypeDefinitionsExt import GroupGQLModel
+        from ..GraphTypeDefinitionsExt import GroupGQLModel
         result = await GroupGQLModel.resolve_reference(info=info, id=self.group_id)
         return result
 
@@ -710,7 +710,7 @@ class AcClassificationGQLModel:
             permission_classes=[OnlyForAuthentized(isList=False)]
             )
     async def student(self, info: strawberry.types.Info) -> Optional["UserGQLModel"]:
-        from .GraphTypeDefinitionsExt import UserGQLModel
+        from ..GraphTypeDefinitionsExt import UserGQLModel
         return await UserGQLModel.resolve_reference(info=info, id=self.student_id)
 
     @strawberry.field(
@@ -1262,7 +1262,7 @@ class Query:
 ###########################################################################################################################
 
 from typing import Optional
-from ._GraphResolvers import encapsulateInsert, encapsulateUpdate
+from .._GraphResolvers import encapsulateInsert, encapsulateUpdate
 
 # region Program CU
 @strawberry.input(description="Model for initialization during C operation")
@@ -2126,7 +2126,7 @@ class Mutation:
 #
 ###########################################################################################################################
 
-from .GraphTypeDefinitionsExt import GroupGQLModel as _GroupGQLModel, UserGQLModel as _UserGQLModel
+from ..GraphTypeDefinitionsExt import GroupGQLModel as _GroupGQLModel, UserGQLModel as _UserGQLModel
 schema = strawberry.federation.Schema(query=Query, mutation=Mutation,
     types=(
     _GroupGQLModel, 

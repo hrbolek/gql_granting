@@ -1,6 +1,6 @@
 from functools import cache
 import uuid
-from src.DBDefinitions import BaseModel
+from DBDefinitions import BaseModel
 
 import random
 import itertools
@@ -347,7 +347,7 @@ import datetime
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
 #
 ###########################################################################################################################
-from src.DBDefinitions import (
+from DBDefinitions import (
     
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,
