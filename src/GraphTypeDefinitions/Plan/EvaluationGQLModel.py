@@ -54,9 +54,10 @@ class EvaluationGQLModel(BaseGQLModel):
 
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info=info).EvaluationModel
+        return getLoadersFromInfo(info=info).ClassificationModel
     
     points: typing.Optional[int] = strawberry.field(
+        default=None,
         description="given points for this exam",
         permission_classes=[
             OnlyForAuthentized
@@ -64,13 +65,23 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     grade: typing.Optional[str] = strawberry.field(
+        default=None,
         description="given grade / mark",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
-    attempt: typing.Optional[int] = strawberry.field(
+    description: typing.Optional[str] = strawberry.field(
+        default=None,
+        description="description given to student and exam",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    order: typing.Optional[int] = strawberry.field(
+        default=None,
         description="index of attempt",
         permission_classes=[
             OnlyForAuthentized
@@ -78,6 +89,7 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     passed: typing.Optional[bool] = strawberry.field(
+        default=None,
         description="True if student passed this exam",
         permission_classes=[
             OnlyForAuthentized
@@ -85,6 +97,7 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     student_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="id of the student",
         permission_classes=[
             OnlyForAuthentized
@@ -100,6 +113,7 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     examiner_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="who examined",
         permission_classes=[
             OnlyForAuthentized
@@ -115,6 +129,7 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     semester_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="to which semester / subject this examination belongs",
         permission_classes=[
             OnlyForAuthentized
@@ -130,6 +145,7 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     exam_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="related exam conditions",
         permission_classes=[
             OnlyForAuthentized
@@ -144,22 +160,24 @@ class EvaluationGQLModel(BaseGQLModel):
         resolver=ScalarResolver["ExamGQLModel"](fkey_field_name="exam_id")
     )
 
-    exam_event_id: typing.Optional[IDType] = strawberry.field(
-        description="",
+    event_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
+        description="the event when exam happened and evaluation has been stored",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
-    exam_event: typing.Optional["EventGQLModel"] = strawberry.field(
+    event: typing.Optional["EventGQLModel"] = strawberry.field(
         description="",
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["EventGQLModel"](fkey_field_name="exam_event_id")
+        resolver=ScalarResolver["EventGQLModel"](fkey_field_name="event_id")
     )
 
     parent_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="id of exam which this is part",
         permission_classes=[
             OnlyForAuthentized
@@ -181,6 +199,23 @@ class EvaluationGQLModel(BaseGQLModel):
         ],
         resolver=VectorResolver["EvaluationGQLModel"](fkey_field_name="parent_id", whereType=EvaluationInputFilter)
     )
+
+    classificationlevel_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
+        description="Formal given grade",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    classificationplan_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
+        description="Exam plan",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
 
 
 @strawberry.interface(

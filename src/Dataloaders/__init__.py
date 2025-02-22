@@ -2,11 +2,14 @@ import os
 import asyncio
 import aiohttp
 from functools import cache
+
 from aiodataloader import DataLoader
+
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
+from uoishelpers.dataloaders import createLoadersAuto
 
 
-from DBDefinitions import (
+from ..DBDefinitions import (
     BaseModel, 
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,
@@ -16,7 +19,6 @@ from DBDefinitions import (
     ProgramTypeModel,
     ProgramStudentModel,
     ProgramStudentMessageModel,
-    ProgramStudentStateModel,
 
     ClassificationLevelModel,
     ClassificationModel,
@@ -26,7 +28,15 @@ from DBDefinitions import (
     SemesterModel,
     TopicModel,
     LessonModel,
-    LessonTypeModel
+    LessonTypeModel,
+
+    PlanModel,
+    PlanItemFacilityModel,
+    PlanItemGroupModel,
+    PlanItemTeacherModel,
+    PlanItemModel,
+
+    ClassificationPlanModel
 )
 
 
@@ -221,7 +231,7 @@ dbmodels = {
     "programtypes": ProgramTypeModel,
     "programstudents": ProgramStudentModel,
     "programmessages": ProgramStudentMessageModel,
-    "acprograms_studentstates": ProgramStudentStateModel,
+    # "acprograms_studentstates": ProgramStudentStateModel,
 
     "classificationlevels": ClassificationLevelModel,
     "classifications": ClassificationModel,
@@ -241,7 +251,11 @@ def createLoaders(asyncSessionMaker, models=dbmodels):
     attrs = {}
     for key, DBModel in models.items():
         attrs[key] = property(cache(createLambda(key, DBModel)))
-    
+        cls = DBModel
+        attrs[cls.__tablename__] = property(cache(createLambda(None, cls)))
+        attrs[cls.__name__] = attrs[cls.__tablename__]
+        print("loader", cls.__tablename__, cls.__name__)
+
     attrs["authorizations"] = property(cache(lambda self: AuthorizationLoader()))
     Loaders = type('Loaders', (), attrs)   
     return Loaders()
@@ -251,22 +265,9 @@ def createLoadersContext(asyncSessionMaker):
         "loaders": createLoaders(asyncSessionMaker)
     }
 
-def createLoaders(asyncSessionMaker):
-
-    def createLambda(loaderName, DBModel):
-        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
-
-    attrs = {}
-
-    for DBModel in BaseModel.registry.mappers:
-        cls = DBModel.class_
-        attrs[cls.__tablename__] = property(cache(createLambda(asyncSessionMaker, cls)))
-    
-    # attrs["authorizations"] = property(cache(lambda self: AuthorizationLoader()))
-    Loaders = type('Loaders', (), attrs)   
-    return Loaders()
-
 def createLoadersContext(asyncSessionMaker):
     return {
-        "loaders": createLoaders(asyncSessionMaker)
+        # "loaders": createLoaders(asyncSessionMaker)
+        "loaders": createLoadersAuto(asyncSessionMaker, BaseModel=BaseModel)
     }
+

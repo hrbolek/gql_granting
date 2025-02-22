@@ -40,11 +40,18 @@ EventGQLModel = typing.Annotated["EventGQLModel", strawberry.lazy("..EventGQLMod
 @dataclasses.dataclass
 class StudyPlanInputFilter:
     id: IDType
+    semester_id: IDType
+    exam_id: IDType
+    event_id: IDType
 
 
 @strawberry.federation.type()
 class StudyPlanGQLModel(BaseGQLModel):
 
+    @classmethod
+    def getLoader(cls, info):
+        return getLoadersFromInfo(info=info).PlanModel
+    
     semester_id: typing.Optional[IDType] = strawberry.field(
         description="ID of Semester to which the plan is related",
         permission_classes=[
@@ -96,4 +103,14 @@ class StudyPlanGQLModel(BaseGQLModel):
             OnlyForAuthentized
         ],
         resolver=ScalarResolver["EventGQLModel"](fkey_field_name="event_id")
+    )
+
+@strawberry.interface()
+class StudyPlanQuery:
+    studyplan_page: typing.List[StudyPlanGQLModel] = strawberry.field(
+        description="filtered list of study plan",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver[StudyPlanGQLModel](whereType=StudyPlanInputFilter)
     )

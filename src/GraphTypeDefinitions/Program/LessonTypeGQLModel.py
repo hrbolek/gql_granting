@@ -4,7 +4,6 @@ import datetime
 import typing
 import strawberry
 
-import strawberry.types
 from uoishelpers.gqlpermissions import (
     OnlyForAuthentized,
     SimpleInsertPermission, 
@@ -29,26 +28,26 @@ from uoishelpers.resolvers import (
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
-ProgramGQLModel = typing.Annotated["ProgramGQLModel", strawberry.lazy(".ProgramGQLModel")]
-ProgramInputFilter = typing.Annotated["ProgramInputFilter", strawberry.lazy(".ProgramGQLModel")]
+
+TopicGQLModel = typing.Annotated["TopicGQLModel", strawberry.lazy(".TopicGQLModel")]
 
 @createInputs
 @dataclasses.dataclass
-class ProgramFormTypeInputFilter:
+class LessonTypeInputFilter:
     id: IDType
     name: str
     name_en: str
 
 @strawberry.federation.type(
-    description="",
-    keys=["id"]
-)
-class ProgramFormTypeGQLModel(BaseGQLModel):
+    keys=["id"],
+    description="""LessonType entity"""
+    )
+class LessonTypeGQLModel(BaseGQLModel):
 
     @classmethod
-    def getLoader(cls, info):
-        return getLoadersFromInfo(info=info).ProgramFormTypeModel
-    
+    def getLoader(cls, info: strawberry.types.Info):
+        return getLoadersFromInfo(info).LessonTypeModel
+
     name: typing.Optional[str] = strawberry.field(
         description="name",
         permission_classes=[
@@ -67,19 +66,19 @@ class ProgramFormTypeGQLModel(BaseGQLModel):
 @strawberry.interface(
     description=""
 )
-class ProgramFormQuery:
-    program_form_by_id: typing.Optional["ProgramFormTypeGQLModel"] = strawberry.field(
-        description="returns programform by its id",
+class LessonTypeQuery:
+    program_by_id: typing.Optional["LessonTypeGQLModel"] = strawberry.field(
+        description="returns program by its id",
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ProgramFormTypeGQLModel.load_with_loader
+        resolver=LessonTypeGQLModel.load_with_loader
     )
 
-    program_form_page: typing.List["ProgramFormTypeGQLModel"] = strawberry.field(
-        description="returns programforms defined by filter",
+    program_page: typing.List["LessonTypeGQLModel"] = strawberry.field(
+        description="returns programs defined by filter",
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=PageResolver["ProgramFormTypeGQLModel"](whereType=ProgramFormTypeInputFilter)
+        resolver=PageResolver["LessonTypeGQLModel"](whereType=LessonTypeInputFilter)
     )

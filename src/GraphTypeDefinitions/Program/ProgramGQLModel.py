@@ -52,6 +52,19 @@ class ProgramGQLModel(BaseGQLModel):
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info).ProgramModel
     
+    name: typing.Optional[str] = strawberry.field(
+        description="Name of program",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    name_en: typing.Optional[str] = strawberry.field(
+        description="Eng. name of program",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
 
     subjects: typing.List["SubjectGQLModel"] = strawberry.field(
         description="""Program subjects""",
@@ -69,7 +82,7 @@ class ProgramGQLModel(BaseGQLModel):
         resolver=VectorResolver["StudentGQLModel"](fkey_field_name="program_id", whereType=StudentInputFilter)
     )
 
-    guarantors_id: typing.Optional[IDType] = strawberry.field(
+    group_id: typing.Optional[IDType] = strawberry.field(
         description="guarantors of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -81,22 +94,22 @@ class ProgramGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="guarantors_id")
+        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="group_id")
     )
 
-    licensed_id: typing.Optional[IDType] = strawberry.field(
+    licenced_group_id: typing.Optional[IDType] = strawberry.field(
         description="Who has got license for programme",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
-    licensed: typing.Optional["GroupGQLModel"] = strawberry.field(
+    licenced_group: typing.Optional["GroupGQLModel"] = strawberry.field(
         description="Who has got license for programme",
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="guarantors_id")
+        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="licenced_group_id")
     )    
 
     type_id: typing.Optional[IDType] = strawberry.field(

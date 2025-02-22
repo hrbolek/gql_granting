@@ -29,6 +29,15 @@ from uoishelpers.resolvers import (
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
+@createInputs
+@dataclasses.dataclass
+class ProgramLanguageTypeInputFilter:
+    id: IDType
+    name: str
+    name_en: str
+
+
+
 @strawberry.federation.type(
     description="language definition, often CZ or EN",
     keys=["id"]
@@ -52,3 +61,23 @@ class ProgramLanguageTypeGQLModel(BaseGQLModel):
             OnlyForAuthentized
         ]
     )
+
+@strawberry.interface(
+    description=""
+)
+class ProgramLanguageQuery:
+    program_language_by_id: typing.Optional["ProgramLanguageTypeGQLModel"] = strawberry.field(
+        description="returns programlanguage by its id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ProgramLanguageTypeGQLModel.load_with_loader
+    )
+
+    program_language_page: typing.List["ProgramLanguageTypeGQLModel"] = strawberry.field(
+        description="returns programlanguages defined by filter",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver["ProgramLanguageTypeGQLModel"](whereType=ProgramLanguageTypeInputFilter)
+    )    

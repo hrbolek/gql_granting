@@ -29,6 +29,14 @@ from uoishelpers.resolvers import (
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
+@createInputs
+@dataclasses.dataclass
+class ProgramTitleTypeInputFilter:
+    id: IDType
+    name: str
+    name_en: str
+
+
 @strawberry.federation.type(
     description="Specifies title if ended successfully",
     keys=["id"]
@@ -51,4 +59,24 @@ class ProgramTitleTypeGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ]
+    )
+
+@strawberry.interface(
+    description=""
+)
+class ProgramTitleQuery:
+    program_title_by_id: typing.Optional["ProgramTitleTypeGQLModel"] = strawberry.field(
+        description="returns programtitle by its id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ProgramTitleTypeGQLModel.load_with_loader
+    )
+
+    program_title_page: typing.List["ProgramTitleTypeGQLModel"] = strawberry.field(
+        description="returns programtitles defined by filter",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver["ProgramTitleTypeGQLModel"](whereType=ProgramTitleTypeInputFilter)
     )

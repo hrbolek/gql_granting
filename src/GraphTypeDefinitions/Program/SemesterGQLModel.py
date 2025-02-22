@@ -54,21 +54,31 @@ class SemesterGQLModel(BaseGQLModel):
         return getLoadersFromInfo(info).SemesterModel
     
     order: typing.Optional[int] = strawberry.field(
+        default=None,
         description="order in same subject", 
         permission_classes=[OnlyForAuthentized]
     )
 
     mandatory: typing.Optional[bool] = strawberry.field(
+        default=None,
         description="True if every student must pass this subject", 
         permission_classes=[OnlyForAuthentized]
     )
 
     credits: typing.Optional[int] = strawberry.field(
+        default=None,
         description="credits", 
         permission_classes=[OnlyForAuthentized]
     )
-    
+
+    classificationtype_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
+        description="subject id", 
+        permission_classes=[OnlyForAuthentized]
+    )
+
     subject_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="subject id", 
         permission_classes=[OnlyForAuthentized]
     )
@@ -81,7 +91,8 @@ class SemesterGQLModel(BaseGQLModel):
 
     prerequisites: typing.List["SubjectGQLModel"] = strawberry.field(
         description="subjects vhcin must be studied at first", 
-        permission_classes=[OnlyForAuthentized]
+        permission_classes=[OnlyForAuthentized],
+        resolver=lambda: []
     )
 
     topics: typing.List["TopicGQLModel"] = strawberry.field(
@@ -99,3 +110,82 @@ class SemesterGQLModel(BaseGQLModel):
         ],
         resolver=VectorResolver["StudyPlanGQLModel"](fkey_field_name="semester_id", whereType=StudyPlanInputFilter)
     )
+
+
+@strawberry.interface(
+    description=""
+)
+class SemesterQuery:
+    semester_by_id: typing.Optional["SemesterGQLModel"] = strawberry.field(
+        description="returns semester by its id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=SemesterGQLModel.load_with_loader
+    )
+
+    semester_page: typing.List["SemesterGQLModel"] = strawberry.field(
+        description="returns semesters defined by filter",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver["SemesterGQLModel"](whereType=SemesterInputFilter)
+    )
+
+@strawberry.input(
+    description="parameter for create operation"
+)
+class SemesterInsertGQLModel:
+    name: str = strawberry.field(
+        description="name of the semester"
+    )
+    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+
+
+@strawberry.input(
+    description="parameter for update operation"
+)
+class SemesterUpdateGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+@strawberry.input(
+    description="parameter for delete operation"
+)
+class SemesterDeleteGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+
+@strawberry.interface(
+    description=""
+)
+class SemesterMutation:
+
+    @strawberry.mutation(
+        description="create a new semester"
+    )
+    async def semester_insert(self, info: strawberry.types.Info, semester: SemesterInsertGQLModel) -> typing.Union[SemesterGQLModel, InsertError[SemesterGQLModel]]:
+        result = await Insert[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
+        return result
+    
+    @strawberry.mutation(
+        description="updates existing semester",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def semester_update(self, info: strawberry.types.Info, semester: SemesterUpdateGQLModel) -> typing.Union[SemesterGQLModel, UpdateError[SemesterGQLModel]]:
+        result = await Update[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
+        return result
+
+    @strawberry.mutation(
+        description="delete existing semester",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def semester_delete(self, info: strawberry.types.Info, semester: SemesterDeleteGQLModel) -> typing.Optional[DeleteError[SemesterGQLModel]]:
+        result = await Delete[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
+        return result
+

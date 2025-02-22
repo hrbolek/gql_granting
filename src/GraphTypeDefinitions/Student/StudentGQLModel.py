@@ -46,20 +46,20 @@ class StudentInputFilter:
     keys=["id"],
     description=""
 )
-class StudentGQLModel:
+class StudentGQLModel(BaseGQLModel):
     
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        pass
+        return getLoadersFromInfo(info=info).ProgramStudentModel
 
-    user_id: typing.Optional[IDType] = strawberry.field(
-        description="",
+    student_id: typing.Optional[IDType] = strawberry.field(
+        description="id of the user",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
-    user: typing.Optional["UserGQLModel"] = strawberry.field(
+    student: typing.Optional["UserGQLModel"] = strawberry.field(
         description="who is student",
         permission_classes=[
             OnlyForAuthentized
@@ -84,6 +84,14 @@ class StudentGQLModel:
 
     state_id: typing.Optional[IDType] = strawberry.field(
         description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    semester: typing.Optional[int] = strawberry.field(
+        default=None,
+        description="semester of study",
         permission_classes=[
             OnlyForAuthentized
         ]

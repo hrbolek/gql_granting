@@ -1,11 +1,11 @@
 import strawberry
 from .BaseGQLModel import IDType
 
-
+from .Plan import PlanQuery
 from .Program import ProgramQuery
 from .Student import StudentQuery
 @strawberry.type(description="""Type for query root""")
-class Query(ProgramQuery, StudentQuery):
+class Query(ProgramQuery, StudentQuery, PlanQuery):
     pass
 
 from .Program import ProgramMutation

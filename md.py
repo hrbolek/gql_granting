@@ -259,10 +259,75 @@ def generate_markdown_from_schema2():
     return markdown
 
 
+def unwrap_type(type_obj):
+    """
+    Rekurzivně "rozbalí" typ, aby získal základní pojmenovaný typ.
+    Například NON_NULL nebo LIST obalí skutečný typ, který nás zajímá.
+    """
+    while type_obj and type_obj.get("ofType"):
+        type_obj = type_obj["ofType"]
+    return type_obj
+
+def create_dot():
+    
+
+    result = schema.execute_sync(introspection_query)
+    if result.errors:
+        print("Chyby při introspekci:", result.errors)
+        return
+
+    schema_data = result.data["__schema"]
+    types = schema_data["types"]
+
+
+    # Vybereme pouze objektové typy, které nejsou systémové (nezačínají "__")
+    entities = {t["name"]: t for t in types if t["kind"] == "OBJECT" and not t["name"].startswith("__")}
+
+    # Budeme uchovávat vztahy ve formě: (zdroj, cíl) -> množina názvů polí
+    edges = {}
+    for entity_name, entity in entities.items():
+        fields = entity.get("fields", [])
+        for field in fields:
+            named_type = unwrap_type(field["type"])
+            if not named_type:
+                continue
+            target_name = named_type.get("name")
+            # Pokud cílový typ je také objekt (entita) v našem schématu, vytvoříme vztah.
+            if target_name in entities:
+                key = (entity_name, target_name)
+                if key not in edges:
+                    edges[key] = set()
+                edges[key].add(field["name"])
+
+    # Generujeme obsah DOT souboru
+    dot_lines = []
+    dot_lines.append("digraph G {")
+    dot_lines.append("  node [shape=rectangle];")
+    # Vykreslíme všechny entity jako uzly
+    for entity_name in entities:
+        dot_lines.append(f'  "{entity_name}";')
+    dot_lines.append("")  # prázdný řádek pro přehlednost
+
+    # Vykreslíme vztahy (šipky) mezi entitami s popiskem obsahujícím názvy polí
+    for (src, tgt), field_names in edges.items():
+        label = ", ".join(sorted(field_names))
+        dot_lines.append(f'  "{src}" -> "{tgt}" [label="{label}"];')
+    dot_lines.append("}")
+
+    return "\n".join(dot_lines)
+
+    print(f"DOT file generated: {output_file}")
+
 markdown_content = generate_markdown_from_schema()
 with open(MD_FILE_PATH, "w", encoding="utf-8") as md_file:
     md_file.write(markdown_content)
 
 markdown_content = generate_markdown_from_schema2()
-with open(MD_FILE_PATH + ".md", "w", encoding="utf-8") as md_file:
+# with open(MD_FILE_PATH + ".md", "w", encoding="utf-8") as md_file:
+with open(MD_FILE_PATH, "w", encoding="utf-8") as md_file:    
     md_file.write(markdown_content)
+
+output_file = ".schema.dot"
+dot_lines = create_dot()
+with open(output_file, "w", encoding="utf-8") as f:
+    f.write(dot_lines)

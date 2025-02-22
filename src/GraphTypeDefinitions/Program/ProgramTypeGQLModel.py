@@ -35,6 +35,19 @@ ProgramTitleTypeGQLModel = typing.Annotated["ProgramTitleTypeGQLModel", strawber
 ProgramLanguageTypeGQLModel = typing.Annotated["ProgramLanguageTypeGQLModel", strawberry.lazy(".ProgramLanguageTypeGQLModel")]
 ProgramFormTypeGQLModel = typing.Annotated["ProgramFormTypeGQLModel", strawberry.lazy(".ProgramFormTypeGQLModel")]
 
+
+@createInputs
+@dataclasses.dataclass
+class ProgramTypeInputFilter:
+    id: IDType
+    name: str
+    name_en: str
+    level_id: IDType
+    title_id: IDType
+    language_id: IDType
+    form_id: IDType
+
+
 @strawberry.federation.type(
     description="Unites attributes into single type",
     keys=["id"]
@@ -58,8 +71,8 @@ class ProgramTypeGQLModel(BaseGQLModel):
             OnlyForAuthentized
         ]
     )
-    
-    level_type_id: typing.Optional[IDType] = strawberry.field(
+
+    level_id: typing.Optional[IDType] = strawberry.field(
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -70,10 +83,11 @@ class ProgramTypeGQLModel(BaseGQLModel):
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        resolver=ScalarResolver[ProgramLevelTypeGQLModel](fkey_field_name="level_id")
     )
 
-    title_type_id: typing.Optional[IDType] = strawberry.field(
+    title_id: typing.Optional[IDType] = strawberry.field(
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -84,10 +98,11 @@ class ProgramTypeGQLModel(BaseGQLModel):
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        resolver=ScalarResolver[ProgramTitleTypeGQLModel](fkey_field_name="title_id")
     )    
 
-    language_type_id: typing.Optional[IDType] = strawberry.field(
+    language_id: typing.Optional[IDType] = strawberry.field(
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -98,10 +113,11 @@ class ProgramTypeGQLModel(BaseGQLModel):
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        resolver=ScalarResolver[ProgramLanguageTypeGQLModel](fkey_field_name="language_id")
     )        
 
-    form_type_id: typing.Optional[IDType] = strawberry.field(
+    form_id: typing.Optional[IDType] = strawberry.field(
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -112,5 +128,27 @@ class ProgramTypeGQLModel(BaseGQLModel):
         description="level of programme",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        resolver=ScalarResolver[ProgramFormTypeGQLModel](fkey_field_name="form_id")
     )        
+
+
+@strawberry.interface(
+    description=""
+)
+class ProgramTypeQuery:
+    program_type_by_id: typing.Optional["ProgramTypeGQLModel"] = strawberry.field(
+        description="returns programtype by its id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ProgramTypeGQLModel.load_with_loader
+    )
+
+    program_type_page: typing.List["ProgramTypeGQLModel"] = strawberry.field(
+        description="returns programtypes defined by filter",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver["ProgramTypeGQLModel"](whereType=ProgramTypeInputFilter)
+    )

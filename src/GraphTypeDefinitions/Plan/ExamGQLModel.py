@@ -35,6 +35,11 @@ EvaluationInputFilter = typing.Annotated["EvaluationInputFilter", strawberry.laz
 @dataclasses.dataclass
 class ExamInputFilter:
     id: IDType
+    parent_id: IDType
+    name: str
+    description: str
+    min_score: int
+    max_score: int
 
 
 
@@ -46,9 +51,18 @@ class ExamGQLModel(BaseGQLModel):
 
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
-        return getLoadersFromInfo(info=info).ExamModel
+        return getLoadersFromInfo(info=info).ClassificationPlanModel
     
     name: typing.Optional[str] = strawberry.field(
+        default=None,
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    name_en: typing.Optional[str] = strawberry.field(
+        default=None,
         description="",
         permission_classes=[
             OnlyForAuthentized
@@ -56,6 +70,15 @@ class ExamGQLModel(BaseGQLModel):
     )
 
     description: typing.Optional[str] = strawberry.field(
+        default=None,
+        description="extended description of exam conditions",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    description_en: typing.Optional[str] = strawberry.field(
+        default=None,
         description="extended description of exam conditions",
         permission_classes=[
             OnlyForAuthentized
@@ -63,6 +86,7 @@ class ExamGQLModel(BaseGQLModel):
     )
 
     min_score: typing.Optional[int] = strawberry.field(
+        default=None,
         description="defined minimum points to pass the exam",
         permission_classes=[
             OnlyForAuthentized
@@ -70,11 +94,27 @@ class ExamGQLModel(BaseGQLModel):
     )
 
     max_score: typing.Optional[int] = strawberry.field(
-        description="defined maximum achievable points"
+        default=None,
+        description="defined maximum achievable points",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    type_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
+        description="id of exam type",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
     )
 
     parent_id: typing.Optional[IDType] = strawberry.field(
-        description="id of exam which is part"
+        default=None,
+        description="id of exam which is part",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
     )
 
     parent: typing.Optional[IDType] = strawberry.field(
@@ -99,4 +139,17 @@ class ExamGQLModel(BaseGQLModel):
             OnlyForAuthentized
         ],
         resolver=VectorResolver["EvaluationGQLModel"](fkey_field_name="exam_id", whereType=EvaluationInputFilter)
+    )
+
+@strawberry.interface(
+    description=""
+)
+class ExamQuery:
+
+    exam_page: typing.List[ExamGQLModel] = strawberry.field(
+        description="filtered evaluations",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver[ExamGQLModel](whereType=ExamInputFilter)
     )

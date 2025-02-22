@@ -1,6 +1,6 @@
 from functools import cache
 import uuid
-from DBDefinitions import BaseModel
+from src.DBDefinitions import BaseModel
 
 import random
 import itertools
@@ -347,7 +347,7 @@ import datetime
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
 #
 ###########################################################################################################################
-from DBDefinitions import (
+from src.DBDefinitions import (
     
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,
@@ -365,7 +365,7 @@ from DBDefinitions import (
     ClassificationModel,
     ClassificationTypeModel,
 
-    ProgramStudentStateModel,
+    # ProgramStudentStateModel,
     ProgramStudentModel,
     ProgramStudentMessageModel
 )
@@ -429,7 +429,7 @@ async def initDB(asyncSessionMaker):
             LessonModel,
             ClassificationModel,
 
-            ProgramStudentStateModel,
+            # ProgramStudentStateModel,
             ProgramStudentModel,
             ProgramStudentMessageModel
         ]

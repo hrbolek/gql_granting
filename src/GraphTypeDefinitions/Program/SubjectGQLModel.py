@@ -49,27 +49,32 @@ class SubjectGQLModel(BaseGQLModel):
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info).SubjectModel
 
-    name: str = strawberry.field(
+    name: typing.Optional[str] = strawberry.field(
+        default=None,
         description="subject name", 
         permission_classes=[OnlyForAuthentized]
         )
     
-    name_en: str = strawberry.field(
+    name_en: typing.Optional[str] = strawberry.field(
+        default=None,
         description="subject name in english", 
         permission_classes=[OnlyForAuthentized]
         )
     
-    description: str = strawberry.field(
+    description: typing.Optional[str] = strawberry.field(
+        default=None,
         description="subject description", 
         permission_classes=[OnlyForAuthentized]
         )
     
-    description_en: str = strawberry.field(
+    description_en: typing.Optional[str] = strawberry.field(
+        default=None,
         description="subject description in english", 
         permission_classes=[OnlyForAuthentized]
         )
     
-    program_id: IDType = strawberry.field(
+    program_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="program id", 
         permission_classes=[OnlyForAuthentized]
         )
@@ -86,7 +91,8 @@ class SubjectGQLModel(BaseGQLModel):
         resolver=VectorResolver["SemesterGQLModel"](fkey_field_name="subject_id", whereType=SemesterInputFilter)
         )
     
-    guarantors_id: typing.Optional[IDType] = strawberry.field(
+    group_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
         description="guarantors of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -98,6 +104,84 @@ class SubjectGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="guarantors_id")
+        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="group_id")
     )
+
+
+@strawberry.interface(
+    description=""
+)
+class SubjectQuery:
+    subject_by_id: typing.Optional["SubjectGQLModel"] = strawberry.field(
+        description="returns subject by its id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=SubjectGQLModel.load_with_loader
+    )
+
+    subject_page: typing.List["SubjectGQLModel"] = strawberry.field(
+        description="returns subjects defined by filter",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver["SubjectGQLModel"](whereType=SubjectInputFilter)
+    )
+
+@strawberry.input(
+    description="parameter for create operation"
+)
+class SubjectInsertGQLModel:
+    name: str = strawberry.field(
+        description="name of the subject"
+    )
+    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+
+
+@strawberry.input(
+    description="parameter for update operation"
+)
+class SubjectUpdateGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+@strawberry.input(
+    description="parameter for delete operation"
+)
+class SubjectDeleteGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+
+@strawberry.interface(
+    description=""
+)
+class SubjectMutation:
+
+    @strawberry.mutation(
+        description="create a new subject"
+    )
+    async def subject_insert(self, info: strawberry.types.Info, subject: SubjectInsertGQLModel) -> typing.Union[SubjectGQLModel, InsertError[SubjectGQLModel]]:
+        result = await Insert[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
+        return result
+    
+    @strawberry.mutation(
+        description="updates existing subject",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def subject_update(self, info: strawberry.types.Info, subject: SubjectUpdateGQLModel) -> typing.Union[SubjectGQLModel, UpdateError[SubjectGQLModel]]:
+        result = await Update[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
+        return result
+
+    @strawberry.mutation(
+        description="delete existing subject",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def subject_delete(self, info: strawberry.types.Info, subject: SubjectDeleteGQLModel) -> typing.Optional[DeleteError[SubjectGQLModel]]:
+        result = await Delete[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
+        return result
 

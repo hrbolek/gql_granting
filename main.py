@@ -12,7 +12,7 @@ import logging
 import logging.handlers
 
 from src.GraphTypeDefinitions import schema
-from DBDefinitions import startEngine, ComposeConnectionString
+from src.DBDefinitions import startEngine, ComposeConnectionString
 from src.DBFeeder import initDB
 
 # region logging setup
@@ -97,7 +97,7 @@ async def RunOnceAndReturnSessionMaker():
 async def get_context(request: Request):
     asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         
-    from Dataloaders import createLoadersContext
+    from src.Dataloaders import createLoadersContext
     context = createLoadersContext(asyncSessionMaker)
 
     result = {**context}
@@ -123,13 +123,17 @@ async def graphiql():
     realpath = os.path.realpath("./voyager.html")
     return realpath
 
-MD_FILE_PATH = "./graphql_schema.md"
-@app.get("/md")
-async def get_markdown():
-    """Vrací vygenerovanou GraphQL dokumentaci jako Markdown soubor.
-    Returns the generated GraphQL schema documentation in Markdown format."""
-    return FileResponse(MD_FILE_PATH, media_type="text/markdown", filename="graphql_schema.md")
+# MD_FILE_PATH = "./graphql_schema.md"
+# @app.get("/md")
+# async def get_markdown():
+#     """Vrací vygenerovanou GraphQL dokumentaci jako Markdown soubor.
+#     Returns the generated GraphQL schema documentation in Markdown format."""
+#     return FileResponse(MD_FILE_PATH, media_type="text/markdown", filename="graphql_schema.md")
 
+@app.get("/doc", response_class=FileResponse)
+async def graphiql():
+    realpath = os.path.realpath("./liveschema.html")
+    return realpath
 
 import prometheus_client
 @app.get("/metrics")
