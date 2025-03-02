@@ -122,6 +122,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
   <script>
+    
+    const fetchURL = "/gql";
+
     // Custom slugify that ensures non‑empty id
     let headingIndex = 0;
     function customSlugify(s) {
@@ -458,67 +461,88 @@
         navDiv.appendChild(link);
       });
     }
-    // --- Button Group: Add Copy and Test buttons to pre>code blocks ---
-    function addButtonGroups() {
-      document.querySelectorAll('pre code').forEach((codeBlock) => {
-        const btnGroup = document.createElement('div');
-        btnGroup.classList.add('btn-group', 'btn-group-sm', 'btn-group-custom');
+// --- Button Group: Add Copy, Test, and Store buttons to pre>code blocks ---
+function addButtonGroups() {
+  document.querySelectorAll('pre code').forEach((codeBlock) => {
+    const btnGroup = document.createElement('div');
+    btnGroup.classList.add('btn-group', 'btn-group-sm', 'btn-group-custom');
 
-        const copyBtn = document.createElement('button');
-        copyBtn.type = "button";
-        copyBtn.classList.add('btn', 'btn-primary');
-        copyBtn.innerText = 'Copy';
-        copyBtn.addEventListener('click', () => {
-          navigator.clipboard.writeText(codeBlock.innerText).then(() => {
-            copyBtn.innerText = 'Copied!';
-            setTimeout(() => copyBtn.innerText = 'Copy', 2000);
-          }).catch(err => console.error('Failed to copy!', err));
+    // Copy Button
+    const copyBtn = document.createElement('button');
+    copyBtn.type = "button";
+    copyBtn.classList.add('btn', 'btn-primary');
+    copyBtn.innerText = 'Copy';
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+        copyBtn.innerText = 'Copied!';
+        setTimeout(() => copyBtn.innerText = 'Copy', 2000);
+      }).catch(err => console.error('Failed to copy!', err));
+    });
+    btnGroup.appendChild(copyBtn);
+
+    // Test Button
+    const testBtn = document.createElement('button');
+    testBtn.type = "button";
+    testBtn.classList.add('btn', 'btn-secondary');
+    testBtn.innerText = 'Test';
+    testBtn.addEventListener('click', () => {
+      // Open modal and populate it with the query from this code block.
+      const queryText = codeBlock.innerText;
+      document.getElementById("queryText").value = queryText;
+      document.getElementById("variablesText").value = "{}";
+      document.getElementById("testResponse").innerText = "";
+      const testModal = new bootstrap.Modal(document.getElementById("testModal"));
+      testModal.show();
+
+      // When Send is clicked, send POST request with the query and variables.
+      document.getElementById("sendTestBtn").onclick = () => {
+        let variables;
+        try {
+          variables = JSON.parse(document.getElementById("variablesText").value);
+        } catch (e) {
+          document.getElementById("testResponse").innerText = "Invalid JSON in variables.";
+          return;
+        }
+        fetch(fetchURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: queryText, variables })
+        })
+        .then(response => response.json())
+        .then(respData => {
+          document.getElementById("testResponse").innerText = JSON.stringify(respData, null, 2);
+        })
+        .catch(err => {
+          document.getElementById("testResponse").innerText = "Error: " + err;
         });
-        btnGroup.appendChild(copyBtn);
+      };
+    });
+    btnGroup.appendChild(testBtn);
 
-        const testBtn = document.createElement('button');
-        testBtn.type = "button";
-        testBtn.classList.add('btn', 'btn-secondary');
-        testBtn.innerText = 'Test';
-        testBtn.addEventListener('click', () => {
-          // Open modal and populate it with the query from this code block.
-          const queryText = codeBlock.innerText;
-          document.getElementById("queryText").value = queryText;
-          document.getElementById("variablesText").value = "{}";
-          document.getElementById("testResponse").innerText = "";
-          const testModal = new bootstrap.Modal(document.getElementById("testModal"));
-          testModal.show();
+    // Store Button - Save the GraphQL query to localStorage in a GraphiQL-compatible way
+    const storeBtn = document.createElement('button');
+    storeBtn.type = "button";
+    storeBtn.classList.add('btn', 'btn-info');
+    storeBtn.innerText = 'Store';
+    storeBtn.addEventListener('click', () => {
+      const queryText = codeBlock.innerText;
+      try {
+        // Save the query using the same key that GraphiQL uses.
+        localStorage.setItem('graphiql:query', queryText);
+        storeBtn.innerText = 'Stored!';
+        setTimeout(() => storeBtn.innerText = 'Store', 2000);
+      } catch (e) {
+        console.error('Error storing query: ', e);
+      }
+    });
+    btnGroup.appendChild(storeBtn);
 
-          // When Send is clicked, send POST request with the query and variables.
-          document.getElementById("sendTestBtn").onclick = () => {
-            let variables;
-            try {
-              variables = JSON.parse(document.getElementById("variablesText").value);
-            } catch (e) {
-              document.getElementById("testResponse").innerText = "Invalid JSON in variables.";
-              return;
-            }
-            fetch('/gql', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ query: queryText, variables })
-            })
-            .then(response => response.json())
-            .then(respData => {
-              document.getElementById("testResponse").innerText = JSON.stringify(respData, null, 2);
-            })
-            .catch(err => {
-              document.getElementById("testResponse").innerText = "Error: " + err;
-            });
-          };
-        });
-        btnGroup.appendChild(testBtn);
+    // Append button group to the parent of the code block
+    codeBlock.parentElement.style.position = 'relative';
+    codeBlock.parentElement.appendChild(btnGroup);
+  });
+}
 
-        // Append button group to the parent of code block
-        codeBlock.parentElement.style.position = 'relative';
-        codeBlock.parentElement.appendChild(btnGroup);
-      });
-    }
     // --- Wrap h5 headings (h5 are handled by markdown-it-anchor) ---
     function wrapH5Sections(md) {
       md.core.ruler.after('block', 'wrap_h5_sections', function (state) {
@@ -599,7 +623,7 @@ query IntrospectionQuery {
   }
 }
 `;
-    fetch('/gql', {
+    fetch(fetchURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: introspectionQuery })
