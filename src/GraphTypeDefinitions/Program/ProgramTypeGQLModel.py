@@ -152,3 +152,62 @@ class ProgramTypeQuery:
         ],
         resolver=PageResolver["ProgramTypeGQLModel"](whereType=ProgramTypeInputFilter)
     )
+
+
+@strawberry.input(
+    description="parameter for create operation"
+)
+class ProgramTypeInsertGQLModel:
+    name: str = strawberry.field(
+        description="name of the program_type"
+    )
+    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+
+
+@strawberry.input(
+    description="parameter for update operation"
+)
+class ProgramTypeUpdateGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+@strawberry.input(
+    description="parameter for delete operation"
+)
+class ProgramTypeDeleteGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+
+@strawberry.interface(
+    description=""
+)
+class ProgramTypeMutation:
+
+    @strawberry.mutation(
+        description="create a new program_type"
+    )
+    async def program_type_insert(self, info: strawberry.types.Info, program_type: ProgramTypeInsertGQLModel) -> typing.Union[ProgramTypeGQLModel, InsertError[ProgramTypeGQLModel]]:
+        result = await Insert[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
+        return result
+    
+    @strawberry.mutation(
+        description="updates existing program_type",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def program_type_update(self, info: strawberry.types.Info, program_type: ProgramTypeUpdateGQLModel) -> typing.Union[ProgramTypeGQLModel, UpdateError[ProgramTypeGQLModel]]:
+        result = await Update[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
+        return result
+
+    @strawberry.mutation(
+        description="delete existing program_type",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def program_type_delete(self, info: strawberry.types.Info, program_type: ProgramTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramTypeGQLModel]]:
+        result = await Delete[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
+        return result
+

@@ -107,10 +107,83 @@ class StudyPlanGQLModel(BaseGQLModel):
 
 @strawberry.interface()
 class StudyPlanQuery:
-    studyplan_page: typing.List[StudyPlanGQLModel] = strawberry.field(
+    study_plan_by_id: typing.Optional[StudyPlanGQLModel] = strawberry.field(
+        description="study plan",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=StudyPlanGQLModel.load_with_loader
+    )
+
+    study_plan_page: typing.List[StudyPlanGQLModel] = strawberry.field(
         description="filtered list of study plan",
         permission_classes=[
             OnlyForAuthentized
         ],
         resolver=PageResolver[StudyPlanGQLModel](whereType=StudyPlanInputFilter)
     )
+
+
+
+@strawberry.input(
+    description="parameter for create"
+)
+class StudyPlanInsertGQLModel:
+    semester_id: IDType = strawberry.field(
+        description="Semester to which teh plan is linked."
+    )
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+
+    createdby_id: strawberry.Private[IDType] = None
+
+
+
+@strawberry.input(
+    description="parameter for update"
+)
+class StudyPlanUpdateGQLModel:
+    id: IDType = strawberry.field(description="id of the studyplan to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+
+@strawberry.input(
+    description="parameter for delete"
+)
+class StudyPlanDeleteGQLModel:
+    id: IDType = strawberry.field(description="id of the studyplan to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+
+@strawberry.interface(
+    description=""
+)
+class StudyPlanMutation:
+
+    @strawberry.mutation(
+        description="inserts a new studyplan",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_insert(self, info: strawberry.types.Info, study_plan: StudyPlanInsertGQLModel) -> typing.Union[StudyPlanGQLModel, InsertError[StudyPlanGQLModel]]:
+        result = await Insert[StudyPlanGQLModel].DoItSafeWay(info=info, entity=study_plan)
+        return result
+    
+    @strawberry.mutation(
+        description="updates an existing studyplan",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_update(self, info: strawberry.types.Info, study_plan: StudyPlanUpdateGQLModel) -> typing.Union[StudyPlanGQLModel, UpdateError[StudyPlanGQLModel]]:
+        result = await Update[StudyPlanGQLModel].DoItSafeWay(info=info, entity=study_plan)
+        return result
+
+    @strawberry.mutation(
+        description="deletes an existing studyplan",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_delete(self, info: strawberry.types.Info, study_plan: StudyPlanUpdateGQLModel) -> typing.Optional[DeleteError[StudyPlanGQLModel]]:
+        result = await Delete[StudyPlanGQLModel].DoItSafeWay(info=info, entity=study_plan)
+        return result
+

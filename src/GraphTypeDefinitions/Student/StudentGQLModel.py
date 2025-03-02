@@ -114,9 +114,80 @@ class StudentGQLModel(BaseGQLModel):
     )
 
 
-@strawberry.type(description="")
+@strawberry.interface(
+    description=""
+)
 class StudentQuery:
+    student_by_id: typing.Optional["StudentGQLModel"] = strawberry.field(
+        description="returns student by its id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=StudentGQLModel.load_with_loader
+    )
 
-    @strawberry.field(description="")
-    async def hello() -> str:
-        return "hello"
+    student_page: typing.List["StudentGQLModel"] = strawberry.field(
+        description="returns students defined by filter",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=PageResolver["StudentGQLModel"](whereType=StudentInputFilter)
+    )
+
+@strawberry.input(
+    description="parameter for create operation"
+)
+class StudentInsertGQLModel:
+    name: str = strawberry.field(
+        description="name of the student"
+    )
+    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+
+
+@strawberry.input(
+    description="parameter for update operation"
+)
+class StudentUpdateGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+@strawberry.input(
+    description="parameter for delete operation"
+)
+class StudentDeleteGQLModel:
+    id: IDType = strawberry.field(description="primary key client generated")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+
+
+@strawberry.interface(
+    description=""
+)
+class StudentMutation:
+
+    @strawberry.mutation(
+        description="create a new student"
+    )
+    async def student_insert(self, info: strawberry.types.Info, student: StudentInsertGQLModel) -> typing.Union[StudentGQLModel, InsertError[StudentGQLModel]]:
+        result = await Insert[StudentGQLModel].DoItSafeWay(info=info, entity=student)
+        return result
+    
+    @strawberry.mutation(
+        description="updates existing student",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def student_update(self, info: strawberry.types.Info, student: StudentUpdateGQLModel) -> typing.Union[StudentGQLModel, UpdateError[StudentGQLModel]]:
+        result = await Update[StudentGQLModel].DoItSafeWay(info=info, entity=student)
+        return result
+
+    @strawberry.mutation(
+        description="delete existing student",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def student_delete(self, info: strawberry.types.Info, student: StudentDeleteGQLModel) -> typing.Optional[DeleteError[StudentGQLModel]]:
+        result = await Delete[StudentGQLModel].DoItSafeWay(info=info, entity=student)
+        return result
+

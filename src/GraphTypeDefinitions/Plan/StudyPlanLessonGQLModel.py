@@ -142,10 +142,129 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
 
 @strawberry.interface()
 class StudyPlanLessonQuery:
-    studyplanlesson_page: typing.List[StudyPlanLessonGQLModel] = strawberry.field(
+    study_plan_lesson_by_id: typing.Optional[StudyPlanLessonGQLModel] = strawberry.field(
+        description="study plan lesson",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=StudyPlanLessonGQLModel.load_with_loader
+    )
+
+    study_plan_lesson_page: typing.List[StudyPlanLessonGQLModel] = strawberry.field(
         description="filtered list of study plan lessons",
         permission_classes=[
             OnlyForAuthentized
         ],
         resolver=PageResolver[StudyPlanLessonGQLModel](whereType=StudyPlanLessonInputFilter)
     )
+
+
+
+@strawberry.input(
+    description="parameter for create"
+)
+class StudyPlanLessonInsertGQLModel:
+    plan_id: IDType = strawberry.field(
+        description="The identifier of the study plan that this lesson belongs to."
+    )
+    lessontype_id: IDType = strawberry.field(
+        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson."
+    )
+    topic_id: IDType = strawberry.field(
+        description="The identifier of the topic associated with this study plan lesson."
+    )
+    event_id: typing.Optional[IDType] = strawberry.field(
+        description="Optional identifier of an event linked to this study plan lesson (if applicable)."
+    )
+    linked_with_id: typing.Optional[IDType] = strawberry.field(
+        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session)."
+    )
+    name: typing.Optional[str] = strawberry.field(
+        description="The localized name of the study plan lesson."
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="The English name of the study plan lesson."
+    )
+    length: typing.Optional[int] = strawberry.field(
+        description="The duration or length of the study plan lesson, expressed in virtual units."
+    )
+       
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+
+    createdby_id: strawberry.Private[IDType] = None
+
+
+
+@strawberry.input(
+    description="parameter for update"
+)
+class StudyPlanLessonUpdateGQLModel:
+    id: IDType = strawberry.field(description="id of the study_plan_lesson to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+
+    lessontype_id: IDType = strawberry.field(
+        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson."
+    )
+    topic_id: IDType = strawberry.field(
+        description="The identifier of the topic associated with this study plan lesson."
+    )
+    event_id: typing.Optional[IDType] = strawberry.field(
+        description="Optional identifier of an event linked to this study plan lesson (if applicable)."
+    )
+    linked_with_id: typing.Optional[IDType] = strawberry.field(
+        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session)."
+    )
+    name: typing.Optional[str] = strawberry.field(
+        description="The localized name of the study plan lesson."
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="The English name of the study plan lesson."
+    )
+    length: typing.Optional[int] = strawberry.field(
+        description="The duration or length of the study plan lesson, expressed in virtual units."
+    )
+    changedby_id: strawberry.Private[IDType] = None
+
+
+@strawberry.input(
+    description="parameter for delete"
+)
+class StudyPlanLessonDeleteGQLModel:
+    id: IDType = strawberry.field(description="id of the study_plan_lesson to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+
+@strawberry.interface(
+    description=""
+)
+class StudyPlanLessonMutation:
+
+    @strawberry.mutation(
+        description="inserts a new study_plan_lesson",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_insert(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonInsertGQLModel) -> typing.Union[StudyPlanLessonGQLModel, InsertError[StudyPlanLessonGQLModel]]:
+        result = await Insert[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
+        return result
+    
+    @strawberry.mutation(
+        description="updates an existing evaluatio",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_update(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonUpdateGQLModel) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        result = await Update[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
+        return result
+
+    @strawberry.mutation(
+        description="deletes an existing study_plan_lesson",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_delete(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonDeleteGQLModel) -> typing.Optional[DeleteError[StudyPlanLessonGQLModel]]:
+        result = await Delete[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
+        return result
+

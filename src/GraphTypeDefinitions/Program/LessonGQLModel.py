@@ -108,3 +108,66 @@ class LessonQuery:
         ],
         resolver=PageResolver["LessonGQLModel"](whereType=LessonInputFilter)
     )
+
+
+@strawberry.input(
+    description="parameter for create"
+)
+class LessonInsertGQLModel:
+    semester_id: IDType = strawberry.field(
+        description="Which semester / subject is examined"
+    )
+
+    user_id: IDType = strawberry.field(description="Who is examined")
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+
+@strawberry.input(
+    description="parameter for update"
+)
+class LessonUpdateGQLModel:
+    id: IDType = strawberry.field(description="id of the lesson to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+    grade: typing.Optional[str] = strawberry.field(description="", default=None)
+
+@strawberry.input(
+    description="parameter for delete"
+)
+class LessonDeleteGQLModel:
+    id: IDType = strawberry.field(description="id of the lesson to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+
+@strawberry.interface(
+    description=""
+)
+class LessonMutation:
+
+    @strawberry.mutation(
+        description="inserts a new lesson",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def lesson_insert(self, info: strawberry.types.Info, lesson: LessonInsertGQLModel) -> typing.Union[LessonGQLModel, InsertError[LessonGQLModel]]:
+        result = await Insert[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
+        return result
+    
+    @strawberry.mutation(
+        description="updates an existing evaluatio",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def lesson_update(self, info: strawberry.types.Info, lesson: LessonUpdateGQLModel) -> typing.Union[LessonGQLModel, UpdateError[LessonGQLModel]]:
+        result = await Update[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
+        return result
+
+    @strawberry.mutation(
+        description="deletes an existing lesson",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def lesson_delete(self, info: strawberry.types.Info, lesson: LessonUpdateGQLModel) -> typing.Optional[DeleteError[LessonGQLModel]]:
+        result = await Delete[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
+        return result
+

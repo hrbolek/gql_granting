@@ -146,10 +146,134 @@ class ExamGQLModel(BaseGQLModel):
 )
 class ExamQuery:
 
+    exam_by_id: typing.Optional[ExamGQLModel] = strawberry.field(
+        description="Exam by it id",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ExamGQLModel.load_with_loader
+    )
+
     exam_page: typing.List[ExamGQLModel] = strawberry.field(
-        description="filtered evaluations",
+        description="filtered exams",
         permission_classes=[
             OnlyForAuthentized
         ],
         resolver=PageResolver[ExamGQLModel](whereType=ExamInputFilter)
     )
+
+
+@strawberry.input(
+    description="parameter for create"
+)
+class ExamInsertGQLModel:
+    name: typing.Optional[str] = strawberry.field(
+        description="The localized name of the exam."
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="The English name of the exam."
+    )
+    description: typing.Optional[str] = strawberry.field(
+        description="A detailed localized description of the exam."
+    )
+    description_en: typing.Optional[str] = strawberry.field(
+        description="A detailed description of the exam in English."
+    )
+    min_score: typing.Optional[int] = strawberry.field(
+        description="The minimum score required, used for passing or grading."
+    )
+    max_score: typing.Optional[int] = strawberry.field(
+        description="The maximum achievable score for the exam."
+    )
+    type_id: typing.Optional[IDType] = strawberry.field(
+        description="Identifier for the exam type, which determines its category or format."
+    )
+    parent_id: typing.Optional[IDType] = strawberry.field(
+        description="Optional identifier for a parent exam, if applicable."
+    )
+    plan_id: typing.Optional[IDType] = strawberry.field(
+        description="Identifier for the exam plan or schedule this exam belongs to."
+    )   
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+
+    semester_id: strawberry.Private[IDType] = None
+    createdby_id: strawberry.Private[IDType] = None
+
+
+
+@strawberry.input(
+    description="parameter for update"
+)
+class ExamUpdateGQLModel:
+    id: IDType = strawberry.field(description="id of the exam to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+    name: typing.Optional[str] = strawberry.field(
+        description="The localized name of the exam."
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="The English name of the exam."
+    )
+    description: typing.Optional[str] = strawberry.field(
+        description="A detailed localized description of the exam."
+    )
+    description_en: typing.Optional[str] = strawberry.field(
+        description="A detailed description of the exam in English."
+    )
+    min_score: typing.Optional[int] = strawberry.field(
+        description="The minimum score required, used for passing or grading."
+    )
+    max_score: typing.Optional[int] = strawberry.field(
+        description="The maximum achievable score for the exam."
+    )
+    type_id: typing.Optional[IDType] = strawberry.field(
+        description="Identifier for the exam type, which determines its category or format."
+    )
+    parent_id: typing.Optional[IDType] = strawberry.field(
+        description="Optional identifier for a parent exam, if applicable."
+    )
+    plan_id: typing.Optional[IDType] = strawberry.field(
+        description="Identifier for the exam plan or schedule this exam belongs to."
+    )
+
+@strawberry.input(
+    description="parameter for delete"
+)
+class ExamDeleteGQLModel:
+    id: IDType = strawberry.field(description="id of the exam to update")
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+
+@strawberry.interface(
+    description=""
+)
+class ExamMutation:
+
+    @strawberry.mutation(
+        description="inserts a new exam",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def exam_insert(self, info: strawberry.types.Info, exam: ExamInsertGQLModel) -> typing.Union[ExamGQLModel, InsertError[ExamGQLModel]]:
+        result = await Insert[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
+        return result
+    
+    @strawberry.mutation(
+        description="updates an existing evaluatio",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def exam_update(self, info: strawberry.types.Info, exam: ExamUpdateGQLModel) -> typing.Union[ExamGQLModel, UpdateError[ExamGQLModel]]:
+        result = await Update[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
+        return result
+
+    @strawberry.mutation(
+        description="deletes an existing exam",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def exam_delete(self, info: strawberry.types.Info, exam: ExamUpdateGQLModel) -> typing.Optional[DeleteError[ExamGQLModel]]:
+        result = await Delete[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
+        return result
+

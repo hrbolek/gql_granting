@@ -1,9 +1,9 @@
 import strawberry
 
 from .EvaluationGQLModel import EvaluationQuery, EvaluationMutation
-from .ExamGQLModel import ExamGQLModel, ExamQuery
-from .StudyPlanGQLModel import StudyPlanQuery
-from. StudyPlanLessonGQLModel import StudyPlanLessonQuery
+from .ExamGQLModel import ExamGQLModel, ExamQuery, ExamMutation
+from .StudyPlanGQLModel import StudyPlanQuery, StudyPlanMutation
+from. StudyPlanLessonGQLModel import StudyPlanLessonQuery, StudyPlanLessonMutation
 
 
 
@@ -13,5 +13,15 @@ class PlanQuery(
     ExamQuery,
     StudyPlanQuery,
     StudyPlanLessonQuery
+):
+    pass
+
+
+@strawberry.interface
+class PlanMutation(
+    EvaluationMutation,
+    ExamMutation,
+    StudyPlanMutation,
+    StudyPlanLessonMutation
 ):
     pass
