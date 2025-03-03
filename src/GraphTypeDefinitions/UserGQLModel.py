@@ -37,7 +37,7 @@ class UserGQLModel:
     id: IDType = strawberry.federation.field(external=True)
     resolve_reference = resolve_reference
 
-    studies: typing.Optional["StudentGQLModel"] = strawberry.field(
+    studies: typing.List["StudentGQLModel"] = strawberry.field(
         description="studies, aka what user is studying (with state)",
         permission_classes=[
             OnlyForAuthentized

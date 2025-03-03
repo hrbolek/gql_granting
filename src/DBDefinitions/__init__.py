@@ -14,6 +14,7 @@ from .ProgramLevelTypeModel import ProgramLevelTypeModel
 from .ProgramModel import ProgramModel
 from .ProgramStudent import ProgramStudentModel
 from .ProgramStudentMessageModel import ProgramStudentMessageModel
+from .ProgramStudentDocumentModel import ProgramStudentDocumentModel
 from .ProgramTitleTypeModel import ProgramTitleTypeModel
 from .ProgramTypeModel import ProgramTypeModel
 from .SemesterModel import SemesterModel

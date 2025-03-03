@@ -52,7 +52,7 @@ class StudentGQLModel(BaseGQLModel):
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info=info).ProgramStudentModel
 
-    student_id: typing.Optional[IDType] = strawberry.field(
+    user_id: typing.Optional[IDType] = strawberry.field(
         description="id of the user",
         permission_classes=[
             OnlyForAuthentized
@@ -64,7 +64,7 @@ class StudentGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["UserGQLModel"](fkey_field_name="student_id")
+        resolver=ScalarResolver["UserGQLModel"](fkey_field_name="user_id")
     )
 
     program_id: typing.Optional[IDType] = strawberry.field(
@@ -111,6 +111,7 @@ class StudentGQLModel(BaseGQLModel):
             OnlyForAuthentized
         ],
         resolver=VectorResolver["EvaluationGQLModel"](fkey_field_name="student_id", whereType=EvaluationInputFilter)
+        # resolver=lambda self: []
     )
 
 

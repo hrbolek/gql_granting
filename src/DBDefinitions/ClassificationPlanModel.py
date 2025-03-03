@@ -17,4 +17,4 @@ class ClassificationPlanModel(BaseModel):
 
     type_id: Mapped[IDType] = mapped_column(ForeignKey("acclassificationtypes.id"), default=None, nullable=True, index=True)
     parent_id: Mapped[IDType] = mapped_column(ForeignKey("acclassificationplans.id"), default=None, nullable=True, index=True)
-    plan_id: Mapped[IDType] = mapped_column(ForeignKey("acplans.id"), default=None, nullable=True, index=True)
+    # plan_id: Mapped[IDType] = mapped_column(ForeignKey("acplans.id"), default=None, nullable=True, index=True)

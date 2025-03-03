@@ -45,7 +45,7 @@ class StudentDocumentGQLModel(BaseGQLModel):
 
     @classmethod
     def getLoader(cls, info) -> IDLoader:
-        return getLoadersFromInfo(info=info).StudentDocumentModel
+        return getLoadersFromInfo(info=info).ProgramStudentDocumentModel
     
     description: typing.Optional[str] = strawberry.field(
         description="description",

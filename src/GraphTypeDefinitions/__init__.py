@@ -139,4 +139,4 @@ class SQLQueryExtension(Extension):
         print(f"Filtered type tree: {operation.to_dict()}")
         
 
-schema.extensions = [SQLQueryExtension, WhoAmIExtension]
+# schema.extensions = [SQLQueryExtension, WhoAmIExtension]
