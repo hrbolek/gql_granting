@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.10.13-slim as prepare
+FROM python:3.10.13-slim AS prepare
 
 # instalace curl, aby bylo mozne zprovoznit standardni healthcheck
 RUN apt update && apt install curl -y && rm -rf /var/cache/apk/*
@@ -16,7 +16,7 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
-FROM prepare as test
+FROM prepare AS test
 
 COPY requirements-dev.txt .
 RUN python -m pip install -r requirements-dev.txt
@@ -26,7 +26,7 @@ COPY . /app
 
 RUN python -m pytest --cov-report term-missing --cov=src tests/*
 
-FROM prepare as runner
+FROM prepare AS runner
 # Creates a non-root user and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
 WORKDIR /app
