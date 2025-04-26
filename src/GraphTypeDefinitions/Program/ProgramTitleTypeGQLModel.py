@@ -98,6 +98,8 @@ class ProgramTitleTypeInsertGQLModel:
 class ProgramTitleTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+    name: typing.Optional[str] = strawberry.field(description="name of the program_title_type", default=None)
+    name_en: typing.Optional[str] = strawberry.field(description="name of the program_title_type", default=None)
 
 @strawberry.input(
     description="parameter for delete operation"

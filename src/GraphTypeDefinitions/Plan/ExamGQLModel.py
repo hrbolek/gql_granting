@@ -53,6 +53,14 @@ class ExamGQLModel(BaseGQLModel):
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info=info).ClassificationPlanModel
     
+    plan_id: typing.Optional[IDType] = strawberry.field(
+        default=None,
+        description="study plan which the exam belongs to",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
     name: typing.Optional[str] = strawberry.field(
         default=None,
         description="",
@@ -117,7 +125,7 @@ class ExamGQLModel(BaseGQLModel):
         ]
     )
 
-    parent: typing.Optional[IDType] = strawberry.field(
+    parent: typing.Optional["ExamGQLModel"] = strawberry.field(
         description="exam is part of exam",
         permission_classes=[
             OnlyForAuthentized
@@ -168,33 +176,35 @@ class ExamQuery:
 )
 class ExamInsertGQLModel:
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the exam."
+        description="The localized name of the exam.", default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the exam."
+        description="The English name of the exam.", default=None
     )
     description: typing.Optional[str] = strawberry.field(
-        description="A detailed localized description of the exam."
+        description="A detailed localized description of the exam.", default=None
     )
     description_en: typing.Optional[str] = strawberry.field(
-        description="A detailed description of the exam in English."
+        description="A detailed description of the exam in English.", default=None
     )
     min_score: typing.Optional[int] = strawberry.field(
-        description="The minimum score required, used for passing or grading."
+        description="The minimum score required, used for passing or grading.", default=None
     )
     max_score: typing.Optional[int] = strawberry.field(
-        description="The maximum achievable score for the exam."
+        description="The maximum achievable score for the exam.", default=None
     )
     type_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam type, which determines its category or format."
+        description="Identifier for the exam type, which determines its category or format.", default=None
     )
     parent_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier for a parent exam, if applicable."
+        description="Optional identifier for a parent exam, if applicable.", default=None
     )
     plan_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam plan or schedule this exam belongs to."
+        description="Identifier for the exam plan or schedule this exam belongs to.", default=None
     )   
-    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+    id: typing.Optional[IDType] = strawberry.field(
+        description="optional client generated primary key value", default=None
+    )
 
     semester_id: strawberry.Private[IDType] = None
     createdby_id: strawberry.Private[IDType] = None
@@ -208,31 +218,31 @@ class ExamUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the exam to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the exam."
+        description="The localized name of the exam.", default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the exam."
+        description="The English name of the exam.", default=None
     )
     description: typing.Optional[str] = strawberry.field(
-        description="A detailed localized description of the exam."
+        description="A detailed localized description of the exam.", default=None
     )
     description_en: typing.Optional[str] = strawberry.field(
-        description="A detailed description of the exam in English."
+        description="A detailed description of the exam in English.", default=None
     )
     min_score: typing.Optional[int] = strawberry.field(
-        description="The minimum score required, used for passing or grading."
+        description="The minimum score required, used for passing or grading.", default=None
     )
     max_score: typing.Optional[int] = strawberry.field(
-        description="The maximum achievable score for the exam."
+        description="The maximum achievable score for the exam.", default=None
     )
     type_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam type, which determines its category or format."
+        description="Identifier for the exam type, which determines its category or format.", default=None
     )
     parent_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier for a parent exam, if applicable."
+        description="Optional identifier for a parent exam, if applicable.", default=None
     )
     plan_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam plan or schedule this exam belongs to."
+        description="Identifier for the exam plan or schedule this exam belongs to.", default=None
     )
 
 @strawberry.input(

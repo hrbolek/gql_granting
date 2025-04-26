@@ -7,6 +7,6 @@ class PlanItemFacilityModel(BaseModel):
     """Where should teach"""
     __tablename__ = "acplanitemfacilities"
 
-    planitem_id: Mapped[IDType] = mapped_column(ForeignKey("acplanitems.id"), index=True, default=None, nullable=True)
+    planitem_id: Mapped[IDType] = mapped_column(ForeignKey("plan_lessons.id"), index=True, default=None, nullable=True)
     facility_id: Mapped[IDType] = UUIDFKey(ForeignKey("facilities.id"), index=True, default=None, nullable=True)
     

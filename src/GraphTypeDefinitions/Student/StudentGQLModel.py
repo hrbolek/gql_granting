@@ -89,7 +89,7 @@ class StudentGQLModel(BaseGQLModel):
         ]
     )
 
-    semester: typing.Optional[int] = strawberry.field(
+    semester_number: typing.Optional[int] = strawberry.field(
         default=None,
         description="semester of study",
         permission_classes=[
@@ -139,10 +139,12 @@ class StudentQuery:
     description="parameter for create operation"
 )
 class StudentInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the student"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    user_id: typing.Optional[IDType] = strawberry.field(description="id of the user")
+    program_id: typing.Optional[IDType] = strawberry.field(description="id of the program")
+    state_id: typing.Optional[IDType] = strawberry.field(description="id of the state")
+    semester_number: typing.Optional[int] = strawberry.field(description="semester of study", default=None)
+
 
 
 @strawberry.input(
@@ -151,6 +153,10 @@ class StudentInsertGQLModel:
 class StudentUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+    user_id: typing.Optional[IDType] = strawberry.field(description="id of the user")
+    program_id: typing.Optional[IDType] = strawberry.field(description="id of the program")
+    state_id: typing.Optional[IDType] = strawberry.field(description="id of the state")
+    semester_number: typing.Optional[int] = strawberry.field(description="semester of study", default=None)
 
 @strawberry.input(
     description="parameter for delete operation"

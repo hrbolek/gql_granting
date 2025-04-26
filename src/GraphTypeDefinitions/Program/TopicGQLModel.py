@@ -115,10 +115,13 @@ class TopicQuery:
     description="parameter for create operation"
 )
 class TopicInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the topic"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    name: typing.Optional[str] = strawberry.field(description="topic name")
+    name_en: typing.Optional[str] = strawberry.field(description="topic name")
+    order: typing.Optional[int] = strawberry.field(description="topic name")
+    description: typing.Optional[str] = strawberry.field(description="topic description")
+    semester_id: typing.Optional[IDType] = strawberry.field(description="semester id")
+    
 
 
 @strawberry.input(
@@ -127,7 +130,12 @@ class TopicInsertGQLModel:
 class TopicUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-
+    name: typing.Optional[str] = strawberry.field(description="topic name")
+    name_en: typing.Optional[str] = strawberry.field(description="topic name")
+    order: typing.Optional[int] = strawberry.field(description="topic name")
+    description: typing.Optional[str] = strawberry.field(description="topic description")
+    semester_id: typing.Optional[IDType] = strawberry.field(description="semester id")
+    
 @strawberry.input(
     description="parameter for delete operation"
 )

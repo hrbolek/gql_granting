@@ -4,6 +4,7 @@ import datetime
 import typing
 import strawberry
 
+import strawberry.file_uploads
 import strawberry.types
 from uoishelpers.gqlpermissions import (
     OnlyForAuthentized,
@@ -34,6 +35,7 @@ UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy("..UserGQLModel"
 GroupGQLModel = typing.Annotated["GroupGQLModel", strawberry.lazy("..GroupGQLModel")]
 FacilityGQLModel = typing.Annotated["FacilityGQLModel", strawberry.lazy("..FacilityGQLModel")]
 EventGQLModel = typing.Annotated["EventGQLModel", strawberry.lazy("..EventGQLModel")]
+StudyPlanLessonGQLModel = typing.Annotated["StudyPlanLessonGQLModel", strawberry.lazy(".StudyPlanLessonGQLModel")]
 
 @createInputs
 @dataclasses.dataclass
@@ -57,6 +59,23 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
 
     order: typing.Optional[int] = strawberry.field(
         description="order in plan",
+        default=None,
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    name: typing.Optional[str] = strawberry.field(
+        description="lesson name",
+        default=None,
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    name_en: typing.Optional[str] = strawberry.field(
+        description="lesson name in english",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -64,6 +83,7 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
 
     length: typing.Optional[int] = strawberry.field(
         description="length in fictive units",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -71,6 +91,7 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
 
     event_id: typing.Optional[IDType] = strawberry.field(
         description="id of event which has been planed for this lesson",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -86,6 +107,7 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
 
     topic_id: typing.Optional[IDType] = strawberry.field(
         description="Topic to which the Lesson is related",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -99,8 +121,32 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         resolver=ScalarResolver["TopicGQLModel"](fkey_field_name="topic_id")
     )
 
+    lessontype_id: typing.Optional[IDType] = strawberry.field(
+        description="Lesson type",
+        default=None,
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
     linked_with_id: typing.Optional[IDType] = strawberry.type(
         description="key to describe integration with other planned lessons"
+    )
+
+    plan_id: typing.Optional[IDType] = strawberry.field(
+        description="Plan which owns this lesson",
+        default=None,
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    plan: typing.Optional[StudyPlanLessonGQLModel] = strawberry.field(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ScalarResolver[StudyPlanLessonGQLModel](fkey_field_name="plan_id")
     )
 
     @strawberry.field(
@@ -165,31 +211,31 @@ class StudyPlanLessonQuery:
 )
 class StudyPlanLessonInsertGQLModel:
     plan_id: IDType = strawberry.field(
-        description="The identifier of the study plan that this lesson belongs to."
+        description="The identifier of the study plan that this lesson belongs to.", default=None
     )
     lessontype_id: IDType = strawberry.field(
-        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson."
+        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.", default=None
     )
     topic_id: IDType = strawberry.field(
-        description="The identifier of the topic associated with this study plan lesson."
+        description="The identifier of the topic associated with this study plan lesson.", default=None
     )
     event_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier of an event linked to this study plan lesson (if applicable)."
+        description="Optional identifier of an event linked to this study plan lesson (if applicable).", default=None
     )
     linked_with_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session)."
+        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).", default=None
     )
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the study plan lesson."
+        description="The localized name of the study plan lesson.", default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the study plan lesson."
+        description="The English name of the study plan lesson.", default=None
     )
     length: typing.Optional[int] = strawberry.field(
-        description="The duration or length of the study plan lesson, expressed in virtual units."
+        description="The duration or length of the study plan lesson, expressed in virtual units.", default=None
     )
        
-    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
 
     createdby_id: strawberry.Private[IDType] = None
 
@@ -203,25 +249,25 @@ class StudyPlanLessonUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
 
     lessontype_id: IDType = strawberry.field(
-        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson."
+        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.", default=None
     )
     topic_id: IDType = strawberry.field(
-        description="The identifier of the topic associated with this study plan lesson."
+        description="The identifier of the topic associated with this study plan lesson.", default=None
     )
     event_id: typing.Optional[IDType] = strawberry.field(
         description="Optional identifier of an event linked to this study plan lesson (if applicable)."
     )
     linked_with_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session)."
+        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).", default=None
     )
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the study plan lesson."
+        description="The localized name of the study plan lesson.", default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the study plan lesson."
+        description="The English name of the study plan lesson.", default=None
     )
     length: typing.Optional[int] = strawberry.field(
-        description="The duration or length of the study plan lesson, expressed in virtual units."
+        description="The duration or length of the study plan lesson, expressed in virtual units.", default=None
     )
     changedby_id: strawberry.Private[IDType] = None
 

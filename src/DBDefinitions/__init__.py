@@ -27,6 +27,7 @@ from .PlanItemTeacherModel import PlanItemTeacherModel
 from .PlanItemModel import PlanItemModel
 from .ClassificationPlanModel import ClassificationPlanModel
 from .PlanModel import PlanModel
+from .PlanItemModel import PlanItemModel
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

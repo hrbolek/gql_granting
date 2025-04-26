@@ -132,10 +132,13 @@ class SubjectQuery:
     description="parameter for create operation"
 )
 class SubjectInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the subject"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    name: typing.Optional[str] = strawberry.field(description="subject name")
+    name_en: typing.Optional[str] = strawberry.field(description="subject name in english")
+    description: typing.Optional[str] = strawberry.field(description="subject description")
+    description_en: typing.Optional[str] = strawberry.field(description="subject description in english")
+    program_id: typing.Optional[IDType] = strawberry.field(description="program id")
+    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme")
 
 
 @strawberry.input(
@@ -144,6 +147,12 @@ class SubjectInsertGQLModel:
 class SubjectUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+    name: typing.Optional[str] = strawberry.field(description="subject name")
+    name_en: typing.Optional[str] = strawberry.field(description="subject name in english")
+    description: typing.Optional[str] = strawberry.field(description="subject description")
+    description_en: typing.Optional[str] = strawberry.field(description="subject description in english")
+    program_id: typing.Optional[IDType] = strawberry.field(description="program id")
+    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme")
 
 @strawberry.input(
     description="parameter for delete operation"

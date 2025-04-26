@@ -49,6 +49,7 @@ class StudentDocumentGQLModel(BaseGQLModel):
     
     description: typing.Optional[str] = strawberry.field(
         description="description",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -56,6 +57,7 @@ class StudentDocumentGQLModel(BaseGQLModel):
 
     student_id: typing.Optional[IDType] = strawberry.field(
         description="id of the student",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -65,11 +67,13 @@ class StudentDocumentGQLModel(BaseGQLModel):
         description="student",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        resolver=ScalarResolver["StudentGQLModel"](fkey_field_name="student_id")
     )
 
     document_id: typing.Optional[IDType] = strawberry.field(
         description="id of the document",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -79,7 +83,8 @@ class StudentDocumentGQLModel(BaseGQLModel):
         description="document",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        resolver=ScalarResolver["DocumentGQLModel"](fkey_field_name="document_id")
     )
 
 
@@ -108,10 +113,11 @@ class StudentDocumentQuery:
     description="parameter for create operation"
 )
 class StudentDocumentInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the student_document"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    description: typing.Optional[str] = strawberry.field(description="description")
+    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student")
+    document_id: typing.Optional[IDType] = strawberry.field(description="id of the document")
+
 
 
 @strawberry.input(
@@ -120,7 +126,10 @@ class StudentDocumentInsertGQLModel:
 class StudentDocumentUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-
+    description: typing.Optional[str] = strawberry.field(description="description")
+    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student")
+    document_id: typing.Optional[IDType] = strawberry.field(description="id of the document")
+    
 @strawberry.input(
     description="parameter for delete operation"
 )

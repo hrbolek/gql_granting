@@ -44,11 +44,11 @@ class BaseGQLModel:
     def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID, **otherdata):
         return cls.load_with_loader(info=info, id=id)
        
-    id: typing.Optional[IDType] = strawberry.field(
-        description="primary key", 
-        default=None,
+    id: IDType = strawberry.field(
+        description="primary key",     
         permission_classes=[OnlyForAuthentized]
         )
+    
     lastchange: typing.Optional[datetime.datetime] = strawberry.field(
         description="timestamp", 
         default=None,

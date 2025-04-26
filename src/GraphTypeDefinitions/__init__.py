@@ -38,7 +38,7 @@ from uoishelpers.schema import WhoAmIExtension
 schema.extensions.append(WhoAmIExtension)
 
 from typing import Dict, Any, Optional
-from strawberry.extensions import Extension
+from strawberry.extensions import SchemaExtension
 from graphql import DocumentNode, OperationDefinitionNode, FieldNode
 from graphql import parse
 # =====================================================
@@ -112,7 +112,7 @@ def extract_type_structure(
 # 7. Schema Extension – generování SQL dotazu při dotazu
 # =====================================================
 
-class SQLQueryExtension(Extension):
+class SQLQueryExtension(SchemaExtension):
     def on_request_start(self) -> None:
         """
         Při startu požadavku:

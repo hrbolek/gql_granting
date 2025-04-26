@@ -152,10 +152,17 @@ class ProgramQuery:
     description="parameter for create operation"
 )
 class ProgramInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the program"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    name: typing.Optional[str] = strawberry.field(
+        description="name of the program", default=None
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="name of the program", default=None
+    )
+    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=None)
+    licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=None)
+    type_id: typing.Optional[IDType] = strawberry.field(description="programme type", default=None)
+    
 
 
 @strawberry.input(
@@ -164,6 +171,15 @@ class ProgramInsertGQLModel:
 class ProgramUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+    name: typing.Optional[str] = strawberry.field(
+        description="name of the program", default=None
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="name of the program", default=None
+    )
+    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=None)
+    licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=None)
+    type_id: typing.Optional[IDType] = strawberry.field(description="programme type", default=None)
 
 @strawberry.input(
     description="parameter for delete operation"

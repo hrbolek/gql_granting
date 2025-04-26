@@ -136,10 +136,13 @@ class SemesterQuery:
     description="parameter for create operation"
 )
 class SemesterInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the semester"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    order: typing.Optional[int] = strawberry.field(description="order in same subject", default=None)
+    mandatory: typing.Optional[bool] = strawberry.field(description="True if every student must pass this subject", default=None)
+    credits: typing.Optional[int] = strawberry.field(description="credits", default=None)
+    classificationtype_id: typing.Optional[IDType] = strawberry.field(description="subject id", default=None)
+    subject_id: typing.Optional[IDType] = strawberry.field(description="subject id", default=None)
+
 
 
 @strawberry.input(
@@ -148,7 +151,12 @@ class SemesterInsertGQLModel:
 class SemesterUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-
+    order: typing.Optional[int] = strawberry.field(description="order in same subject", default=None)
+    mandatory: typing.Optional[bool] = strawberry.field(description="True if every student must pass this subject", default=None)
+    credits: typing.Optional[int] = strawberry.field(description="credits", default=None)
+    classificationtype_id: typing.Optional[IDType] = strawberry.field(description="subject id", default=None)
+    subject_id: typing.Optional[IDType] = strawberry.field(description="subject id", default=None)
+    
 @strawberry.input(
     description="parameter for delete operation"
 )

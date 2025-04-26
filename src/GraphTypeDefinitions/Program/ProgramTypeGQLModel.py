@@ -88,14 +88,14 @@ class ProgramTypeGQLModel(BaseGQLModel):
     )
 
     title_id: typing.Optional[IDType] = strawberry.field(
-        description="level of programme",
+        description="title given to student",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
     title_type: typing.Optional["ProgramTitleTypeGQLModel"] = strawberry.field(
-        description="level of programme",
+        description="title given to student",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -103,14 +103,14 @@ class ProgramTypeGQLModel(BaseGQLModel):
     )    
 
     language_id: typing.Optional[IDType] = strawberry.field(
-        description="level of programme",
+        description="language used in programme",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
     language_type: typing.Optional["ProgramLanguageTypeGQLModel"] = strawberry.field(
-        description="level of programme",
+        description="language used in programme",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -118,14 +118,14 @@ class ProgramTypeGQLModel(BaseGQLModel):
     )        
 
     form_id: typing.Optional[IDType] = strawberry.field(
-        description="level of programme",
+        description="teaching form, like presential, distance, etc.",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
     form_type: typing.Optional["ProgramFormTypeGQLModel"] = strawberry.field(
-        description="level of programme",
+        description="teaching form, like presential, distance, etc.",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -158,10 +158,14 @@ class ProgramTypeQuery:
     description="parameter for create operation"
 )
 class ProgramTypeInsertGQLModel:
-    name: str = strawberry.field(
-        description="name of the program_type"
-    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    name: typing.Optional[str] = strawberry.field(description="name of the program_type")
+    name_en: typing.Optional[str] = strawberry.field(description="name of the program_type")
+    level_id: typing.Optional[IDType] = strawberry.field(description="level of programme")
+    title_id: typing.Optional[IDType] = strawberry.field(description="title given to student")
+    language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme")
+    form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.")
+
 
 
 @strawberry.input(
@@ -170,6 +174,12 @@ class ProgramTypeInsertGQLModel:
 class ProgramTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
+    name: typing.Optional[str] = strawberry.field(description="name of the program_type")
+    name_en: typing.Optional[str] = strawberry.field(description="name of the program_type")
+    level_id: typing.Optional[IDType] = strawberry.field(description="level of programme")
+    title_id: typing.Optional[IDType] = strawberry.field(description="title given to student")
+    language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme")
+    form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.")
 
 @strawberry.input(
     description="parameter for delete operation"

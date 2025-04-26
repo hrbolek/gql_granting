@@ -67,16 +67,24 @@ class StudyPlanGQLModel(BaseGQLModel):
         resolver=ScalarResolver["SemesterGQLModel"](fkey_field_name="semester_id")
     )
 
+    classificationplan_id: typing.Optional[IDType] = strawberry.field(
+        description="ID of classification conditions",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
     lessons: typing.List["StudyPlanLessonGQLModel"] = strawberry.field(
         description="part of study plan",
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=VectorResolver["StudyPlanLessonGQLModel"](fkey_field_name="semester_id", whereType=StudyPlanLessonInputFilter)
+        resolver=VectorResolver["StudyPlanLessonGQLModel"](fkey_field_name="plan_id", whereType=StudyPlanLessonInputFilter)
     )
 
     exam_id: typing.Optional[IDType] = strawberry.field(
         description="Exam Rules",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -87,11 +95,12 @@ class StudyPlanGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["ExamGQLModel"](fkey_field_name="plan_id")
+        resolver=ScalarResolver["ExamGQLModel"](fkey_field_name="exam_id")
     )
 
     event_id: typing.Optional[IDType] = strawberry.field(
         description="Time period when the plan will live",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -129,11 +138,11 @@ class StudyPlanQuery:
     description="parameter for create"
 )
 class StudyPlanInsertGQLModel:
-    semester_id: IDType = strawberry.field(
-        description="Semester to which teh plan is linked."
-    )
-    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
-
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
+    semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
+    exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
+    event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=None)
+    
     createdby_id: strawberry.Private[IDType] = None
 
 
@@ -142,8 +151,11 @@ class StudyPlanInsertGQLModel:
     description="parameter for update"
 )
 class StudyPlanUpdateGQLModel:
-    id: IDType = strawberry.field(description="id of the studyplan to update")
-    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+    id: IDType = strawberry.field(description="id of the studyplan to update", default=None)
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update", default=None)
+    semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
+    exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
+    event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=None)
 
 @strawberry.input(
     description="parameter for delete"

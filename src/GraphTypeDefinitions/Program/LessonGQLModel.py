@@ -114,12 +114,10 @@ class LessonQuery:
     description="parameter for create"
 )
 class LessonInsertGQLModel:
-    semester_id: IDType = strawberry.field(
-        description="Which semester / subject is examined"
-    )
-
-    user_id: IDType = strawberry.field(description="Who is examined")
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+    count: typing.Optional[int] = strawberry.field(description="how many virtual time units")
+    topic_id: typing.Optional[IDType] = strawberry.field(description="to which topic belongs")
+    type_id: typing.Optional[IDType] = strawberry.field(description="lesson typ")
 
 @strawberry.input(
     description="parameter for update"
@@ -127,7 +125,9 @@ class LessonInsertGQLModel:
 class LessonUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the lesson to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
-    grade: typing.Optional[str] = strawberry.field(description="", default=None)
+    count: typing.Optional[int] = strawberry.field(description="how many virtual time units")
+    topic_id: typing.Optional[IDType] = strawberry.field(description="to which topic belongs")
+    type_id: typing.Optional[IDType] = strawberry.field(description="lesson typ")
 
 @strawberry.input(
     description="parameter for delete"

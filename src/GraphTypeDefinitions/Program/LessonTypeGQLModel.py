@@ -89,14 +89,13 @@ class LessonTypeQuery:
 )
 class LessonTypeInsertGQLModel:
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the lesson_type."
+        description="The localized name of the lesson_type.", default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the lesson_type."
+        description="The English name of the lesson_type.", default=None
     )
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
 
-    semester_id: strawberry.Private[IDType] = None
     createdby_id: strawberry.Private[IDType] = None
 
 
@@ -108,10 +107,10 @@ class LessonTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the lesson_type to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the lesson_type."
+        description="The localized name of the lesson_type.", default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the lesson_type."
+        description="The English name of the lesson_type.", default=None
     )
 
 @strawberry.input(
