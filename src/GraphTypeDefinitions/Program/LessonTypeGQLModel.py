@@ -62,6 +62,13 @@ class LessonTypeGQLModel(BaseGQLModel):
         ]
     )
 
+    abbr: typing.Optional[str] = strawberry.field(
+        description="abbreviation",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
 
 @strawberry.interface(
     description=""
@@ -94,7 +101,10 @@ class LessonTypeInsertGQLModel:
     name_en: typing.Optional[str] = strawberry.field(
         description="The English name of the lesson_type.", default=None
     )
-    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
+    abbr: typing.Optional[str] = strawberry.field(
+        description="Abbreviation of the lesson_type.", default=None
+    )
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
 
     createdby_id: strawberry.Private[IDType] = None
 
@@ -111,6 +121,9 @@ class LessonTypeUpdateGQLModel:
     )
     name_en: typing.Optional[str] = strawberry.field(
         description="The English name of the lesson_type.", default=None
+    )
+    abbr: typing.Optional[str] = strawberry.field(
+        description="Abbreviation of the lesson_type.", default=None
     )
 
 @strawberry.input(

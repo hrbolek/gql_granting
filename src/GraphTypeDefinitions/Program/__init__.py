@@ -12,6 +12,8 @@ from .ProgramTypeGQLModel import ProgramTypeQuery, ProgramTypeMutation
 from .SemesterGQLModel import SemesterQuery, SemesterMutation
 from .SubjectGQLModel import SubjectQuery, SubjectMutation
 from .TopicGQLModel import TopicQuery, TopicMutation
+from .LessonGQLModel import LessonGQLModel, LessonMutation, LessonQuery
+from .LessonTypeGQLModel import LessonTypeGQLModel, LessonTypeMutation, LessonTypeQuery
 
 @strawberry.interface(name="ProgramAllQuery")
 class ProgramQuery(
@@ -24,7 +26,10 @@ class ProgramQuery(
 
     SemesterQuery,
     SubjectQuery,
-    TopicQuery
+    TopicQuery,
+
+    LessonQuery,
+    LessonTypeQuery
 ):
     pass
 
@@ -38,6 +43,8 @@ class ProgramMutation(
     ProgramTypeMutation,
     SemesterMutation,
     SubjectMutation,
-    TopicMutation
+    TopicMutation,
+    LessonMutation,
+    LessonTypeMutation
 ):
     pass

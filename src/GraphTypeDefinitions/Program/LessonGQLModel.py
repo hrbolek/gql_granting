@@ -114,10 +114,10 @@ class LessonQuery:
     description="parameter for create"
 )
 class LessonInsertGQLModel:
-    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value")
-    count: typing.Optional[int] = strawberry.field(description="how many virtual time units")
-    topic_id: typing.Optional[IDType] = strawberry.field(description="to which topic belongs")
-    type_id: typing.Optional[IDType] = strawberry.field(description="lesson typ")
+    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
+    count: typing.Optional[int] = strawberry.field(description="how many virtual time units", default=None)
+    topic_id: typing.Optional[IDType] = strawberry.field(description="to which topic belongs", default=None)
+    type_id: typing.Optional[IDType] = strawberry.field(description="lesson typ", default=None)
 
 @strawberry.input(
     description="parameter for update"
@@ -125,9 +125,9 @@ class LessonInsertGQLModel:
 class LessonUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the lesson to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
-    count: typing.Optional[int] = strawberry.field(description="how many virtual time units")
-    topic_id: typing.Optional[IDType] = strawberry.field(description="to which topic belongs")
-    type_id: typing.Optional[IDType] = strawberry.field(description="lesson typ")
+    count: typing.Optional[int] = strawberry.field(description="how many virtual time units", default=None)
+    topic_id: typing.Optional[IDType] = strawberry.field(description="to which topic belongs", default=None)
+    type_id: typing.Optional[IDType] = strawberry.field(description="lesson typ", default=None)
 
 @strawberry.input(
     description="parameter for delete"
