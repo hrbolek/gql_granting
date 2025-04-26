@@ -10,18 +10,18 @@ from functools import cache
 from sqlalchemy.future import select
 
 
-def singleCall(asyncFunc):
-    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-    Dekorovana funkce je asynchronni.
-    """
-    resultCache = {}
+# def singleCall(asyncFunc):
+#     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
+#     Dekorovana funkce je asynchronni.
+#     """
+#     resultCache = {}
 
-    async def result():
-        if resultCache.get("result", None) is None:
-            resultCache["result"] = await asyncFunc()
-        return resultCache["result"]
+#     async def result():
+#         if resultCache.get("result", None) is None:
+#             resultCache["result"] = await asyncFunc()
+#         return resultCache["result"]
 
-    return result
+#     return result
 
 
 ###########################################################################################################################
@@ -384,7 +384,7 @@ from uoishelpers.feeders import ImportModels
 def get_demodata(filename="./systemdata.json"):
     def datetime_parser(json_dict):
         for (key, value) in json_dict.items():
-            if key in ["date", "startdate", "enddate", "lastchange", "created"]:
+            if (key in ["date", "startdate", "enddate", "lastchange", "created"]) or ("_at" in key):
                 if value is None:
                     dateValueWOtzinfo = None
                 else:

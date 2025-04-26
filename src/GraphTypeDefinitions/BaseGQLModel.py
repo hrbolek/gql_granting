@@ -19,11 +19,7 @@ async def resolve_reference(cls, info: strawberry.types.Info, id: IDType, **othe
     keys=["id"], description="""Entity representing an interface"""
 )
 class BaseGQLModel:
-    
-    @classmethod
-    def getLoader(cls, info: strawberry.types.Info):
-        raise NotImplementedError()
-    
+       
     @classmethod
     def from_dataclass(cls, db_row):
         db_row_dict = dataclasses.asdict(db_row)
