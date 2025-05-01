@@ -30,6 +30,7 @@ from ..BaseGQLModel import BaseGQLModel, IDType
 
 EvaluationGQLModel = typing.Annotated["EvaluationGQLModel", strawberry.lazy(".EvaluationGQLModel")]
 EvaluationInputFilter = typing.Annotated["EvaluationInputFilter", strawberry.lazy(".EvaluationGQLModel")]
+StudyPlanGQLModel = typing.Annotated["StudyPlanGQLModel", strawberry.lazy(".StudyPlanGQLModel")]
 
 @createInputs
 @dataclasses.dataclass
@@ -53,13 +54,37 @@ class ExamGQLModel(BaseGQLModel):
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info=info).ClassificationPlanModel
     
-    plan_id: typing.Optional[IDType] = strawberry.field(
-        default=None,
+    # plan_id: typing.Optional[IDType] = strawberry.field(
+    #     default=None,
+    #     description="study plan which the exam belongs to",
+    #     permission_classes=[
+    #         OnlyForAuthentized
+    #     ]
+    # )
+
+    @strawberry.field(
         description="study plan which the exam belongs to",
         permission_classes=[
             OnlyForAuthentized
-        ]
-    )
+        ])
+    async def plan_id(self, info: strawberry.types.Info) -> typing.Optional[IDType]:
+        from .StudyPlanGQLModel import StudyPlanGQLModel
+        planLoader = StudyPlanGQLModel.getLoader(info)
+        planRows = await planLoader.filter_by(classificationplan_id=self.id)
+        planRow = next(planRows, None)
+        return planRow.id if planRow else None
+
+    @strawberry.field(
+        description="study plan which the exam belongs to",
+        permission_classes=[
+            OnlyForAuthentized
+        ])
+    async def plan(self, info: strawberry.types.Info) -> typing.Optional["StudyPlanGQLModel"]:
+        from .StudyPlanGQLModel import StudyPlanGQLModel
+        planLoader = StudyPlanGQLModel.getLoader(info)
+        planRows = await planLoader.filter_by(classificationplan_id=self.id)
+        planRow = next(planRows, None)
+        return StudyPlanGQLModel.from_dataclass(planRow) if planRow else None
 
     name: typing.Optional[str] = strawberry.field(
         default=None,
