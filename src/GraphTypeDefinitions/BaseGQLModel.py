@@ -9,14 +9,32 @@ from uoishelpers.gqlpermissions import OnlyForAuthentized, RBACObjectGQLModel
 IDType = uuid.UUID
 UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy(".UserGQLModel")]
 
+from strawberry.federation.schema_directive import schema_directive, Location
+from strawberry.directive import DirectiveLocation
+
+@schema_directive(
+    repeatable=True,
+    compose=True,
+    description="Description for foreign keys",
+    locations=[Location.INPUT_FIELD_DEFINITION, Location.FIELD_DEFINITION, DirectiveLocation.FIELD],
+)
+class Relation:
+    """
+    @relation(to: Typ, field: 'id')
+    říká, že pole inputu je cizí klíč na zadaný typ.
+    """
+    to: str
+    field: str = "id"
+
 @classmethod
 async def resolve_reference(cls, info: strawberry.types.Info, id: IDType, **otherData):
     _id = IDType(id) if isinstance(id, str) else id
+    print(f"resolving reference for {cls} with id='{_id}'({type(id)})")
     return None if id is None else cls(id=_id, **otherData)
 
 
 @strawberry.federation.interface(
-    keys=["id"], description="""Entity representing an interface"""
+    description="""Entity representing an interface"""
 )
 class BaseGQLModel:
        
@@ -34,11 +52,12 @@ class BaseGQLModel:
         loader = cls.getLoader(info=info)
         db_row = await loader.load(_id)
         
-        return None if db_row is None else cls.from_dataclass(db_row=db_row)
+        return cls(id=id) if db_row is None else cls.from_dataclass(db_row=db_row)
     
     @classmethod
     def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID, **otherdata):
-        return cls.load_with_loader(info=info, id=id)
+        _id = IDType(id) if isinstance(id, str) else id
+        return cls.load_with_loader(info=info, id=_id)
        
     id: IDType = strawberry.field(
         description="primary key",     

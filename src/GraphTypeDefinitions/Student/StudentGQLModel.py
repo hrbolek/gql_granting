@@ -26,7 +26,7 @@ from uoishelpers.resolvers import (
     ScalarResolver
 )
 
-from ..BaseGQLModel import BaseGQLModel, IDType
+from ..BaseGQLModel import BaseGQLModel, IDType, Relation
 
 UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy("..UserGQLModel")]
 StateGQLModel = typing.Annotated["StateGQLModel", strawberry.lazy("..StateGQLModel")]
@@ -56,6 +56,9 @@ class StudentGQLModel(BaseGQLModel):
         description="id of the user",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        directives=[
+            Relation(to="UserGQLModel")
         ]
     )
 
@@ -71,6 +74,9 @@ class StudentGQLModel(BaseGQLModel):
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        directives=[
+            Relation(to="ProgramGQLModel")
         ]
     )
 

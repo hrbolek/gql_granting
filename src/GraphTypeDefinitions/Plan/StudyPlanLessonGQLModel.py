@@ -165,7 +165,14 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         ]
     )
     async def instructors(self, info: strawberry.types.Info) -> typing.List["UserGQLModel"]:
-        return []
+        from ..UserGQLModel import UserGQLModel
+        loader = getLoadersFromInfo(info).PlanItemTeacherModel
+        rows = await loader.filter_by(planitem_id=self.id)
+        rows = [row for row in rows]
+        ruid = [{"uid": row.user_id, "id": row.id} for row in rows]
+        print(ruid)
+        valid = [row for row in rows if row.user_id is not None]
+        return [UserGQLModel.resolve_reference(info=info, id=row.user_id) for row in valid]
 
     @strawberry.field(
         description="study groups",
@@ -174,7 +181,11 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         ]
     )
     async def study_groups(self, info: strawberry.types.Info) -> typing.List["GroupGQLModel"]:
-        return []
+        from ..GroupGQLModel import GroupGQLModel
+        loader = getLoadersFromInfo(info).PlanItemGroupModel
+        rows = await loader.filter_by(planitem_id=self.id)
+        valid = [row for row in rows if row.group_id is not None]
+        return [GroupGQLModel(id=row.group_id) for row in valid]
     
     @strawberry.field(
         description="places for this lesson",
@@ -183,7 +194,11 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         ]
     )
     async def facilities(self, info: strawberry.types.Info) -> typing.List["FacilityGQLModel"]:
-        return []
+        from ..FacilityGQLModel import FacilityGQLModel
+        loader = getLoadersFromInfo(info).PlanItemFacilityModel
+        rows = await loader.filter_by(planitem_id=self.id)
+        valid = [row for row in rows if row.facility_id is not None]
+        return [FacilityGQLModel(id=row.facility_id) for row in valid]
     
 
 @strawberry.interface()
@@ -279,6 +294,28 @@ class StudyPlanLessonDeleteGQLModel:
     id: IDType = strawberry.field(description="id of the study_plan_lesson to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
 
+@strawberry.input(
+    description="parameter for adding or removing the instructor from lesson plan"
+)
+class StudyPlanLessonAddRemoveInstructor:
+    planitem_id: IDType = strawberry.field(description="study plan primary key")
+    user_id: IDType = strawberry.field(description="instructor primary key")
+    
+
+@strawberry.input(
+    description="parameter for adding or removing the facility from lesson plan"
+)
+class StudyPlanLessonAddRemoveFacility:
+    planitem_id: IDType = strawberry.field(description="study plan primary key")
+    facility_id: IDType = strawberry.field(description="facility primary key")
+
+@strawberry.input(
+    description="parameter for adding or removing the study group from lesson plan"
+)
+class StudyPlanLessonAddRemoveStudyGroup:
+    planitem_id: IDType = strawberry.field(description="study plan primary key")
+    group_id: IDType = strawberry.field(description="group primary key")
+
 @strawberry.interface(
     description=""
 )
@@ -313,4 +350,166 @@ class StudyPlanLessonMutation:
     async def study_plan_lesson_delete(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonDeleteGQLModel) -> typing.Optional[DeleteError[StudyPlanLessonGQLModel]]:
         result = await Delete[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
         return result
+
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_add_instructor(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveInstructor) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
+        loader = getLoadersFromInfo(info).PlanItemTeacherModel
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, user_id=study_plan_lesson.user_id)
+        row = next(rows, None)
+        if row:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg="Instructor is already planned for this study plan item",
+                _input=study_plan_lesson
+                )
+        try:
+            await loader.insert(study_plan_lesson)
+        except Exception as e:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg=f"{e}",
+                _input=study_plan_lesson
+                )
+        return studyplanlesson
+
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_remove_instructor(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveInstructor) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
+        loader = getLoadersFromInfo(info).PlanItemTeacherModel
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, user_id=study_plan_lesson.user_id)
+        row = next(rows, None)
+        if row is None:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg="Instructor is not planned for this study plan item",
+                _input=study_plan_lesson
+                )
+        try:
+            await loader.delete(row.id)
+        except Exception as e:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg=f"{e}",
+                _input=study_plan_lesson
+                )
+        return studyplanlesson
+
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_add_facility(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveFacility) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
+        loader = getLoadersFromInfo(info).PlanItemFacilityModel
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        row = next(rows, None)
+        if row:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg="Facility is already planned for this study plan item",
+                _input=study_plan_lesson
+                )
+        try:
+            await loader.insert(study_plan_lesson)
+        except Exception as e:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg=f"{e}",
+                _input=study_plan_lesson
+                )
+        return studyplanlesson
+
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_remove_facility(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveFacility) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
+        loader = getLoadersFromInfo(info).PlanItemFacilityModel
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        row = next(rows, None)
+        if row is None:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg="Facility is not planned for this study plan item",
+                _input=study_plan_lesson
+                )
+        try:
+            await loader.delete(row.id)
+        except Exception as e:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg=f"{e}",
+                _input=study_plan_lesson
+                )
+        return studyplanlesson
+
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_add_group(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
+        loader = getLoadersFromInfo(info).PlanItemGroupModel
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        row = next(rows, None)
+        if row:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg="Facility is already planned for this study plan item",
+                _input=study_plan_lesson
+                )
+        try:
+            await loader.insert(study_plan_lesson)
+        except Exception as e:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg=f"{e}",
+                _input=study_plan_lesson
+                )
+        return studyplanlesson
+
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+    async def study_plan_lesson_remove_group(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+        studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
+        loader = getLoadersFromInfo(info).PlanItemGroupModel
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        row = next(rows, None)
+        if row is None:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg="Facility is not planned for this study plan item",
+                _input=study_plan_lesson
+                )
+        try:
+            await loader.delete(row.id)
+        except Exception as e:
+            return UpdateError[StudyPlanLessonGQLModel](
+                _entity=studyplanlesson,
+                msg=f"{e}",
+                _input=study_plan_lesson
+                )
+        return studyplanlesson
 

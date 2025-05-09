@@ -27,11 +27,13 @@ class Mutation(
 ):
     pass
 
+from .BaseGQLModel import Relation
 schema = strawberry.federation.Schema(
     query=Query,
     mutation=Mutation,
     extensions=[],
-    types=[DocumentGQLModel, EventGQLModel, GroupGQLModel, UserGQLModel]
+    types=[DocumentGQLModel, EventGQLModel, GroupGQLModel, UserGQLModel],
+    schema_directives=[Relation]
 )
 
 from uoishelpers.schema import WhoAmIExtension

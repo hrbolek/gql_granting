@@ -289,7 +289,21 @@ class ExamMutation:
         ]
     )
     async def exam_insert(self, info: strawberry.types.Info, exam: ExamInsertGQLModel) -> typing.Union[ExamGQLModel, InsertError[ExamGQLModel]]:
+        #TODO implement plan update to accept examid
         result = await Insert[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
+        if getattr(result, "failed", False):
+            return result
+        
+        from .StudyPlanGQLModel import StudyPlanGQLModel, StudyPlanUpdateGQLModel
+        if exam.plan_id is None:
+            return result
+        planEntity = StudyPlanUpdateGQLModel(id=exam.plan_id, exam_id=result.id)
+        planResult = await Update[StudyPlanGQLModel].DoItSafeWay(info=info, entity=planEntity)
+        if getattr(planResult, "failed", False):
+            return InsertError[ExamGQLModel](
+                msg=planResult.msg,
+                _input=exam
+            )
         return result
     
     @strawberry.mutation(
