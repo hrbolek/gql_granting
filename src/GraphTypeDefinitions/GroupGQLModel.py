@@ -22,8 +22,8 @@ class GroupGQLModel:
     id: IDType = strawberry.federation.field(external=True)
     resolve_reference = resolve_reference
 
-    accredited_programs: typing.Optional[ProgramGQLModel] = strawberry.field(
+    accredited_programs: typing.List[ProgramGQLModel] = strawberry.field(
         description="List of accredited study programs that are implemented (offered and delivered) by this organizational unit (typically a faculty).",
         permission_classes=[OnlyForAuthentized],
-        resolver=ScalarResolver[ProgramGQLModel](f_key_field_name="licenced_group_id")
+        resolver=ScalarResolver[ProgramGQLModel](fkey_field_name="licenced_group_id")
     )
