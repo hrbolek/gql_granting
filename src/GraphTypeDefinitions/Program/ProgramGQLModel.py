@@ -98,14 +98,14 @@ class ProgramGQLModel(BaseGQLModel):
     )
 
     licenced_group_id: typing.Optional[IDType] = strawberry.field(
-        description="Who has got license for programme",
+        description="Foreign key referencing the group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
     licenced_group: typing.Optional["GroupGQLModel"] = strawberry.field(
-        description="Who has got license for programme",
+        description="The group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.",
         permission_classes=[
             OnlyForAuthentized
         ],
