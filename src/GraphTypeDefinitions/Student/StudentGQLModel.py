@@ -41,6 +41,8 @@ class StudentInputFilter:
     id: IDType
     user_id: IDType
     program_id: IDType
+    semester_number: int
+    state_id: IDType
 
 @strawberry.federation.type(
     keys=["id"],

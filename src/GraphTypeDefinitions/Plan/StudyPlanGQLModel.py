@@ -54,6 +54,7 @@ class StudyPlanGQLModel(BaseGQLModel):
     
     semester_id: typing.Optional[IDType] = strawberry.field(
         description="ID of Semester to which the plan is related",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -69,6 +70,7 @@ class StudyPlanGQLModel(BaseGQLModel):
 
     classificationplan_id: typing.Optional[IDType] = strawberry.field(
         description="ID of classification conditions",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]

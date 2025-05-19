@@ -35,7 +35,7 @@ UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy("..UserGQLModel"
 GroupGQLModel = typing.Annotated["GroupGQLModel", strawberry.lazy("..GroupGQLModel")]
 FacilityGQLModel = typing.Annotated["FacilityGQLModel", strawberry.lazy("..FacilityGQLModel")]
 EventGQLModel = typing.Annotated["EventGQLModel", strawberry.lazy("..EventGQLModel")]
-StudyPlanLessonGQLModel = typing.Annotated["StudyPlanLessonGQLModel", strawberry.lazy(".StudyPlanLessonGQLModel")]
+StudyPlanGQLModel = typing.Annotated["StudyPlanGQLModel", strawberry.lazy(".StudyPlanGQLModel")]
 
 @createInputs
 @dataclasses.dataclass
@@ -141,12 +141,12 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         ]
     )
 
-    plan: typing.Optional[StudyPlanLessonGQLModel] = strawberry.field(
+    plan: typing.Optional[StudyPlanGQLModel] = strawberry.field(
         description="",
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver[StudyPlanLessonGQLModel](fkey_field_name="plan_id")
+        resolver=ScalarResolver[StudyPlanGQLModel](fkey_field_name="plan_id")
     )
 
     @strawberry.field(
@@ -414,7 +414,7 @@ class StudyPlanLessonMutation:
     async def study_plan_lesson_add_facility(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveFacility) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemFacilityModel
-        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, group_id=study_plan_lesson.group_id)
         row = next(rows, None)
         if row:
             return UpdateError[StudyPlanLessonGQLModel](
@@ -468,7 +468,7 @@ class StudyPlanLessonMutation:
     async def study_plan_lesson_add_group(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemGroupModel
-        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, group_id=study_plan_lesson.group_id)
         row = next(rows, None)
         if row:
             return UpdateError[StudyPlanLessonGQLModel](
@@ -495,7 +495,7 @@ class StudyPlanLessonMutation:
     async def study_plan_lesson_remove_group(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemGroupModel
-        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, group_id=study_plan_lesson.group_id)
         row = next(rows, None)
         if row is None:
             return UpdateError[StudyPlanLessonGQLModel](

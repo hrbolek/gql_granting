@@ -56,14 +56,16 @@ class ProgramGQLModel(BaseGQLModel):
         description="Name of program",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        default=None
     )
 
     name_en: typing.Optional[str] = strawberry.field(
         description="Eng. name of program",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        default=None
     )
 
     subjects: typing.List["SubjectGQLModel"] = strawberry.field(
@@ -86,7 +88,8 @@ class ProgramGQLModel(BaseGQLModel):
         description="guarantors of programme",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        default=None
     )
 
     guarantors: typing.Optional["GroupGQLModel"] = strawberry.field(
@@ -101,7 +104,8 @@ class ProgramGQLModel(BaseGQLModel):
         description="Foreign key referencing the group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        default=None
     )
 
     licenced_group: typing.Optional["GroupGQLModel"] = strawberry.field(
@@ -116,7 +120,8 @@ class ProgramGQLModel(BaseGQLModel):
         description="type of programme",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        default=None
     )
 
     type_: typing.Optional["ProgramTypeGQLModel"] = strawberry.field(
