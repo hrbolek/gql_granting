@@ -2,7 +2,13 @@ import strawberry
 from .BaseGQLModel import IDType
 
 from .Plan import PlanQuery, PlanMutation
-from .Program import ProgramQuery, ProgramMutation
+from .Program import (
+    ProgramQuery, 
+    ProgramMutation,
+    LessonGQLModel,
+    LessonTypeGQLModel
+)
+
 from .Student import StudentQuery, StudentMutation
 
 from .DocumentGQLModel import DocumentGQLModel

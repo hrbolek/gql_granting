@@ -61,7 +61,8 @@ class StudentGQLModel(BaseGQLModel):
         ],
         directives=[
             Relation(to="UserGQLModel")
-        ]
+        ],
+        default=None
     )
 
     student: typing.Optional["UserGQLModel"] = strawberry.field(
@@ -79,7 +80,8 @@ class StudentGQLModel(BaseGQLModel):
         ],
         directives=[
             Relation(to="ProgramGQLModel")
-        ]
+        ],
+        default=None
     )
 
     program: typing.Optional["ProgramGQLModel"] = strawberry.field(
@@ -94,7 +96,8 @@ class StudentGQLModel(BaseGQLModel):
         description="",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        default=None
     )
 
     semester_number: typing.Optional[int] = strawberry.field(

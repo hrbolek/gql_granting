@@ -36,6 +36,7 @@ GroupGQLModel = typing.Annotated["GroupGQLModel", strawberry.lazy("..GroupGQLMod
 FacilityGQLModel = typing.Annotated["FacilityGQLModel", strawberry.lazy("..FacilityGQLModel")]
 EventGQLModel = typing.Annotated["EventGQLModel", strawberry.lazy("..EventGQLModel")]
 StudyPlanGQLModel = typing.Annotated["StudyPlanGQLModel", strawberry.lazy(".StudyPlanGQLModel")]
+LessonTypeGQLModel = typing.Annotated["LessonTypeGQLModel", strawberry.lazy("..Program.LessonTypeGQLModel")]
 
 @createInputs
 @dataclasses.dataclass
@@ -127,6 +128,13 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ]
+    )
+    lessontype: typing.Optional[LessonTypeGQLModel] = strawberry.field(
+        description="type of the lesson",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ScalarResolver[LessonTypeGQLModel](fkey_field_name="lessontype_id")
     )
 
     linked_with_id: typing.Optional[IDType] = strawberry.type(
@@ -249,7 +257,10 @@ class StudyPlanLessonInsertGQLModel:
     length: typing.Optional[int] = strawberry.field(
         description="The duration or length of the study plan lesson, expressed in virtual units.", default=None
     )
-       
+    order: typing.Optional[int] = strawberry.field(
+        description="order in plan",
+        default=None
+    )  
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
 
     createdby_id: strawberry.Private[IDType] = None
@@ -284,6 +295,10 @@ class StudyPlanLessonUpdateGQLModel:
     length: typing.Optional[int] = strawberry.field(
         description="The duration or length of the study plan lesson, expressed in virtual units.", default=None
     )
+    order: typing.Optional[int] = strawberry.field(
+        description="order in plan",
+        default=None
+    )  
     changedby_id: strawberry.Private[IDType] = None
 
 

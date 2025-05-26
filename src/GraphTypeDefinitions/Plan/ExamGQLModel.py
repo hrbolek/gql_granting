@@ -31,6 +31,7 @@ from ..BaseGQLModel import BaseGQLModel, IDType
 EvaluationGQLModel = typing.Annotated["EvaluationGQLModel", strawberry.lazy(".EvaluationGQLModel")]
 EvaluationInputFilter = typing.Annotated["EvaluationInputFilter", strawberry.lazy(".EvaluationGQLModel")]
 StudyPlanGQLModel = typing.Annotated["StudyPlanGQLModel", strawberry.lazy(".StudyPlanGQLModel")]
+ClassificationTypeGQLModel = typing.Annotated["ClassificationTypeGQLModel", strawberry.lazy("..Program.ClassificationTypeGQLModel")]
 
 @createInputs
 @dataclasses.dataclass
@@ -142,6 +143,16 @@ class ExamGQLModel(BaseGQLModel):
         ]
     )
 
+    type_: typing.Optional[ClassificationTypeGQLModel] = strawberry.field(
+        name="type",
+        description="type of classification",
+        permission_classes=[
+            OnlyForAuthentized,
+
+        ],
+        resolver=ScalarResolver[ClassificationTypeGQLModel](fkey_field_name="type_id")
+    )
+    
     parent_id: typing.Optional[IDType] = strawberry.field(
         default=None,
         description="id of exam which is part",
