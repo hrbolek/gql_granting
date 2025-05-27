@@ -68,7 +68,7 @@ class StudyPlanGQLModel(BaseGQLModel):
         resolver=ScalarResolver["SemesterGQLModel"](fkey_field_name="semester_id")
     )
 
-    classificationplan_id: typing.Optional[IDType] = strawberry.field(
+    exam_id: typing.Optional[IDType] = strawberry.field(
         description="ID of classification conditions",
         default=None,
         permission_classes=[
@@ -82,14 +82,6 @@ class StudyPlanGQLModel(BaseGQLModel):
             OnlyForAuthentized
         ],
         resolver=VectorResolver["StudyPlanLessonGQLModel"](fkey_field_name="plan_id", whereType=StudyPlanLessonInputFilter)
-    )
-
-    exam_id: typing.Optional[IDType] = strawberry.field(
-        description="Exam Rules",
-        default=None,
-        permission_classes=[
-            OnlyForAuthentized
-        ]
     )
 
     exam: typing.Optional["ExamGQLModel"] = strawberry.field(

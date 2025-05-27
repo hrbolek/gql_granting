@@ -71,7 +71,7 @@ class ExamGQLModel(BaseGQLModel):
     async def plan_id(self, info: strawberry.types.Info) -> typing.Optional[IDType]:
         from .StudyPlanGQLModel import StudyPlanGQLModel
         planLoader = StudyPlanGQLModel.getLoader(info)
-        planRows = await planLoader.filter_by(classificationplan_id=self.id)
+        planRows = await planLoader.filter_by(exam_id=self.id)
         planRow = next(planRows, None)
         return planRow.id if planRow else None
 
@@ -83,7 +83,7 @@ class ExamGQLModel(BaseGQLModel):
     async def plan(self, info: strawberry.types.Info) -> typing.Optional["StudyPlanGQLModel"]:
         from .StudyPlanGQLModel import StudyPlanGQLModel
         planLoader = StudyPlanGQLModel.getLoader(info)
-        planRows = await planLoader.filter_by(classificationplan_id=self.id)
+        planRows = await planLoader.filter_by(exam_id=self.id)
         planRow = next(planRows, None)
         return StudyPlanGQLModel.from_dataclass(planRow) if planRow else None
 

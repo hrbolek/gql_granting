@@ -45,7 +45,7 @@ class EvaluationInputFilter:
     passed: bool
     description: str
     classificationlevel_id: IDType
-    classificationplan_id: IDType
+    exam_id: IDType
     exam_id: IDType
     parent_id: IDType
     user_id: IDType
@@ -223,7 +223,7 @@ class EvaluationGQLModel(BaseGQLModel):
         ]
     )
 
-    classificationplan_id: typing.Optional[IDType] = strawberry.field(
+    exam_id: typing.Optional[IDType] = strawberry.field(
         default=None,
         description="Exam plan",
         permission_classes=[
@@ -268,7 +268,7 @@ class EvaluationInsertGQLModel:
     description: typing.Optional[str] = strawberry.field(description="description given to student and exam", default=None)
     grade: typing.Optional[str] = strawberry.field(description="given grade / mark", default=None)
     classificationlevel_id: typing.Optional[IDType] = strawberry.field(description="Formal given grade", default=None)
-    classificationplan_id: typing.Optional[IDType] = strawberry.field(description="Exam plan", default=None)
+    exam_id: typing.Optional[IDType] = strawberry.field(description="Exam plan", default=None)
     event_id: typing.Optional[IDType] = strawberry.field(description="the event when exam happened and evaluation has been stored", default=None)
     parent_id: typing.Optional[IDType] = strawberry.field(description="id of exam which this is part", default=None)
     student_id: typing.Optional[IDType] = strawberry.field(description="id of the student", default=None)
@@ -290,7 +290,7 @@ class EvaluationUpdateGQLModel:
     description: typing.Optional[str] = strawberry.field(description="description given to student and exam", default=None)
     grade: typing.Optional[str] = strawberry.field(description="given grade / mark", default=None)
     classificationlevel_id: typing.Optional[IDType] = strawberry.field(description="Formal given grade", default=None)
-    classificationplan_id: typing.Optional[IDType] = strawberry.field(description="Exam plan", default=None)
+    exam_id: typing.Optional[IDType] = strawberry.field(description="Exam plan", default=None)
     event_id: typing.Optional[IDType] = strawberry.field(description="the event when exam happened and evaluation has been stored", default=None)
     parent_id: typing.Optional[IDType] = strawberry.field(description="id of exam which this is part", default=None)
     student_id: typing.Optional[IDType] = strawberry.field(description="id of the student", default=None)
