@@ -50,6 +50,7 @@ class StudyPlanLessonInputFilter:
     linked_with_id: IDType
 
 @strawberry.federation.type(
+    keys=["id"],
     description="On row in studyplan"
 )
 class StudyPlanLessonGQLModel(BaseGQLModel):
@@ -137,8 +138,12 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
         resolver=ScalarResolver[LessonTypeGQLModel](fkey_field_name="lessontype_id")
     )
 
-    linked_with_id: typing.Optional[IDType] = strawberry.type(
-        description="key to describe integration with other planned lessons"
+    linked_with_id: typing.Optional[IDType] = strawberry.field(
+        description="key to describe integration with other planned lessons",
+        default=None,
+        permission_classes=[
+            OnlyForAuthentized
+        ],
     )
 
     plan_id: typing.Optional[IDType] = strawberry.field(
@@ -150,7 +155,7 @@ class StudyPlanLessonGQLModel(BaseGQLModel):
     )
 
     plan: typing.Optional[StudyPlanGQLModel] = strawberry.field(
-        description="",
+        description="the plan to which this lesson belongs",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -274,14 +279,14 @@ class StudyPlanLessonUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the study_plan_lesson to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
 
-    lessontype_id: IDType = strawberry.field(
+    lessontype_id: typing.Optional[IDType] = strawberry.field(
         description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.", default=None
     )
-    topic_id: IDType = strawberry.field(
+    topic_id: typing.Optional[IDType] = strawberry.field(
         description="The identifier of the topic associated with this study plan lesson.", default=None
     )
     event_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier of an event linked to this study plan lesson (if applicable)."
+        description="Optional identifier of an event linked to this study plan lesson (if applicable).", default=None
     )
     linked_with_id: typing.Optional[IDType] = strawberry.field(
         description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).", default=None

@@ -30,7 +30,8 @@ from ..BaseGQLModel import BaseGQLModel, IDType
 
 
 @strawberry.federation.type(
-    description=""
+    keys=["id"],
+    description="Classification type"
 )
 class ClassificationTypeGQLModel(BaseGQLModel):
     @classmethod

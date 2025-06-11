@@ -89,7 +89,7 @@ class ExamGQLModel(BaseGQLModel):
 
     name: typing.Optional[str] = strawberry.field(
         default=None,
-        description="",
+        description="name of Exam, something like test 1",
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -97,7 +97,7 @@ class ExamGQLModel(BaseGQLModel):
 
     name_en: typing.Optional[str] = strawberry.field(
         default=None,
-        description="",
+        description="English name of Exam, something like test 1",
         permission_classes=[
             OnlyForAuthentized
         ]

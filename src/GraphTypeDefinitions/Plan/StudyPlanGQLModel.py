@@ -45,7 +45,10 @@ class StudyPlanInputFilter:
     event_id: IDType
 
 
-@strawberry.federation.type()
+@strawberry.federation.type(
+    keys=["id"],
+    description="set of lessons / events in the specified semester"
+)
 class StudyPlanGQLModel(BaseGQLModel):
 
     @classmethod

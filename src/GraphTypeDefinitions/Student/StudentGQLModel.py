@@ -46,7 +46,7 @@ class StudentInputFilter:
 
 @strawberry.federation.type(
     keys=["id"],
-    description=""
+    description="Connects an user with a program to define that somebody is studying a program."
 )
 class StudentGQLModel(BaseGQLModel):
     
@@ -74,7 +74,7 @@ class StudentGQLModel(BaseGQLModel):
     )
 
     program_id: typing.Optional[IDType] = strawberry.field(
-        description="",
+        description="the program which user is studying",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -93,7 +93,7 @@ class StudentGQLModel(BaseGQLModel):
     )
 
     state_id: typing.Optional[IDType] = strawberry.field(
-        description="",
+        description="in what state the student is",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -164,9 +164,9 @@ class StudentInsertGQLModel:
 class StudentUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    user_id: typing.Optional[IDType] = strawberry.field(description="id of the user")
-    program_id: typing.Optional[IDType] = strawberry.field(description="id of the program")
-    state_id: typing.Optional[IDType] = strawberry.field(description="id of the state")
+    user_id: typing.Optional[IDType] = strawberry.field(description="id of the user", default=None)
+    program_id: typing.Optional[IDType] = strawberry.field(description="id of the program", default=None)
+    state_id: typing.Optional[IDType] = strawberry.field(description="id of the state", default=None)
     semester_number: typing.Optional[int] = strawberry.field(description="semester of study", default=None)
 
 @strawberry.input(

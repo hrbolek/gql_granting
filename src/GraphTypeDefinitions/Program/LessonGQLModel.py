@@ -74,7 +74,7 @@ class LessonGQLModel(BaseGQLModel):
 
     type_id: typing.Optional[IDType] = strawberry.field(
         default=None,
-        description="",
+        description="type of Lesson, like Laboratories",
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -82,7 +82,7 @@ class LessonGQLModel(BaseGQLModel):
 
     type_: typing.Optional["LessonTypeGQLModel"] = strawberry.field(
         name="type",
-        description="",
+        description="type of Lesson, like Laboratories",
         permission_classes=[
             OnlyForAuthentized
         ],

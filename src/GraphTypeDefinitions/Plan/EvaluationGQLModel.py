@@ -63,6 +63,7 @@ class EvaluationInputFilter:
 
 
 @strawberry.federation.type(
+    keys=["id"],
     description="Exam evaluation"
 )
 class EvaluationGQLModel(BaseGQLModel):
@@ -184,7 +185,7 @@ class EvaluationGQLModel(BaseGQLModel):
     )
 
     event: typing.Optional["EventGQLModel"] = strawberry.field(
-        description="",
+        description="the event when exam happened and evaluation has been stored",
         permission_classes=[
             OnlyForAuthentized
         ],

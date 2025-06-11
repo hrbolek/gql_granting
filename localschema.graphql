@@ -1,0 +1,4531 @@
+"""Description for foreign keys"""
+directive @relation(to: String!, field: String! = "id") repeatable on INPUT_FIELD_DEFINITION | FIELD_DEFINITION | FIELD
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"""Entity representing an interface"""
+interface BaseGQLModel {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+}
+
+"""Integer filter methods, only one constrain allowed"""
+input BoolFilter {
+  """operation for select.filter() method"""
+  _eq: Boolean = null
+}
+
+"""Classification type"""
+type ClassificationTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """the name"""
+  name: String
+
+  """the name"""
+  nameEn: String
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+"""Datetime filter methods, only one constrain allowed"""
+input DatetimeFilter {
+  """operation for select.filter() method"""
+  _eq: DateTime = null
+
+  """operation for select.filter() method"""
+  _le: DateTime = null
+
+  """operation for select.filter() method"""
+  _lt: DateTime = null
+
+  """operation for select.filter() method"""
+  _ge: DateTime = null
+
+  """operation for select.filter() method"""
+  _gt: DateTime = null
+}
+
+extend type DocumentGQLModel @key(fields: "id") {
+  id: UUID! @external
+}
+
+"""Exam evaluation"""
+type EvaluationGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """index of attempt"""
+  order: Int
+
+  """given points for this exam"""
+  points: Int
+
+  """True if student passed this exam"""
+  passed: Boolean
+
+  """description given to student and exam"""
+  description: String
+
+  """given grade / mark"""
+  grade: String
+
+  """id of the student"""
+  studentId: UUID
+
+  """student who is examined"""
+  student: StudentGQLModel
+
+  """who examined"""
+  examinerId: UUID
+
+  """Who examined"""
+  examiner: UserGQLModel
+
+  """to which semester / subject this examination belongs"""
+  semesterId: UUID
+
+  """semester to which this examination belongs to"""
+  semester: SemesterGQLModel
+
+  """Exam plan"""
+  examId: UUID
+
+  """related exam conditions"""
+  exam: ExamGQLModel
+
+  """the event when exam happened and evaluation has been stored"""
+  eventId: UUID
+
+  """the event when exam happened and evaluation has been stored"""
+  event: EventGQLModel
+
+  """id of exam which this is part"""
+  parentId: UUID
+
+  """exam of which is this part"""
+  parent: EvaluationGQLModel
+
+  """sub parts of this evaluation"""
+  parts(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+
+  """Formal given grade"""
+  classificationlevelId: UUID
+}
+
+"""Error object returned as an result of Delete operation"""
+type EvaluationGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: EvaluationGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union EvaluationGQLModelEvaluationGQLModelUpdateError = EvaluationGQLModel | EvaluationGQLModelUpdateError
+
+union EvaluationGQLModelInsertError = EvaluationGQLModel | InsertError
+
+"""Error object returned as an result of Update operation"""
+type EvaluationGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: EvaluationGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on EvaluationInputFilter"""
+input EvaluationInputFilter {
+  """Filter method"""
+  _or: [EvaluationInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [EvaluationInputFilterAnd!] = null
+
+  """Filter method"""
+  order: IntFilter = null
+
+  """Filter method"""
+  points: IntFilter = null
+
+  """Filter method"""
+  passed: BoolFilter = null
+
+  """Filter method"""
+  description: StrFilter = null
+
+  """Filter method"""
+  classificationlevel_id: UuidFilter = null
+
+  """Filter method"""
+  exam_id: UuidFilter = null
+
+  """Filter method"""
+  parent_id: UuidFilter = null
+
+  """Filter method"""
+  user_id: UuidFilter = null
+
+  """Filter method"""
+  student_id: UuidFilter = null
+
+  """Filter method"""
+  examiner_id: UuidFilter = null
+
+  """Filter method"""
+  semester_id: UuidFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  lastchange: DatetimeFilter = null
+
+  """Filter method"""
+  created: DatetimeFilter = null
+
+  """Filter method"""
+  semester: SemesterInputFilter = null
+}
+
+"""And operator definition on EvaluationInputFilter"""
+input EvaluationInputFilterAnd {
+  """Filter method"""
+  _or: [EvaluationInputFilterOr!] = null
+
+  """Filter method"""
+  order: IntFilter = null
+
+  """Filter method"""
+  points: IntFilter = null
+
+  """Filter method"""
+  passed: BoolFilter = null
+
+  """Filter method"""
+  description: StrFilter = null
+
+  """Filter method"""
+  classificationlevel_id: UuidFilter = null
+
+  """Filter method"""
+  exam_id: UuidFilter = null
+
+  """Filter method"""
+  parent_id: UuidFilter = null
+
+  """Filter method"""
+  user_id: UuidFilter = null
+
+  """Filter method"""
+  student_id: UuidFilter = null
+
+  """Filter method"""
+  examiner_id: UuidFilter = null
+
+  """Filter method"""
+  semester_id: UuidFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  lastchange: DatetimeFilter = null
+
+  """Filter method"""
+  created: DatetimeFilter = null
+
+  """Filter method"""
+  semester: SemesterInputFilter = null
+}
+
+"""Or operator definition on EvaluationInputFilter"""
+input EvaluationInputFilterOr {
+  """Filter method"""
+  _and: [EvaluationInputFilterAnd!] = null
+
+  """Filter method"""
+  order: IntFilter = null
+
+  """Filter method"""
+  points: IntFilter = null
+
+  """Filter method"""
+  passed: BoolFilter = null
+
+  """Filter method"""
+  description: StrFilter = null
+
+  """Filter method"""
+  classificationlevel_id: UuidFilter = null
+
+  """Filter method"""
+  exam_id: UuidFilter = null
+
+  """Filter method"""
+  parent_id: UuidFilter = null
+
+  """Filter method"""
+  user_id: UuidFilter = null
+
+  """Filter method"""
+  student_id: UuidFilter = null
+
+  """Filter method"""
+  examiner_id: UuidFilter = null
+
+  """Filter method"""
+  semester_id: UuidFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  lastchange: DatetimeFilter = null
+
+  """Filter method"""
+  created: DatetimeFilter = null
+
+  """Filter method"""
+  semester: SemesterInputFilter = null
+}
+
+"""parameter for create"""
+input EvaluationInsertGQLModel {
+  """optional client generated primary key value"""
+  id: UUID = null
+
+  """Which semester / subject is examined"""
+  semesterId: UUID = null
+
+  """Who is examined"""
+  userId: UUID = null
+
+  """index of attempt"""
+  order: Int = null
+
+  """given points for this exam"""
+  points: Int = null
+
+  """True if student passed this exam"""
+  passed: Boolean = null
+
+  """description given to student and exam"""
+  description: String = null
+
+  """given grade / mark"""
+  grade: String = null
+
+  """Formal given grade"""
+  classificationlevelId: UUID = null
+
+  """related exam conditions"""
+  examId: UUID = null
+
+  """the event when exam happened and evaluation has been stored"""
+  eventId: UUID = null
+
+  """id of exam which this is part"""
+  parentId: UUID = null
+
+  """id of the student"""
+  studentId: UUID = null
+
+  """who examined"""
+  examinerId: UUID = null
+}
+
+""""""
+interface EvaluationMutation {
+  """inserts a new evaluation"""
+  evaluationInsert(evaluation: EvaluationInsertGQLModel!): EvaluationGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  evaluationUpdate(evaluation: EvaluationUpdateGQLModel!): EvaluationGQLModelEvaluationGQLModelUpdateError!
+
+  """deletes an existing evaluation"""
+  evaluationDelete(evaluation: EvaluationUpdateGQLModel!): EvaluationGQLModelDeleteError
+}
+
+""""""
+interface EvaluationQuery {
+  """find an evaluation by its id"""
+  evaluationById(id: UUID!): EvaluationGQLModel
+
+  """list of evaluations"""
+  evaluationPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+}
+
+"""parameter for update"""
+input EvaluationUpdateGQLModel {
+  """id of the evaluation to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+
+  """Which semester / subject is examined"""
+  semesterId: UUID = null
+
+  """Who is examined"""
+  userId: UUID = null
+
+  """index of attempt"""
+  order: Int = null
+
+  """given points for this exam"""
+  points: Int = null
+
+  """True if student passed this exam"""
+  passed: Boolean = null
+
+  """description given to student and exam"""
+  description: String = null
+
+  """given grade / mark"""
+  grade: String = null
+
+  """Formal given grade"""
+  classificationlevelId: UUID = null
+
+  """related exam conditions"""
+  examId: UUID = null
+
+  """the event when exam happened and evaluation has been stored"""
+  eventId: UUID = null
+
+  """id of exam which this is part"""
+  parentId: UUID = null
+
+  """id of the student"""
+  studentId: UUID = null
+
+  """who examined"""
+  examinerId: UUID = null
+}
+
+extend type EventGQLModel @key(fields: "id") {
+  id: UUID! @external
+}
+
+"""Exam definition"""
+type ExamGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name of Exam, something like test 1"""
+  name: String
+
+  """English name of Exam, something like test 1"""
+  nameEn: String
+
+  """extended description of exam conditions"""
+  description: String
+
+  """extended description of exam conditions"""
+  descriptionEn: String
+
+  """defined minimum points to pass the exam"""
+  minScore: Int
+
+  """defined maximum achievable points"""
+  maxScore: Int
+
+  """id of exam type"""
+  typeId: UUID
+
+  """type of classification"""
+  type: ClassificationTypeGQLModel
+
+  """id of exam which is part"""
+  parentId: UUID
+
+  """exam is part of exam"""
+  parent: ExamGQLModel
+
+  """exam parts"""
+  parts(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+
+  """evaluations of users during exams"""
+  evaluations(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+
+  """study plan which the exam belongs to"""
+  planId: UUID
+
+  """study plan which the exam belongs to"""
+  plan: StudyPlanGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type ExamGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ExamGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ExamGQLModelExamGQLModelUpdateError = ExamGQLModel | ExamGQLModelUpdateError
+
+union ExamGQLModelInsertError = ExamGQLModel | InsertError
+
+"""Error object returned as an result of Update operation"""
+type ExamGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ExamGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ExamInputFilter"""
+input ExamInputFilter {
+  """Filter method"""
+  _or: [ExamInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ExamInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  parent_id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  description: StrFilter = null
+
+  """Filter method"""
+  min_score: IntFilter = null
+
+  """Filter method"""
+  max_score: IntFilter = null
+}
+
+"""And operator definition on ExamInputFilter"""
+input ExamInputFilterAnd {
+  """Filter method"""
+  _or: [ExamInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  parent_id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  description: StrFilter = null
+
+  """Filter method"""
+  min_score: IntFilter = null
+
+  """Filter method"""
+  max_score: IntFilter = null
+}
+
+"""Or operator definition on ExamInputFilter"""
+input ExamInputFilterOr {
+  """Filter method"""
+  _and: [ExamInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  parent_id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  description: StrFilter = null
+
+  """Filter method"""
+  min_score: IntFilter = null
+
+  """Filter method"""
+  max_score: IntFilter = null
+}
+
+"""parameter for create"""
+input ExamInsertGQLModel {
+  """The localized name of the exam."""
+  name: String = null
+
+  """The English name of the exam."""
+  nameEn: String = null
+
+  """A detailed localized description of the exam."""
+  description: String = null
+
+  """A detailed description of the exam in English."""
+  descriptionEn: String = null
+
+  """The minimum score required, used for passing or grading."""
+  minScore: Int = null
+
+  """The maximum achievable score for the exam."""
+  maxScore: Int = null
+
+  """Identifier for the exam type, which determines its category or format."""
+  typeId: UUID = null
+
+  """Optional identifier for a parent exam, if applicable."""
+  parentId: UUID = null
+
+  """Identifier for the exam plan or schedule this exam belongs to."""
+  planId: UUID = null
+
+  """optional client generated primary key value"""
+  id: UUID = null
+}
+
+""""""
+interface ExamMutation {
+  """inserts a new exam"""
+  examInsert(exam: ExamInsertGQLModel!): ExamGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  examUpdate(exam: ExamUpdateGQLModel!): ExamGQLModelExamGQLModelUpdateError!
+
+  """deletes an existing exam"""
+  examDelete(exam: ExamUpdateGQLModel!): ExamGQLModelDeleteError
+}
+
+""""""
+interface ExamQuery {
+  """Exam by it id"""
+  examById(id: UUID!): ExamGQLModel
+
+  """filtered exams"""
+  examPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+}
+
+"""parameter for update"""
+input ExamUpdateGQLModel {
+  """id of the exam to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+
+  """The localized name of the exam."""
+  name: String = null
+
+  """The English name of the exam."""
+  nameEn: String = null
+
+  """A detailed localized description of the exam."""
+  description: String = null
+
+  """A detailed description of the exam in English."""
+  descriptionEn: String = null
+
+  """The minimum score required, used for passing or grading."""
+  minScore: Int = null
+
+  """The maximum achievable score for the exam."""
+  maxScore: Int = null
+
+  """Identifier for the exam type, which determines its category or format."""
+  typeId: UUID = null
+
+  """Optional identifier for a parent exam, if applicable."""
+  parentId: UUID = null
+
+  """Identifier for the exam plan or schedule this exam belongs to."""
+  planId: UUID = null
+}
+
+extend type FacilityGQLModel @key(fields: "id") {
+  id: UUID! @external
+}
+
+extend type GroupGQLModel @key(fields: "id") {
+  id: UUID! @external
+
+  """
+  List of accredited study programs that are implemented (offered and delivered) by this organizational unit (typically a faculty).
+  """
+  accreditedPrograms: [ProgramGQLModel!]!
+}
+
+"""Error object returned as an result of Insert operation"""
+type InsertError {
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Integer filter methods, only one constrain allowed"""
+input IntFilter {
+  """operation for select.filter() method"""
+  _eq: Int = null
+
+  """operation for select.filter() method"""
+  _le: Int = null
+
+  """operation for select.filter() method"""
+  _lt: Int = null
+
+  """operation for select.filter() method"""
+  _ge: Int = null
+
+  """operation for select.filter() method"""
+  _gt: Int = null
+
+  """operation for select.filter() method"""
+  _in: [Int!] = null
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
+
+"""Lesson entity"""
+type LessonGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """how many virtual time units"""
+  count: Int
+
+  """to which topic belongs"""
+  topicId: UUID
+
+  """to which topic belongs"""
+  topic: TopicGQLModel
+
+  """type of Lesson, like Laboratories"""
+  typeId: UUID
+
+  """type of Lesson, like Laboratories"""
+  type: LessonTypeGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type LessonGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: LessonGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union LessonGQLModelInsertError = LessonGQLModel | InsertError
+
+union LessonGQLModelLessonGQLModelUpdateError = LessonGQLModel | LessonGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type LessonGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: LessonGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on LessonInputFilter"""
+input LessonInputFilter {
+  """Filter method"""
+  _or: [LessonInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [LessonInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""And operator definition on LessonInputFilter"""
+input LessonInputFilterAnd {
+  """Filter method"""
+  _or: [LessonInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""Or operator definition on LessonInputFilter"""
+input LessonInputFilterOr {
+  """Filter method"""
+  _and: [LessonInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""parameter for create"""
+input LessonInsertGQLModel {
+  """optional client generated primary key value"""
+  id: UUID = null
+
+  """how many virtual time units"""
+  count: Int = null
+
+  """to which topic belongs"""
+  topicId: UUID = null
+
+  """lesson typ"""
+  typeId: UUID = null
+}
+
+""""""
+interface LessonMutation {
+  """inserts a new lesson"""
+  lessonInsert(lesson: LessonInsertGQLModel!): LessonGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  lessonUpdate(lesson: LessonUpdateGQLModel!): LessonGQLModelLessonGQLModelUpdateError!
+
+  """deletes an existing lesson"""
+  lessonDelete(lesson: LessonUpdateGQLModel!): LessonGQLModelDeleteError
+}
+
+""""""
+interface LessonQuery {
+  """returns lesson by its id"""
+  lessonById(id: UUID!): LessonGQLModel
+
+  """returns lessons defined by filter"""
+  lessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+}
+
+"""LessonType entity"""
+type LessonTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name"""
+  name: String
+
+  """english name"""
+  nameEn: String
+
+  """abbreviation"""
+  abbr: String
+}
+
+"""Error object returned as an result of Delete operation"""
+type LessonTypeGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: LessonTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union LessonTypeGQLModelInsertError = LessonTypeGQLModel | InsertError
+
+union LessonTypeGQLModelLessonTypeGQLModelUpdateError = LessonTypeGQLModel | LessonTypeGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type LessonTypeGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: LessonTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on LessonTypeInputFilter"""
+input LessonTypeInputFilter {
+  """Filter method"""
+  _or: [LessonTypeInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [LessonTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""And operator definition on LessonTypeInputFilter"""
+input LessonTypeInputFilterAnd {
+  """Filter method"""
+  _or: [LessonTypeInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""Or operator definition on LessonTypeInputFilter"""
+input LessonTypeInputFilterOr {
+  """Filter method"""
+  _and: [LessonTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""parameter for create"""
+input LessonTypeInsertGQLModel {
+  """The localized name of the lesson_type."""
+  name: String = null
+
+  """The English name of the lesson_type."""
+  nameEn: String = null
+
+  """Abbreviation of the lesson_type."""
+  abbr: String = null
+
+  """optional client generated primary key value"""
+  id: UUID = null
+}
+
+""""""
+interface LessonTypeMutation {
+  """inserts a new lesson_type"""
+  lessonTypeInsert(lessonType: LessonTypeInsertGQLModel!): LessonTypeGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  lessonTypeUpdate(lessonType: LessonTypeUpdateGQLModel!): LessonTypeGQLModelLessonTypeGQLModelUpdateError!
+
+  """deletes an existing lesson_type"""
+  lessonTypeDelete(lessonType: LessonTypeUpdateGQLModel!): LessonTypeGQLModelDeleteError
+}
+
+""""""
+interface LessonTypeQuery {
+  """returns program by its id"""
+  lessonTypeById(id: UUID!): LessonTypeGQLModel
+
+  """returns programs defined by filter"""
+  lessonTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonTypeInputFilter = null): [LessonTypeGQLModel!]!
+}
+
+"""parameter for update"""
+input LessonTypeUpdateGQLModel {
+  """id of the lesson_type to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+
+  """The localized name of the lesson_type."""
+  name: String = null
+
+  """The English name of the lesson_type."""
+  nameEn: String = null
+
+  """Abbreviation of the lesson_type."""
+  abbr: String = null
+}
+
+"""parameter for update"""
+input LessonUpdateGQLModel {
+  """id of the lesson to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+
+  """how many virtual time units"""
+  count: Int = null
+
+  """to which topic belongs"""
+  topicId: UUID = null
+
+  """lesson typ"""
+  typeId: UUID = null
+}
+
+"""root of mutations"""
+type Mutation implements ProgramAllMutation & ProgramMutation & ProgramFormTypeMutation & ProgramLanguageTypeMutation & ProgramLevelTypeMutation & ProgramTitleTypeMutation & ProgramTypeMutation & SemesterMutation & SubjectMutation & TopicMutation & LessonMutation & LessonTypeMutation & StudentAllMutation & StudentMutation & StudentDocumentMutation & PlanMutation & EvaluationMutation & ExamMutation & StudyPlanMutation & StudyPlanLessonMutation {
+  """create a new program"""
+  programInsert(program: ProgramInsertGQLModel!): ProgramGQLModelInsertError!
+
+  """updates existing program"""
+  programUpdate(program: ProgramUpdateGQLModel!): ProgramGQLModelProgramGQLModelUpdateError!
+
+  """delete existing program"""
+  programDelete(program: ProgramDeleteGQLModel!): ProgramGQLModelDeleteError
+
+  """create a new program_form_type"""
+  programFormTypeInsert(programFormType: ProgramFormTypeInsertGQLModel!): ProgramFormTypeGQLModelInsertError!
+
+  """updates existing program_form_type"""
+  programFormTypeUpdate(programFormType: ProgramFormTypeUpdateGQLModel!): ProgramFormTypeGQLModelProgramFormTypeGQLModelUpdateError!
+
+  """delete existing program_form_type"""
+  programFormTypeDelete(programFormType: ProgramFormTypeDeleteGQLModel!): ProgramFormTypeGQLModelDeleteError
+
+  """create a new program_language_type"""
+  programLanguageTypeInsert(programLanguageType: ProgramLanguageTypeInsertGQLModel!): ProgramLanguageTypeGQLModelInsertError!
+
+  """updates existing program_language_type"""
+  programLanguageTypeUpdate(programLanguageType: ProgramLanguageTypeUpdateGQLModel!): ProgramLanguageTypeGQLModelProgramLanguageTypeGQLModelUpdateError!
+
+  """delete existing program_language_type"""
+  programLanguageTypeDelete(programLanguageType: ProgramLanguageTypeDeleteGQLModel!): ProgramLanguageTypeGQLModelDeleteError
+
+  """create a new program_level_type"""
+  programLevelTypeInsert(programLevelType: ProgramLevelTypeInsertGQLModel!): ProgramLevelTypeGQLModelInsertError!
+
+  """updates existing program_level_type"""
+  programLevelTypeUpdate(programLevelType: ProgramLevelTypeUpdateGQLModel!): ProgramLevelTypeGQLModelProgramLevelTypeGQLModelUpdateError!
+
+  """delete existing program_level_type"""
+  programLevelTypeDelete(programLevelType: ProgramLevelTypeDeleteGQLModel!): ProgramLevelTypeGQLModelDeleteError
+
+  """create a new program_title_type"""
+  programTitleTypeInsert(programTitleType: ProgramTitleTypeInsertGQLModel!): ProgramTitleTypeGQLModelInsertError!
+
+  """updates existing program_title_type"""
+  programTitleTypeUpdate(programTitleType: ProgramTitleTypeUpdateGQLModel!): ProgramTitleTypeGQLModelProgramTitleTypeGQLModelUpdateError!
+
+  """delete existing program_title_type"""
+  programTitleTypeDelete(programTitleType: ProgramTitleTypeDeleteGQLModel!): ProgramTitleTypeGQLModelDeleteError
+
+  """create a new program_type"""
+  programTypeInsert(programType: ProgramTypeInsertGQLModel!): ProgramTypeGQLModelInsertError!
+
+  """updates existing program_type"""
+  programTypeUpdate(programType: ProgramTypeUpdateGQLModel!): ProgramTypeGQLModelProgramTypeGQLModelUpdateError!
+
+  """delete existing program_type"""
+  programTypeDelete(programType: ProgramTypeDeleteGQLModel!): ProgramTypeGQLModelDeleteError
+
+  """create a new semester"""
+  semesterInsert(semester: SemesterInsertGQLModel!): SemesterGQLModelInsertError!
+
+  """updates existing semester"""
+  semesterUpdate(semester: SemesterUpdateGQLModel!): SemesterGQLModelSemesterGQLModelUpdateError!
+
+  """delete existing semester"""
+  semesterDelete(semester: SemesterDeleteGQLModel!): SemesterGQLModelDeleteError
+
+  """create a new subject"""
+  subjectInsert(subject: SubjectInsertGQLModel!): SubjectGQLModelInsertError!
+
+  """updates existing subject"""
+  subjectUpdate(subject: SubjectUpdateGQLModel!): SubjectGQLModelSubjectGQLModelUpdateError!
+
+  """delete existing subject"""
+  subjectDelete(subject: SubjectDeleteGQLModel!): SubjectGQLModelDeleteError
+
+  """create a new topic"""
+  topicInsert(topic: TopicInsertGQLModel!): TopicGQLModelInsertError!
+
+  """updates existing topic"""
+  topicUpdate(topic: TopicUpdateGQLModel!): TopicGQLModelTopicGQLModelUpdateError!
+
+  """delete existing topic"""
+  topicDelete(topic: TopicDeleteGQLModel!): TopicGQLModelDeleteError
+
+  """inserts a new lesson"""
+  lessonInsert(lesson: LessonInsertGQLModel!): LessonGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  lessonUpdate(lesson: LessonUpdateGQLModel!): LessonGQLModelLessonGQLModelUpdateError!
+
+  """deletes an existing lesson"""
+  lessonDelete(lesson: LessonUpdateGQLModel!): LessonGQLModelDeleteError
+
+  """inserts a new lesson_type"""
+  lessonTypeInsert(lessonType: LessonTypeInsertGQLModel!): LessonTypeGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  lessonTypeUpdate(lessonType: LessonTypeUpdateGQLModel!): LessonTypeGQLModelLessonTypeGQLModelUpdateError!
+
+  """deletes an existing lesson_type"""
+  lessonTypeDelete(lessonType: LessonTypeUpdateGQLModel!): LessonTypeGQLModelDeleteError
+
+  """create a new student"""
+  studentInsert(student: StudentInsertGQLModel!): StudentGQLModelInsertError!
+
+  """updates existing student"""
+  studentUpdate(student: StudentUpdateGQLModel!): StudentGQLModelStudentGQLModelUpdateError!
+
+  """delete existing student"""
+  studentDelete(student: StudentDeleteGQLModel!): StudentGQLModelDeleteError
+
+  """create a new student_document"""
+  studentDocumentInsert(studentDocument: StudentDocumentInsertGQLModel!): StudentDocumentGQLModelInsertError!
+
+  """updates existing student_document"""
+  studentDocumentUpdate(studentDocument: StudentDocumentUpdateGQLModel!): StudentDocumentGQLModelStudentDocumentGQLModelUpdateError!
+
+  """delete existing student_document"""
+  studentDocumentDelete(studentDocument: StudentDocumentDeleteGQLModel!): StudentDocumentGQLModelDeleteError
+
+  """inserts a new evaluation"""
+  evaluationInsert(evaluation: EvaluationInsertGQLModel!): EvaluationGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  evaluationUpdate(evaluation: EvaluationUpdateGQLModel!): EvaluationGQLModelEvaluationGQLModelUpdateError!
+
+  """deletes an existing evaluation"""
+  evaluationDelete(evaluation: EvaluationUpdateGQLModel!): EvaluationGQLModelDeleteError
+
+  """inserts a new exam"""
+  examInsert(exam: ExamInsertGQLModel!): ExamGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  examUpdate(exam: ExamUpdateGQLModel!): ExamGQLModelExamGQLModelUpdateError!
+
+  """deletes an existing exam"""
+  examDelete(exam: ExamUpdateGQLModel!): ExamGQLModelDeleteError
+
+  """inserts a new studyplan"""
+  studyPlanInsert(studyPlan: StudyPlanInsertGQLModel!): StudyPlanGQLModelInsertError!
+
+  """updates an existing studyplan"""
+  studyPlanUpdate(studyPlan: StudyPlanUpdateGQLModel!): StudyPlanGQLModelStudyPlanGQLModelUpdateError!
+
+  """deletes an existing studyplan"""
+  studyPlanDelete(studyPlan: StudyPlanUpdateGQLModel!): StudyPlanGQLModelDeleteError
+
+  """inserts a new study_plan_lesson"""
+  studyPlanLessonInsert(studyPlanLesson: StudyPlanLessonInsertGQLModel!): StudyPlanLessonGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  studyPlanLessonUpdate(studyPlanLesson: StudyPlanLessonUpdateGQLModel!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """deletes an existing study_plan_lesson"""
+  studyPlanLessonDelete(studyPlanLesson: StudyPlanLessonDeleteGQLModel!): StudyPlanLessonGQLModelDeleteError
+
+  """"""
+  studyPlanLessonAddInstructor(studyPlanLesson: StudyPlanLessonAddRemoveInstructor!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveInstructor(studyPlanLesson: StudyPlanLessonAddRemoveInstructor!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonAddFacility(studyPlanLesson: StudyPlanLessonAddRemoveFacility!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveFacility(studyPlanLesson: StudyPlanLessonAddRemoveFacility!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonAddGroup(studyPlanLesson: StudyPlanLessonAddRemoveStudyGroup!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveGroup(studyPlanLesson: StudyPlanLessonAddRemoveStudyGroup!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+}
+
+interface PlanMutation implements EvaluationMutation & ExamMutation & StudyPlanMutation & StudyPlanLessonMutation {
+  """inserts a new evaluation"""
+  evaluationInsert(evaluation: EvaluationInsertGQLModel!): EvaluationGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  evaluationUpdate(evaluation: EvaluationUpdateGQLModel!): EvaluationGQLModelEvaluationGQLModelUpdateError!
+
+  """deletes an existing evaluation"""
+  evaluationDelete(evaluation: EvaluationUpdateGQLModel!): EvaluationGQLModelDeleteError
+
+  """inserts a new exam"""
+  examInsert(exam: ExamInsertGQLModel!): ExamGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  examUpdate(exam: ExamUpdateGQLModel!): ExamGQLModelExamGQLModelUpdateError!
+
+  """deletes an existing exam"""
+  examDelete(exam: ExamUpdateGQLModel!): ExamGQLModelDeleteError
+
+  """inserts a new studyplan"""
+  studyPlanInsert(studyPlan: StudyPlanInsertGQLModel!): StudyPlanGQLModelInsertError!
+
+  """updates an existing studyplan"""
+  studyPlanUpdate(studyPlan: StudyPlanUpdateGQLModel!): StudyPlanGQLModelStudyPlanGQLModelUpdateError!
+
+  """deletes an existing studyplan"""
+  studyPlanDelete(studyPlan: StudyPlanUpdateGQLModel!): StudyPlanGQLModelDeleteError
+
+  """inserts a new study_plan_lesson"""
+  studyPlanLessonInsert(studyPlanLesson: StudyPlanLessonInsertGQLModel!): StudyPlanLessonGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  studyPlanLessonUpdate(studyPlanLesson: StudyPlanLessonUpdateGQLModel!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """deletes an existing study_plan_lesson"""
+  studyPlanLessonDelete(studyPlanLesson: StudyPlanLessonDeleteGQLModel!): StudyPlanLessonGQLModelDeleteError
+
+  """"""
+  studyPlanLessonAddInstructor(studyPlanLesson: StudyPlanLessonAddRemoveInstructor!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveInstructor(studyPlanLesson: StudyPlanLessonAddRemoveInstructor!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonAddFacility(studyPlanLesson: StudyPlanLessonAddRemoveFacility!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveFacility(studyPlanLesson: StudyPlanLessonAddRemoveFacility!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonAddGroup(studyPlanLesson: StudyPlanLessonAddRemoveStudyGroup!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveGroup(studyPlanLesson: StudyPlanLessonAddRemoveStudyGroup!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+}
+
+interface PlanQuery implements EvaluationQuery & ExamQuery & StudyPlanQuery & StudyPlanLessonQuery {
+  """find an evaluation by its id"""
+  evaluationById(id: UUID!): EvaluationGQLModel
+
+  """list of evaluations"""
+  evaluationPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+
+  """Exam by it id"""
+  examById(id: UUID!): ExamGQLModel
+
+  """filtered exams"""
+  examPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+
+  """study plan"""
+  studyPlanById(id: UUID!): StudyPlanGQLModel
+
+  """filtered list of study plan"""
+  studyPlanPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+
+  """study plan lesson"""
+  studyPlanLessonById(id: UUID!): StudyPlanLessonGQLModel
+
+  """filtered list of study plan lessons"""
+  studyPlanLessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+}
+
+interface ProgramAllMutation implements ProgramMutation & ProgramFormTypeMutation & ProgramLanguageTypeMutation & ProgramLevelTypeMutation & ProgramTitleTypeMutation & ProgramTypeMutation & SemesterMutation & SubjectMutation & TopicMutation & LessonMutation & LessonTypeMutation {
+  """create a new program"""
+  programInsert(program: ProgramInsertGQLModel!): ProgramGQLModelInsertError!
+
+  """updates existing program"""
+  programUpdate(program: ProgramUpdateGQLModel!): ProgramGQLModelProgramGQLModelUpdateError!
+
+  """delete existing program"""
+  programDelete(program: ProgramDeleteGQLModel!): ProgramGQLModelDeleteError
+
+  """create a new program_form_type"""
+  programFormTypeInsert(programFormType: ProgramFormTypeInsertGQLModel!): ProgramFormTypeGQLModelInsertError!
+
+  """updates existing program_form_type"""
+  programFormTypeUpdate(programFormType: ProgramFormTypeUpdateGQLModel!): ProgramFormTypeGQLModelProgramFormTypeGQLModelUpdateError!
+
+  """delete existing program_form_type"""
+  programFormTypeDelete(programFormType: ProgramFormTypeDeleteGQLModel!): ProgramFormTypeGQLModelDeleteError
+
+  """create a new program_language_type"""
+  programLanguageTypeInsert(programLanguageType: ProgramLanguageTypeInsertGQLModel!): ProgramLanguageTypeGQLModelInsertError!
+
+  """updates existing program_language_type"""
+  programLanguageTypeUpdate(programLanguageType: ProgramLanguageTypeUpdateGQLModel!): ProgramLanguageTypeGQLModelProgramLanguageTypeGQLModelUpdateError!
+
+  """delete existing program_language_type"""
+  programLanguageTypeDelete(programLanguageType: ProgramLanguageTypeDeleteGQLModel!): ProgramLanguageTypeGQLModelDeleteError
+
+  """create a new program_level_type"""
+  programLevelTypeInsert(programLevelType: ProgramLevelTypeInsertGQLModel!): ProgramLevelTypeGQLModelInsertError!
+
+  """updates existing program_level_type"""
+  programLevelTypeUpdate(programLevelType: ProgramLevelTypeUpdateGQLModel!): ProgramLevelTypeGQLModelProgramLevelTypeGQLModelUpdateError!
+
+  """delete existing program_level_type"""
+  programLevelTypeDelete(programLevelType: ProgramLevelTypeDeleteGQLModel!): ProgramLevelTypeGQLModelDeleteError
+
+  """create a new program_title_type"""
+  programTitleTypeInsert(programTitleType: ProgramTitleTypeInsertGQLModel!): ProgramTitleTypeGQLModelInsertError!
+
+  """updates existing program_title_type"""
+  programTitleTypeUpdate(programTitleType: ProgramTitleTypeUpdateGQLModel!): ProgramTitleTypeGQLModelProgramTitleTypeGQLModelUpdateError!
+
+  """delete existing program_title_type"""
+  programTitleTypeDelete(programTitleType: ProgramTitleTypeDeleteGQLModel!): ProgramTitleTypeGQLModelDeleteError
+
+  """create a new program_type"""
+  programTypeInsert(programType: ProgramTypeInsertGQLModel!): ProgramTypeGQLModelInsertError!
+
+  """updates existing program_type"""
+  programTypeUpdate(programType: ProgramTypeUpdateGQLModel!): ProgramTypeGQLModelProgramTypeGQLModelUpdateError!
+
+  """delete existing program_type"""
+  programTypeDelete(programType: ProgramTypeDeleteGQLModel!): ProgramTypeGQLModelDeleteError
+
+  """create a new semester"""
+  semesterInsert(semester: SemesterInsertGQLModel!): SemesterGQLModelInsertError!
+
+  """updates existing semester"""
+  semesterUpdate(semester: SemesterUpdateGQLModel!): SemesterGQLModelSemesterGQLModelUpdateError!
+
+  """delete existing semester"""
+  semesterDelete(semester: SemesterDeleteGQLModel!): SemesterGQLModelDeleteError
+
+  """create a new subject"""
+  subjectInsert(subject: SubjectInsertGQLModel!): SubjectGQLModelInsertError!
+
+  """updates existing subject"""
+  subjectUpdate(subject: SubjectUpdateGQLModel!): SubjectGQLModelSubjectGQLModelUpdateError!
+
+  """delete existing subject"""
+  subjectDelete(subject: SubjectDeleteGQLModel!): SubjectGQLModelDeleteError
+
+  """create a new topic"""
+  topicInsert(topic: TopicInsertGQLModel!): TopicGQLModelInsertError!
+
+  """updates existing topic"""
+  topicUpdate(topic: TopicUpdateGQLModel!): TopicGQLModelTopicGQLModelUpdateError!
+
+  """delete existing topic"""
+  topicDelete(topic: TopicDeleteGQLModel!): TopicGQLModelDeleteError
+
+  """inserts a new lesson"""
+  lessonInsert(lesson: LessonInsertGQLModel!): LessonGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  lessonUpdate(lesson: LessonUpdateGQLModel!): LessonGQLModelLessonGQLModelUpdateError!
+
+  """deletes an existing lesson"""
+  lessonDelete(lesson: LessonUpdateGQLModel!): LessonGQLModelDeleteError
+
+  """inserts a new lesson_type"""
+  lessonTypeInsert(lessonType: LessonTypeInsertGQLModel!): LessonTypeGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  lessonTypeUpdate(lessonType: LessonTypeUpdateGQLModel!): LessonTypeGQLModelLessonTypeGQLModelUpdateError!
+
+  """deletes an existing lesson_type"""
+  lessonTypeDelete(lessonType: LessonTypeUpdateGQLModel!): LessonTypeGQLModelDeleteError
+}
+
+interface ProgramAllQuery implements ProgramQuery & ProgramFormTypeQuery & ProgramLanguageQuery & ProgramLevelQuery & ProgramTitleQuery & ProgramTypeQuery & SemesterQuery & SubjectQuery & TopicQuery & LessonQuery & LessonTypeQuery {
+  """returns program by its id"""
+  programById(id: UUID!): ProgramGQLModel
+
+  """returns programs defined by filter"""
+  programPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramInputFilter = null): [ProgramGQLModel!]!
+
+  """returns programform by its id"""
+  programFormById(id: UUID!): ProgramFormTypeGQLModel
+
+  """returns programforms defined by filter"""
+  programFormPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramFormTypeInputFilter = null): [ProgramFormTypeGQLModel!]!
+
+  """returns programlanguage by its id"""
+  programLanguageById(id: UUID!): ProgramLanguageTypeGQLModel
+
+  """returns programlanguages defined by filter"""
+  programLanguagePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLanguageTypeInputFilter = null): [ProgramLanguageTypeGQLModel!]!
+
+  """returns programlevel by its id"""
+  programLevelById(id: UUID!): ProgramLevelTypeGQLModel
+
+  """returns programlevels defined by filter"""
+  programLevelPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLevelTypeInputFilter = null): [ProgramLevelTypeGQLModel!]!
+
+  """returns programtitle by its id"""
+  programTitleById(id: UUID!): ProgramTitleTypeGQLModel
+
+  """returns programtitles defined by filter"""
+  programTitlePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTitleTypeInputFilter = null): [ProgramTitleTypeGQLModel!]!
+
+  """returns programtype by its id"""
+  programTypeById(id: UUID!): ProgramTypeGQLModel
+
+  """returns programtypes defined by filter"""
+  programTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTypeInputFilter = null): [ProgramTypeGQLModel!]!
+
+  """returns semester by its id"""
+  semesterById(id: UUID!): SemesterGQLModel
+
+  """returns semesters defined by filter"""
+  semesterPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+
+  """returns subject by its id"""
+  subjectById(id: UUID!): SubjectGQLModel
+
+  """returns subjects defined by filter"""
+  subjectPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+
+  """returns topic by its id"""
+  topicById(id: UUID!): TopicGQLModel
+
+  """returns topics defined by filter"""
+  topicPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+
+  """returns lesson by its id"""
+  lessonById(id: UUID!): LessonGQLModel
+
+  """returns lessons defined by filter"""
+  lessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+
+  """returns program by its id"""
+  lessonTypeById(id: UUID!): LessonTypeGQLModel
+
+  """returns programs defined by filter"""
+  lessonTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonTypeInputFilter = null): [LessonTypeGQLModel!]!
+}
+
+"""parameter for delete operation"""
+input ProgramDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""parameter for delete operation"""
+input ProgramFormTypeDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""Describes the form of Program, something like Distant"""
+type ProgramFormTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name"""
+  name: String
+
+  """english name"""
+  nameEn: String
+}
+
+"""Error object returned as an result of Delete operation"""
+type ProgramFormTypeGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ProgramFormTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ProgramFormTypeGQLModelInsertError = ProgramFormTypeGQLModel | InsertError
+
+union ProgramFormTypeGQLModelProgramFormTypeGQLModelUpdateError = ProgramFormTypeGQLModel | ProgramFormTypeGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type ProgramFormTypeGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ProgramFormTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ProgramFormTypeInputFilter"""
+input ProgramFormTypeInputFilter {
+  """Filter method"""
+  _or: [ProgramFormTypeInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ProgramFormTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""And operator definition on ProgramFormTypeInputFilter"""
+input ProgramFormTypeInputFilterAnd {
+  """Filter method"""
+  _or: [ProgramFormTypeInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""Or operator definition on ProgramFormTypeInputFilter"""
+input ProgramFormTypeInputFilterOr {
+  """Filter method"""
+  _and: [ProgramFormTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""parameter for create operation"""
+input ProgramFormTypeInsertGQLModel {
+  """name of the program_form_type"""
+  name: String!
+
+  """primary key client generated"""
+  id: UUID = null
+}
+
+""""""
+interface ProgramFormTypeMutation {
+  """create a new program_form_type"""
+  programFormTypeInsert(programFormType: ProgramFormTypeInsertGQLModel!): ProgramFormTypeGQLModelInsertError!
+
+  """updates existing program_form_type"""
+  programFormTypeUpdate(programFormType: ProgramFormTypeUpdateGQLModel!): ProgramFormTypeGQLModelProgramFormTypeGQLModelUpdateError!
+
+  """delete existing program_form_type"""
+  programFormTypeDelete(programFormType: ProgramFormTypeDeleteGQLModel!): ProgramFormTypeGQLModelDeleteError
+}
+
+""""""
+interface ProgramFormTypeQuery {
+  """returns programform by its id"""
+  programFormById(id: UUID!): ProgramFormTypeGQLModel
+
+  """returns programforms defined by filter"""
+  programFormPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramFormTypeInputFilter = null): [ProgramFormTypeGQLModel!]!
+}
+
+"""parameter for update operation"""
+input ProgramFormTypeUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """name of the program_form_type"""
+  name: String = null
+}
+
+"""Program entity, represents an accredited study"""
+type ProgramGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """Name of program"""
+  name: String
+
+  """Eng. name of program"""
+  nameEn: String
+
+  """Program subjects"""
+  subjects(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+
+  """students"""
+  students(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+
+  """guarantors of programme"""
+  groupId: UUID
+
+  """guarantors of programme"""
+  guarantors: GroupGQLModel
+
+  """
+  Foreign key referencing the group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.
+  """
+  licencedGroupId: UUID
+
+  """
+  The group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.
+  """
+  licencedGroup: GroupGQLModel
+
+  """type of programme"""
+  typeId: UUID
+
+  """type of pragramme"""
+  type: ProgramTypeGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type ProgramGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ProgramGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ProgramGQLModelInsertError = ProgramGQLModel | InsertError
+
+union ProgramGQLModelProgramGQLModelUpdateError = ProgramGQLModel | ProgramGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type ProgramGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ProgramGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ProgramInputFilter"""
+input ProgramInputFilter {
+  """Filter method"""
+  _or: [ProgramInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ProgramInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""And operator definition on ProgramInputFilter"""
+input ProgramInputFilterAnd {
+  """Filter method"""
+  _or: [ProgramInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""Or operator definition on ProgramInputFilter"""
+input ProgramInputFilterOr {
+  """Filter method"""
+  _and: [ProgramInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""parameter for create operation"""
+input ProgramInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """name of the program"""
+  name: String = null
+
+  """name of the program"""
+  nameEn: String = null
+
+  """guarantors"""
+  groupId: UUID = null
+
+  """who is licenced to teach"""
+  licencedGroupId: UUID = null
+
+  """programme type"""
+  typeId: UUID = null
+}
+
+""""""
+interface ProgramLanguageQuery {
+  """returns programlanguage by its id"""
+  programLanguageById(id: UUID!): ProgramLanguageTypeGQLModel
+
+  """returns programlanguages defined by filter"""
+  programLanguagePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLanguageTypeInputFilter = null): [ProgramLanguageTypeGQLModel!]!
+}
+
+"""parameter for delete operation"""
+input ProgramLanguageTypeDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""language definition, often CZ or EN"""
+type ProgramLanguageTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name"""
+  name: String
+
+  """english name"""
+  nameEn: String
+}
+
+"""Error object returned as an result of Delete operation"""
+type ProgramLanguageTypeGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ProgramLanguageTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ProgramLanguageTypeGQLModelInsertError = ProgramLanguageTypeGQLModel | InsertError
+
+union ProgramLanguageTypeGQLModelProgramLanguageTypeGQLModelUpdateError = ProgramLanguageTypeGQLModel | ProgramLanguageTypeGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type ProgramLanguageTypeGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ProgramLanguageTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ProgramLanguageTypeInputFilter"""
+input ProgramLanguageTypeInputFilter {
+  """Filter method"""
+  _or: [ProgramLanguageTypeInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ProgramLanguageTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""And operator definition on ProgramLanguageTypeInputFilter"""
+input ProgramLanguageTypeInputFilterAnd {
+  """Filter method"""
+  _or: [ProgramLanguageTypeInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""Or operator definition on ProgramLanguageTypeInputFilter"""
+input ProgramLanguageTypeInputFilterOr {
+  """Filter method"""
+  _and: [ProgramLanguageTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""parameter for create operation"""
+input ProgramLanguageTypeInsertGQLModel {
+  """name of the program_language_type"""
+  name: String!
+
+  """primary key client generated"""
+  id: UUID = null
+}
+
+""""""
+interface ProgramLanguageTypeMutation {
+  """create a new program_language_type"""
+  programLanguageTypeInsert(programLanguageType: ProgramLanguageTypeInsertGQLModel!): ProgramLanguageTypeGQLModelInsertError!
+
+  """updates existing program_language_type"""
+  programLanguageTypeUpdate(programLanguageType: ProgramLanguageTypeUpdateGQLModel!): ProgramLanguageTypeGQLModelProgramLanguageTypeGQLModelUpdateError!
+
+  """delete existing program_language_type"""
+  programLanguageTypeDelete(programLanguageType: ProgramLanguageTypeDeleteGQLModel!): ProgramLanguageTypeGQLModelDeleteError
+}
+
+"""parameter for update operation"""
+input ProgramLanguageTypeUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """name of the program_language_type"""
+  name: String = null
+}
+
+""""""
+interface ProgramLevelQuery {
+  """returns programlevel by its id"""
+  programLevelById(id: UUID!): ProgramLevelTypeGQLModel
+
+  """returns programlevels defined by filter"""
+  programLevelPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLevelTypeInputFilter = null): [ProgramLevelTypeGQLModel!]!
+}
+
+"""parameter for delete operation"""
+input ProgramLevelTypeDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""determine Bc. / Mgr. / Ph.D."""
+type ProgramLevelTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name"""
+  name: String
+
+  """english name"""
+  nameEn: String
+
+  """how many years for standard study"""
+  length: Int
+
+  """1 for Bc., 2 for Mgr. or NMgr., 3 for Ph.D., etc."""
+  priority: Int
+}
+
+"""Error object returned as an result of Delete operation"""
+type ProgramLevelTypeGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ProgramLevelTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ProgramLevelTypeGQLModelInsertError = ProgramLevelTypeGQLModel | InsertError
+
+union ProgramLevelTypeGQLModelProgramLevelTypeGQLModelUpdateError = ProgramLevelTypeGQLModel | ProgramLevelTypeGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type ProgramLevelTypeGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ProgramLevelTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ProgramLevelTypeInputFilter"""
+input ProgramLevelTypeInputFilter {
+  """Filter method"""
+  _or: [ProgramLevelTypeInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ProgramLevelTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""And operator definition on ProgramLevelTypeInputFilter"""
+input ProgramLevelTypeInputFilterAnd {
+  """Filter method"""
+  _or: [ProgramLevelTypeInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""Or operator definition on ProgramLevelTypeInputFilter"""
+input ProgramLevelTypeInputFilterOr {
+  """Filter method"""
+  _and: [ProgramLevelTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""parameter for create operation"""
+input ProgramLevelTypeInsertGQLModel {
+  """name of the program_level_type"""
+  name: String!
+
+  """primary key client generated"""
+  id: UUID = null
+}
+
+""""""
+interface ProgramLevelTypeMutation {
+  """create a new program_level_type"""
+  programLevelTypeInsert(programLevelType: ProgramLevelTypeInsertGQLModel!): ProgramLevelTypeGQLModelInsertError!
+
+  """updates existing program_level_type"""
+  programLevelTypeUpdate(programLevelType: ProgramLevelTypeUpdateGQLModel!): ProgramLevelTypeGQLModelProgramLevelTypeGQLModelUpdateError!
+
+  """delete existing program_level_type"""
+  programLevelTypeDelete(programLevelType: ProgramLevelTypeDeleteGQLModel!): ProgramLevelTypeGQLModelDeleteError
+}
+
+"""parameter for update operation"""
+input ProgramLevelTypeUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """name of the program_level_type"""
+  name: String = null
+
+  """name of the program_level_type"""
+  nameEn: String = null
+
+  """length of the program_level_type"""
+  length: Int = null
+}
+
+"""set of mutations on ProgramGQLModel"""
+interface ProgramMutation {
+  """create a new program"""
+  programInsert(program: ProgramInsertGQLModel!): ProgramGQLModelInsertError!
+
+  """updates existing program"""
+  programUpdate(program: ProgramUpdateGQLModel!): ProgramGQLModelProgramGQLModelUpdateError!
+
+  """delete existing program"""
+  programDelete(program: ProgramDeleteGQLModel!): ProgramGQLModelDeleteError
+}
+
+""""""
+interface ProgramQuery {
+  """returns program by its id"""
+  programById(id: UUID!): ProgramGQLModel
+
+  """returns programs defined by filter"""
+  programPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramInputFilter = null): [ProgramGQLModel!]!
+}
+
+""""""
+interface ProgramTitleQuery {
+  """returns programtitle by its id"""
+  programTitleById(id: UUID!): ProgramTitleTypeGQLModel
+
+  """returns programtitles defined by filter"""
+  programTitlePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTitleTypeInputFilter = null): [ProgramTitleTypeGQLModel!]!
+}
+
+"""parameter for delete operation"""
+input ProgramTitleTypeDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""Specifies title if ended successfully"""
+type ProgramTitleTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name"""
+  name: String
+
+  """english name"""
+  nameEn: String
+}
+
+"""Error object returned as an result of Delete operation"""
+type ProgramTitleTypeGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ProgramTitleTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ProgramTitleTypeGQLModelInsertError = ProgramTitleTypeGQLModel | InsertError
+
+union ProgramTitleTypeGQLModelProgramTitleTypeGQLModelUpdateError = ProgramTitleTypeGQLModel | ProgramTitleTypeGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type ProgramTitleTypeGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ProgramTitleTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ProgramTitleTypeInputFilter"""
+input ProgramTitleTypeInputFilter {
+  """Filter method"""
+  _or: [ProgramTitleTypeInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ProgramTitleTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""And operator definition on ProgramTitleTypeInputFilter"""
+input ProgramTitleTypeInputFilterAnd {
+  """Filter method"""
+  _or: [ProgramTitleTypeInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""Or operator definition on ProgramTitleTypeInputFilter"""
+input ProgramTitleTypeInputFilterOr {
+  """Filter method"""
+  _and: [ProgramTitleTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+}
+
+"""parameter for create operation"""
+input ProgramTitleTypeInsertGQLModel {
+  """name of the program_title_type"""
+  name: String!
+
+  """primary key client generated"""
+  id: UUID = null
+}
+
+""""""
+interface ProgramTitleTypeMutation {
+  """create a new program_title_type"""
+  programTitleTypeInsert(programTitleType: ProgramTitleTypeInsertGQLModel!): ProgramTitleTypeGQLModelInsertError!
+
+  """updates existing program_title_type"""
+  programTitleTypeUpdate(programTitleType: ProgramTitleTypeUpdateGQLModel!): ProgramTitleTypeGQLModelProgramTitleTypeGQLModelUpdateError!
+
+  """delete existing program_title_type"""
+  programTitleTypeDelete(programTitleType: ProgramTitleTypeDeleteGQLModel!): ProgramTitleTypeGQLModelDeleteError
+}
+
+"""parameter for update operation"""
+input ProgramTitleTypeUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """name of the program_title_type"""
+  name: String = null
+
+  """name of the program_title_type"""
+  nameEn: String = null
+}
+
+"""parameter for delete operation"""
+input ProgramTypeDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""Unites attributes into single type"""
+type ProgramTypeGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """name"""
+  name: String
+
+  """english name"""
+  nameEn: String
+
+  """level of programme"""
+  levelId: UUID
+
+  """level of programme"""
+  levelType: ProgramLevelTypeGQLModel
+
+  """title given to student"""
+  titleId: UUID
+
+  """title given to student"""
+  titleType: ProgramTitleTypeGQLModel
+
+  """language used in programme"""
+  languageId: UUID
+
+  """language used in programme"""
+  languageType: ProgramLanguageTypeGQLModel
+
+  """teaching form, like presential, distance, etc."""
+  formId: UUID
+
+  """teaching form, like presential, distance, etc."""
+  formType: ProgramFormTypeGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type ProgramTypeGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: ProgramTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union ProgramTypeGQLModelInsertError = ProgramTypeGQLModel | InsertError
+
+union ProgramTypeGQLModelProgramTypeGQLModelUpdateError = ProgramTypeGQLModel | ProgramTypeGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type ProgramTypeGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: ProgramTypeGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on ProgramTypeInputFilter"""
+input ProgramTypeInputFilter {
+  """Filter method"""
+  _or: [ProgramTypeInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [ProgramTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+
+  """Filter method"""
+  level_id: UuidFilter = null
+
+  """Filter method"""
+  title_id: UuidFilter = null
+
+  """Filter method"""
+  language_id: UuidFilter = null
+
+  """Filter method"""
+  form_id: UuidFilter = null
+}
+
+"""And operator definition on ProgramTypeInputFilter"""
+input ProgramTypeInputFilterAnd {
+  """Filter method"""
+  _or: [ProgramTypeInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+
+  """Filter method"""
+  level_id: UuidFilter = null
+
+  """Filter method"""
+  title_id: UuidFilter = null
+
+  """Filter method"""
+  language_id: UuidFilter = null
+
+  """Filter method"""
+  form_id: UuidFilter = null
+}
+
+"""Or operator definition on ProgramTypeInputFilter"""
+input ProgramTypeInputFilterOr {
+  """Filter method"""
+  _and: [ProgramTypeInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  name_en: StrFilter = null
+
+  """Filter method"""
+  level_id: UuidFilter = null
+
+  """Filter method"""
+  title_id: UuidFilter = null
+
+  """Filter method"""
+  language_id: UuidFilter = null
+
+  """Filter method"""
+  form_id: UuidFilter = null
+}
+
+"""parameter for create operation"""
+input ProgramTypeInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """name of the program_type"""
+  name: String = null
+
+  """name of the program_type"""
+  nameEn: String = null
+
+  """level of programme"""
+  levelId: UUID = null
+
+  """title given to student"""
+  titleId: UUID = null
+
+  """language used in programme"""
+  languageId: UUID = null
+
+  """teaching form, like presential, distance, etc."""
+  formId: UUID = null
+}
+
+""""""
+interface ProgramTypeMutation {
+  """create a new program_type"""
+  programTypeInsert(programType: ProgramTypeInsertGQLModel!): ProgramTypeGQLModelInsertError!
+
+  """updates existing program_type"""
+  programTypeUpdate(programType: ProgramTypeUpdateGQLModel!): ProgramTypeGQLModelProgramTypeGQLModelUpdateError!
+
+  """delete existing program_type"""
+  programTypeDelete(programType: ProgramTypeDeleteGQLModel!): ProgramTypeGQLModelDeleteError
+}
+
+""""""
+interface ProgramTypeQuery {
+  """returns programtype by its id"""
+  programTypeById(id: UUID!): ProgramTypeGQLModel
+
+  """returns programtypes defined by filter"""
+  programTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTypeInputFilter = null): [ProgramTypeGQLModel!]!
+}
+
+"""parameter for update operation"""
+input ProgramTypeUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """name of the program_type"""
+  name: String = null
+
+  """name of the program_type"""
+  nameEn: String = null
+
+  """level of programme"""
+  levelId: UUID = null
+
+  """title given to student"""
+  titleId: UUID = null
+
+  """language used in programme"""
+  languageId: UUID = null
+
+  """teaching form, like presential, distance, etc."""
+  formId: UUID = null
+}
+
+"""parameter for update operation"""
+input ProgramUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """name of the program"""
+  name: String = null
+
+  """name of the program"""
+  nameEn: String = null
+
+  """guarantors"""
+  groupId: UUID = null
+
+  """who is licenced to teach"""
+  licencedGroupId: UUID = null
+
+  """programme type"""
+  typeId: UUID = null
+}
+
+type Query implements ProgramAllQuery & ProgramQuery & ProgramFormTypeQuery & ProgramLanguageQuery & ProgramLevelQuery & ProgramTitleQuery & ProgramTypeQuery & SemesterQuery & SubjectQuery & TopicQuery & LessonQuery & LessonTypeQuery & StudentAllQuery & StudentQuery & StudentDocumentQuery & PlanQuery & EvaluationQuery & ExamQuery & StudyPlanQuery & StudyPlanLessonQuery {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+
+  """returns program by its id"""
+  programById(id: UUID!): ProgramGQLModel
+
+  """returns programs defined by filter"""
+  programPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramInputFilter = null): [ProgramGQLModel!]!
+
+  """returns programform by its id"""
+  programFormById(id: UUID!): ProgramFormTypeGQLModel
+
+  """returns programforms defined by filter"""
+  programFormPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramFormTypeInputFilter = null): [ProgramFormTypeGQLModel!]!
+
+  """returns programlanguage by its id"""
+  programLanguageById(id: UUID!): ProgramLanguageTypeGQLModel
+
+  """returns programlanguages defined by filter"""
+  programLanguagePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLanguageTypeInputFilter = null): [ProgramLanguageTypeGQLModel!]!
+
+  """returns programlevel by its id"""
+  programLevelById(id: UUID!): ProgramLevelTypeGQLModel
+
+  """returns programlevels defined by filter"""
+  programLevelPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLevelTypeInputFilter = null): [ProgramLevelTypeGQLModel!]!
+
+  """returns programtitle by its id"""
+  programTitleById(id: UUID!): ProgramTitleTypeGQLModel
+
+  """returns programtitles defined by filter"""
+  programTitlePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTitleTypeInputFilter = null): [ProgramTitleTypeGQLModel!]!
+
+  """returns programtype by its id"""
+  programTypeById(id: UUID!): ProgramTypeGQLModel
+
+  """returns programtypes defined by filter"""
+  programTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTypeInputFilter = null): [ProgramTypeGQLModel!]!
+
+  """returns semester by its id"""
+  semesterById(id: UUID!): SemesterGQLModel
+
+  """returns semesters defined by filter"""
+  semesterPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+
+  """returns subject by its id"""
+  subjectById(id: UUID!): SubjectGQLModel
+
+  """returns subjects defined by filter"""
+  subjectPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+
+  """returns topic by its id"""
+  topicById(id: UUID!): TopicGQLModel
+
+  """returns topics defined by filter"""
+  topicPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+
+  """returns lesson by its id"""
+  lessonById(id: UUID!): LessonGQLModel
+
+  """returns lessons defined by filter"""
+  lessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+
+  """returns program by its id"""
+  lessonTypeById(id: UUID!): LessonTypeGQLModel
+
+  """returns programs defined by filter"""
+  lessonTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonTypeInputFilter = null): [LessonTypeGQLModel!]!
+
+  """returns student by its id"""
+  studentById(id: UUID!): StudentGQLModel
+
+  """returns students defined by filter"""
+  studentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+
+  """returns student_document by its id"""
+  studentDocumentById(id: UUID!): StudentDocumentGQLModel
+
+  """returns student_documents defined by filter"""
+  studentDocumentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentDocumentInputFilter = null): [StudentDocumentGQLModel!]!
+
+  """find an evaluation by its id"""
+  evaluationById(id: UUID!): EvaluationGQLModel
+
+  """list of evaluations"""
+  evaluationPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+
+  """Exam by it id"""
+  examById(id: UUID!): ExamGQLModel
+
+  """filtered exams"""
+  examPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+
+  """study plan"""
+  studyPlanById(id: UUID!): StudyPlanGQLModel
+
+  """filtered list of study plan"""
+  studyPlanPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+
+  """study plan lesson"""
+  studyPlanLessonById(id: UUID!): StudyPlanLessonGQLModel
+
+  """filtered list of study plan lessons"""
+  studyPlanLessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+}
+
+extend type RBACObjectGQLModel @key(fields: "id") {
+  id: UUID! @external
+}
+
+"""parameter for delete operation"""
+input SemesterDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""Semester entity, allows division of subject into smaller parts"""
+type SemesterGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """order in same subject"""
+  order: Int
+
+  """True if every student must pass this subject"""
+  mandatory: Boolean
+
+  """credits"""
+  credits: Int
+
+  """subject id"""
+  classificationtypeId: UUID
+
+  """subject id"""
+  subjectId: UUID
+
+  """subject"""
+  subject: SubjectGQLModel
+
+  """subjects vhcin must be studied at first"""
+  prerequisites: [SubjectGQLModel!]!
+
+  """Semester topics"""
+  topics(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+
+  """plans of study execution"""
+  plans(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+}
+
+"""Error object returned as an result of Delete operation"""
+type SemesterGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: SemesterGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union SemesterGQLModelInsertError = SemesterGQLModel | InsertError
+
+union SemesterGQLModelSemesterGQLModelUpdateError = SemesterGQLModel | SemesterGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type SemesterGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: SemesterGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on SemesterInputFilter"""
+input SemesterInputFilter {
+  """Filter method"""
+  _or: [SemesterInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [SemesterInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""And operator definition on SemesterInputFilter"""
+input SemesterInputFilterAnd {
+  """Filter method"""
+  _or: [SemesterInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""Or operator definition on SemesterInputFilter"""
+input SemesterInputFilterOr {
+  """Filter method"""
+  _and: [SemesterInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""parameter for create operation"""
+input SemesterInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """order in same subject"""
+  order: Int = null
+
+  """True if every student must pass this subject"""
+  mandatory: Boolean = null
+
+  """credits"""
+  credits: Int = null
+
+  """subject id"""
+  classificationtypeId: UUID = null
+
+  """subject id"""
+  subjectId: UUID = null
+}
+
+""""""
+interface SemesterMutation {
+  """create a new semester"""
+  semesterInsert(semester: SemesterInsertGQLModel!): SemesterGQLModelInsertError!
+
+  """updates existing semester"""
+  semesterUpdate(semester: SemesterUpdateGQLModel!): SemesterGQLModelSemesterGQLModelUpdateError!
+
+  """delete existing semester"""
+  semesterDelete(semester: SemesterDeleteGQLModel!): SemesterGQLModelDeleteError
+}
+
+""""""
+interface SemesterQuery {
+  """returns semester by its id"""
+  semesterById(id: UUID!): SemesterGQLModel
+
+  """returns semesters defined by filter"""
+  semesterPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+}
+
+"""parameter for update operation"""
+input SemesterUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """order in same subject"""
+  order: Int = null
+
+  """True if every student must pass this subject"""
+  mandatory: Boolean = null
+
+  """credits"""
+  credits: Int = null
+
+  """subject id"""
+  classificationtypeId: UUID = null
+
+  """subject id"""
+  subjectId: UUID = null
+}
+
+extend type StateGQLModel @key(fields: "id") {
+  id: UUID! @external
+}
+
+"""Str filter methods, only one constrain allowed"""
+input StrFilter {
+  """operation for select.filter() method"""
+  _eq: String = null
+
+  """operation for select.filter() method"""
+  _le: String = null
+
+  """operation for select.filter() method"""
+  _lt: String = null
+
+  """operation for select.filter() method"""
+  _ge: String = null
+
+  """operation for select.filter() method"""
+  _gt: String = null
+
+  """operation for select.filter() method"""
+  _like: String = null
+
+  """operation for select.filter() method"""
+  _ilike: String = null
+
+  """operation for select.filter() method"""
+  _startswith: String = null
+
+  """operation for select.filter() method"""
+  _endswith: String = null
+}
+
+interface StudentAllMutation implements StudentMutation & StudentDocumentMutation {
+  """create a new student"""
+  studentInsert(student: StudentInsertGQLModel!): StudentGQLModelInsertError!
+
+  """updates existing student"""
+  studentUpdate(student: StudentUpdateGQLModel!): StudentGQLModelStudentGQLModelUpdateError!
+
+  """delete existing student"""
+  studentDelete(student: StudentDeleteGQLModel!): StudentGQLModelDeleteError
+
+  """create a new student_document"""
+  studentDocumentInsert(studentDocument: StudentDocumentInsertGQLModel!): StudentDocumentGQLModelInsertError!
+
+  """updates existing student_document"""
+  studentDocumentUpdate(studentDocument: StudentDocumentUpdateGQLModel!): StudentDocumentGQLModelStudentDocumentGQLModelUpdateError!
+
+  """delete existing student_document"""
+  studentDocumentDelete(studentDocument: StudentDocumentDeleteGQLModel!): StudentDocumentGQLModelDeleteError
+}
+
+interface StudentAllQuery implements StudentQuery & StudentDocumentQuery {
+  """returns student by its id"""
+  studentById(id: UUID!): StudentGQLModel
+
+  """returns students defined by filter"""
+  studentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+
+  """returns student_document by its id"""
+  studentDocumentById(id: UUID!): StudentDocumentGQLModel
+
+  """returns student_documents defined by filter"""
+  studentDocumentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentDocumentInputFilter = null): [StudentDocumentGQLModel!]!
+}
+
+"""parameter for delete operation"""
+input StudentDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""parameter for delete operation"""
+input StudentDocumentDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""documents related to the student"""
+type StudentDocumentGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """description"""
+  description: String
+
+  """id of the student"""
+  studentId: UUID
+
+  """student"""
+  student: StudentGQLModel
+
+  """id of the document"""
+  documentId: UUID
+
+  """document"""
+  document: DocumentGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type StudentDocumentGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: StudentDocumentGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union StudentDocumentGQLModelInsertError = StudentDocumentGQLModel | InsertError
+
+union StudentDocumentGQLModelStudentDocumentGQLModelUpdateError = StudentDocumentGQLModel | StudentDocumentGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type StudentDocumentGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: StudentDocumentGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on StudentDocumentInputFilter"""
+input StudentDocumentInputFilter {
+  """Filter method"""
+  _or: [StudentDocumentInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [StudentDocumentInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+}
+
+"""And operator definition on StudentDocumentInputFilter"""
+input StudentDocumentInputFilterAnd {
+  """Filter method"""
+  _or: [StudentDocumentInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+}
+
+"""Or operator definition on StudentDocumentInputFilter"""
+input StudentDocumentInputFilterOr {
+  """Filter method"""
+  _and: [StudentDocumentInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+}
+
+"""parameter for create operation"""
+input StudentDocumentInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """description"""
+  description: String = null
+
+  """id of the student"""
+  studentId: UUID
+
+  """id of the document"""
+  documentId: UUID
+}
+
+""""""
+interface StudentDocumentMutation {
+  """create a new student_document"""
+  studentDocumentInsert(studentDocument: StudentDocumentInsertGQLModel!): StudentDocumentGQLModelInsertError!
+
+  """updates existing student_document"""
+  studentDocumentUpdate(studentDocument: StudentDocumentUpdateGQLModel!): StudentDocumentGQLModelStudentDocumentGQLModelUpdateError!
+
+  """delete existing student_document"""
+  studentDocumentDelete(studentDocument: StudentDocumentDeleteGQLModel!): StudentDocumentGQLModelDeleteError
+}
+
+""""""
+interface StudentDocumentQuery {
+  """returns student_document by its id"""
+  studentDocumentById(id: UUID!): StudentDocumentGQLModel
+
+  """returns student_documents defined by filter"""
+  studentDocumentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentDocumentInputFilter = null): [StudentDocumentGQLModel!]!
+}
+
+"""parameter for update operation"""
+input StudentDocumentUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """description"""
+  description: String = null
+
+  """id of the student"""
+  studentId: UUID = null
+
+  """id of the document"""
+  documentId: UUID = null
+}
+
+"""
+Connects an user with a program to define that somebody is studying a program.
+"""
+type StudentGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """id of the user"""
+  userId: UUID @relation(to: "UserGQLModel", field: "id")
+
+  """who is student"""
+  student: UserGQLModel
+
+  """the program which user is studying"""
+  programId: UUID @relation(to: "ProgramGQLModel", field: "id")
+
+  """which program student is studying"""
+  program: ProgramGQLModel
+
+  """in what state the student is"""
+  stateId: UUID
+
+  """semester of study"""
+  semesterNumber: Int
+
+  """State of the user study"""
+  state: StateGQLModel
+
+  """given grades"""
+  evaluations(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+}
+
+"""Error object returned as an result of Delete operation"""
+type StudentGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: StudentGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union StudentGQLModelInsertError = StudentGQLModel | InsertError
+
+union StudentGQLModelStudentGQLModelUpdateError = StudentGQLModel | StudentGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type StudentGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: StudentGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on StudentInputFilter"""
+input StudentInputFilter {
+  """Filter method"""
+  _or: [StudentInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [StudentInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  user_id: UuidFilter = null
+
+  """Filter method"""
+  program_id: UuidFilter = null
+
+  """Filter method"""
+  semester_number: IntFilter = null
+
+  """Filter method"""
+  state_id: UuidFilter = null
+}
+
+"""And operator definition on StudentInputFilter"""
+input StudentInputFilterAnd {
+  """Filter method"""
+  _or: [StudentInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  user_id: UuidFilter = null
+
+  """Filter method"""
+  program_id: UuidFilter = null
+
+  """Filter method"""
+  semester_number: IntFilter = null
+
+  """Filter method"""
+  state_id: UuidFilter = null
+}
+
+"""Or operator definition on StudentInputFilter"""
+input StudentInputFilterOr {
+  """Filter method"""
+  _and: [StudentInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  user_id: UuidFilter = null
+
+  """Filter method"""
+  program_id: UuidFilter = null
+
+  """Filter method"""
+  semester_number: IntFilter = null
+
+  """Filter method"""
+  state_id: UuidFilter = null
+}
+
+"""parameter for create operation"""
+input StudentInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """id of the user"""
+  userId: UUID
+
+  """id of the program"""
+  programId: UUID
+
+  """id of the state"""
+  stateId: UUID
+
+  """semester of study"""
+  semesterNumber: Int = null
+}
+
+""""""
+interface StudentMutation {
+  """create a new student"""
+  studentInsert(student: StudentInsertGQLModel!): StudentGQLModelInsertError!
+
+  """updates existing student"""
+  studentUpdate(student: StudentUpdateGQLModel!): StudentGQLModelStudentGQLModelUpdateError!
+
+  """delete existing student"""
+  studentDelete(student: StudentDeleteGQLModel!): StudentGQLModelDeleteError
+}
+
+""""""
+interface StudentQuery {
+  """returns student by its id"""
+  studentById(id: UUID!): StudentGQLModel
+
+  """returns students defined by filter"""
+  studentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+}
+
+"""parameter for update operation"""
+input StudentUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """id of the user"""
+  userId: UUID = null
+
+  """id of the program"""
+  programId: UUID = null
+
+  """id of the state"""
+  stateId: UUID = null
+
+  """semester of study"""
+  semesterNumber: Int = null
+}
+
+"""set of lessons / events in the specified semester"""
+type StudyPlanGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """ID of Semester to which the plan is related"""
+  semesterId: UUID
+
+  """Semester to which the plan is related"""
+  semester: SemesterGQLModel
+
+  """ID of classification conditions"""
+  examId: UUID
+
+  """part of study plan"""
+  lessons(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+
+  """Exam Rules"""
+  exam: ExamGQLModel
+
+  """Time period when the plan will live"""
+  eventId: UUID
+
+  """Time period when the plan will live"""
+  event: EventGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type StudyPlanGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: StudyPlanGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union StudyPlanGQLModelInsertError = StudyPlanGQLModel | InsertError
+
+union StudyPlanGQLModelStudyPlanGQLModelUpdateError = StudyPlanGQLModel | StudyPlanGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type StudyPlanGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: StudyPlanGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on StudyPlanInputFilter"""
+input StudyPlanInputFilter {
+  """Filter method"""
+  _or: [StudyPlanInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [StudyPlanInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  semester_id: UuidFilter = null
+
+  """Filter method"""
+  exam_id: UuidFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+}
+
+"""And operator definition on StudyPlanInputFilter"""
+input StudyPlanInputFilterAnd {
+  """Filter method"""
+  _or: [StudyPlanInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  semester_id: UuidFilter = null
+
+  """Filter method"""
+  exam_id: UuidFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+}
+
+"""Or operator definition on StudyPlanInputFilter"""
+input StudyPlanInputFilterOr {
+  """Filter method"""
+  _and: [StudyPlanInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  semester_id: UuidFilter = null
+
+  """Filter method"""
+  exam_id: UuidFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+}
+
+"""parameter for create"""
+input StudyPlanInsertGQLModel {
+  """optional client generated primary key value"""
+  id: UUID = null
+
+  """Semester to which teh plan is linked."""
+  semesterId: UUID = null
+
+  """Exam Rules"""
+  examId: UUID = null
+
+  """Time period when the plan will live"""
+  eventId: UUID = null
+}
+
+"""parameter for adding or removing the facility from lesson plan"""
+input StudyPlanLessonAddRemoveFacility {
+  """study plan primary key"""
+  planitemId: UUID!
+
+  """facility primary key"""
+  facilityId: UUID!
+}
+
+"""parameter for adding or removing the instructor from lesson plan"""
+input StudyPlanLessonAddRemoveInstructor {
+  """study plan primary key"""
+  planitemId: UUID!
+
+  """instructor primary key"""
+  userId: UUID!
+}
+
+"""parameter for adding or removing the study group from lesson plan"""
+input StudyPlanLessonAddRemoveStudyGroup {
+  """study plan primary key"""
+  planitemId: UUID!
+
+  """group primary key"""
+  groupId: UUID!
+}
+
+"""parameter for delete"""
+input StudyPlanLessonDeleteGQLModel {
+  """id of the study_plan_lesson to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+}
+
+"""On row in studyplan"""
+type StudyPlanLessonGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """order in plan"""
+  order: Int
+
+  """lesson name"""
+  name: String
+
+  """lesson name in english"""
+  nameEn: String
+
+  """length in fictive units"""
+  length: Int
+
+  """id of event which has been planed for this lesson"""
+  eventId: UUID
+
+  """event which has been planed for this lesson"""
+  event: EventGQLModel
+
+  """Topic to which the Lesson is related"""
+  topicId: UUID
+
+  """Topic to which the Lesson is related"""
+  topic: TopicGQLModel
+
+  """Lesson type"""
+  lessontypeId: UUID
+
+  """type of the lesson"""
+  lessontype: LessonTypeGQLModel
+
+  """key to describe integration with other planned lessons"""
+  linkedWithId: UUID
+
+  """Plan which owns this lesson"""
+  planId: UUID
+
+  """the plan to which this lesson belongs"""
+  plan: StudyPlanGQLModel
+
+  """list of linked othe planned lessons"""
+  linkedWith: [StudyPlanLessonGQLModel!]!
+
+  """whos teach the lesson"""
+  instructors: [UserGQLModel!]!
+
+  """study groups"""
+  studyGroups: [GroupGQLModel!]!
+
+  """places for this lesson"""
+  facilities: [FacilityGQLModel!]!
+}
+
+"""Error object returned as an result of Delete operation"""
+type StudyPlanLessonGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: StudyPlanLessonGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union StudyPlanLessonGQLModelInsertError = StudyPlanLessonGQLModel | InsertError
+
+union StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError = StudyPlanLessonGQLModel | StudyPlanLessonGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type StudyPlanLessonGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: StudyPlanLessonGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on StudyPlanLessonInputFilter"""
+input StudyPlanLessonInputFilter {
+  """Filter method"""
+  _or: [StudyPlanLessonInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [StudyPlanLessonInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  order: IntFilter = null
+
+  """Filter method"""
+  length: IntFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+
+  """Filter method"""
+  topic_id: UuidFilter = null
+
+  """Filter method"""
+  linked_with_id: UuidFilter = null
+}
+
+"""And operator definition on StudyPlanLessonInputFilter"""
+input StudyPlanLessonInputFilterAnd {
+  """Filter method"""
+  _or: [StudyPlanLessonInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  order: IntFilter = null
+
+  """Filter method"""
+  length: IntFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+
+  """Filter method"""
+  topic_id: UuidFilter = null
+
+  """Filter method"""
+  linked_with_id: UuidFilter = null
+}
+
+"""Or operator definition on StudyPlanLessonInputFilter"""
+input StudyPlanLessonInputFilterOr {
+  """Filter method"""
+  _and: [StudyPlanLessonInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+
+  """Filter method"""
+  order: IntFilter = null
+
+  """Filter method"""
+  length: IntFilter = null
+
+  """Filter method"""
+  event_id: UuidFilter = null
+
+  """Filter method"""
+  topic_id: UuidFilter = null
+
+  """Filter method"""
+  linked_with_id: UuidFilter = null
+}
+
+"""parameter for create"""
+input StudyPlanLessonInsertGQLModel {
+  """The identifier of the study plan that this lesson belongs to."""
+  planId: UUID!
+
+  """
+  The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.
+  """
+  lessontypeId: UUID!
+
+  """The identifier of the topic associated with this study plan lesson."""
+  topicId: UUID!
+
+  """
+  Optional identifier of an event linked to this study plan lesson (if applicable).
+  """
+  eventId: UUID = null
+
+  """
+  Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).
+  """
+  linkedWithId: UUID = null
+
+  """The localized name of the study plan lesson."""
+  name: String = null
+
+  """The English name of the study plan lesson."""
+  nameEn: String = null
+
+  """
+  The duration or length of the study plan lesson, expressed in virtual units.
+  """
+  length: Int = null
+
+  """order in plan"""
+  order: Int = null
+
+  """optional client generated primary key value"""
+  id: UUID = null
+}
+
+""""""
+interface StudyPlanLessonMutation {
+  """inserts a new study_plan_lesson"""
+  studyPlanLessonInsert(studyPlanLesson: StudyPlanLessonInsertGQLModel!): StudyPlanLessonGQLModelInsertError!
+
+  """updates an existing evaluatio"""
+  studyPlanLessonUpdate(studyPlanLesson: StudyPlanLessonUpdateGQLModel!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """deletes an existing study_plan_lesson"""
+  studyPlanLessonDelete(studyPlanLesson: StudyPlanLessonDeleteGQLModel!): StudyPlanLessonGQLModelDeleteError
+
+  """"""
+  studyPlanLessonAddInstructor(studyPlanLesson: StudyPlanLessonAddRemoveInstructor!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveInstructor(studyPlanLesson: StudyPlanLessonAddRemoveInstructor!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonAddFacility(studyPlanLesson: StudyPlanLessonAddRemoveFacility!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveFacility(studyPlanLesson: StudyPlanLessonAddRemoveFacility!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonAddGroup(studyPlanLesson: StudyPlanLessonAddRemoveStudyGroup!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+
+  """"""
+  studyPlanLessonRemoveGroup(studyPlanLesson: StudyPlanLessonAddRemoveStudyGroup!): StudyPlanLessonGQLModelStudyPlanLessonGQLModelUpdateError!
+}
+
+interface StudyPlanLessonQuery {
+  """study plan lesson"""
+  studyPlanLessonById(id: UUID!): StudyPlanLessonGQLModel
+
+  """filtered list of study plan lessons"""
+  studyPlanLessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+}
+
+"""parameter for update"""
+input StudyPlanLessonUpdateGQLModel {
+  """id of the study_plan_lesson to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+
+  """
+  The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.
+  """
+  lessontypeId: UUID = null
+
+  """The identifier of the topic associated with this study plan lesson."""
+  topicId: UUID = null
+
+  """
+  Optional identifier of an event linked to this study plan lesson (if applicable).
+  """
+  eventId: UUID = null
+
+  """
+  Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).
+  """
+  linkedWithId: UUID = null
+
+  """The localized name of the study plan lesson."""
+  name: String = null
+
+  """The English name of the study plan lesson."""
+  nameEn: String = null
+
+  """
+  The duration or length of the study plan lesson, expressed in virtual units.
+  """
+  length: Int = null
+
+  """order in plan"""
+  order: Int = null
+}
+
+""""""
+interface StudyPlanMutation {
+  """inserts a new studyplan"""
+  studyPlanInsert(studyPlan: StudyPlanInsertGQLModel!): StudyPlanGQLModelInsertError!
+
+  """updates an existing studyplan"""
+  studyPlanUpdate(studyPlan: StudyPlanUpdateGQLModel!): StudyPlanGQLModelStudyPlanGQLModelUpdateError!
+
+  """deletes an existing studyplan"""
+  studyPlanDelete(studyPlan: StudyPlanUpdateGQLModel!): StudyPlanGQLModelDeleteError
+}
+
+interface StudyPlanQuery {
+  """study plan"""
+  studyPlanById(id: UUID!): StudyPlanGQLModel
+
+  """filtered list of study plan"""
+  studyPlanPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+}
+
+"""parameter for update"""
+input StudyPlanUpdateGQLModel {
+  """id of the studyplan to update"""
+  id: UUID!
+
+  """timestamp for concurent update"""
+  lastchange: DateTime!
+
+  """Semester to which teh plan is linked."""
+  semesterId: UUID = null
+
+  """Exam Rules"""
+  examId: UUID = null
+
+  """Time period when the plan will live"""
+  eventId: UUID = null
+}
+
+"""parameter for delete operation"""
+input SubjectDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""Subject entity"""
+type SubjectGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """subject name"""
+  name: String
+
+  """subject name in english"""
+  nameEn: String
+
+  """subject description"""
+  description: String
+
+  """subject description in english"""
+  descriptionEn: String
+
+  """program id"""
+  programId: UUID
+
+  """program entity"""
+  program: ProgramGQLModel
+
+  """subject semesters"""
+  semesters(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+
+  """guarantors of programme"""
+  groupId: UUID
+
+  """guarantors of programme"""
+  guarantors: GroupGQLModel
+}
+
+"""Error object returned as an result of Delete operation"""
+type SubjectGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: SubjectGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union SubjectGQLModelInsertError = SubjectGQLModel | InsertError
+
+union SubjectGQLModelSubjectGQLModelUpdateError = SubjectGQLModel | SubjectGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type SubjectGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: SubjectGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on SubjectInputFilter"""
+input SubjectInputFilter {
+  """Filter method"""
+  _or: [SubjectInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [SubjectInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""And operator definition on SubjectInputFilter"""
+input SubjectInputFilterAnd {
+  """Filter method"""
+  _or: [SubjectInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""Or operator definition on SubjectInputFilter"""
+input SubjectInputFilterOr {
+  """Filter method"""
+  _and: [SubjectInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""parameter for create operation"""
+input SubjectInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """subject name"""
+  name: String = null
+
+  """subject name in english"""
+  nameEn: String = null
+
+  """subject description"""
+  description: String = null
+
+  """subject description in english"""
+  descriptionEn: String = null
+
+  """program id"""
+  programId: UUID = null
+
+  """guarantors of programme"""
+  groupId: UUID = null
+}
+
+""""""
+interface SubjectMutation {
+  """create a new subject"""
+  subjectInsert(subject: SubjectInsertGQLModel!): SubjectGQLModelInsertError!
+
+  """updates existing subject"""
+  subjectUpdate(subject: SubjectUpdateGQLModel!): SubjectGQLModelSubjectGQLModelUpdateError!
+
+  """delete existing subject"""
+  subjectDelete(subject: SubjectDeleteGQLModel!): SubjectGQLModelDeleteError
+}
+
+""""""
+interface SubjectQuery {
+  """returns subject by its id"""
+  subjectById(id: UUID!): SubjectGQLModel
+
+  """returns subjects defined by filter"""
+  subjectPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+}
+
+"""parameter for update operation"""
+input SubjectUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """subject name"""
+  name: String = null
+
+  """subject name in english"""
+  nameEn: String = null
+
+  """subject description"""
+  description: String = null
+
+  """subject description in english"""
+  descriptionEn: String = null
+
+  """program id"""
+  programId: UUID = null
+
+  """guarantors of programme"""
+  groupId: UUID = null
+}
+
+"""parameter for delete operation"""
+input TopicDeleteGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+}
+
+"""Topic entity"""
+type TopicGQLModel implements BaseGQLModel @key(fields: "id") {
+  """primary key"""
+  id: UUID!
+
+  """timestamp"""
+  lastchange: DateTime
+
+  """date & time of unit born"""
+  created: DateTime
+
+  """who created this entity"""
+  createdbyId: UUID
+
+  """who changed this entity"""
+  changedbyId: UUID
+
+  """rbac ruling object"""
+  rbacobjectId: UUID
+
+  """who created this entity"""
+  createdby: UserGQLModel
+
+  """who created this entity"""
+  changedby: UserGQLModel
+
+  """rbac holds relations of user"""
+  rbacobject: RBACObjectGQLModel
+
+  """topic name"""
+  name: String
+
+  """topic name"""
+  nameEn: String
+
+  """topic name"""
+  order: Int
+
+  """topic description"""
+  description: String
+
+  """semester id"""
+  semesterId: UUID
+
+  """semester"""
+  semester: SemesterGQLModel
+
+  """lessons"""
+  lessons(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+}
+
+"""Error object returned as an result of Delete operation"""
+type TopicGQLModelDeleteError {
+  """Entity to be updated"""
+  Entity: TopicGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+union TopicGQLModelInsertError = TopicGQLModel | InsertError
+
+union TopicGQLModelTopicGQLModelUpdateError = TopicGQLModel | TopicGQLModelUpdateError
+
+"""Error object returned as an result of Update operation"""
+type TopicGQLModelUpdateError {
+  """Entity to be updated"""
+  Entity: TopicGQLModel
+
+  """reason of fail"""
+  msg: String!
+
+  """always True, available when error"""
+  failed: Boolean!
+
+  """original data"""
+  input: JSON
+}
+
+"""Operators definition on TopicInputFilter"""
+input TopicInputFilter {
+  """Filter method"""
+  _or: [TopicInputFilterOr!] = null
+
+  """Filter method"""
+  _and: [TopicInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""And operator definition on TopicInputFilter"""
+input TopicInputFilterAnd {
+  """Filter method"""
+  _or: [TopicInputFilterOr!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""Or operator definition on TopicInputFilter"""
+input TopicInputFilterOr {
+  """Filter method"""
+  _and: [TopicInputFilterAnd!] = null
+
+  """Filter method"""
+  id: UuidFilter = null
+
+  """Filter method"""
+  name: StrFilter = null
+}
+
+"""parameter for create operation"""
+input TopicInsertGQLModel {
+  """primary key client generated"""
+  id: UUID = null
+
+  """topic name"""
+  name: String = null
+
+  """topic name"""
+  nameEn: String = null
+
+  """topic name"""
+  order: Int = null
+
+  """topic description"""
+  description: String = null
+
+  """semester id"""
+  semesterId: UUID = null
+}
+
+""""""
+interface TopicMutation {
+  """create a new topic"""
+  topicInsert(topic: TopicInsertGQLModel!): TopicGQLModelInsertError!
+
+  """updates existing topic"""
+  topicUpdate(topic: TopicUpdateGQLModel!): TopicGQLModelTopicGQLModelUpdateError!
+
+  """delete existing topic"""
+  topicDelete(topic: TopicDeleteGQLModel!): TopicGQLModelDeleteError
+}
+
+""""""
+interface TopicQuery {
+  """returns topic by its id"""
+  topicById(id: UUID!): TopicGQLModel
+
+  """returns topics defined by filter"""
+  topicPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+}
+
+"""parameter for update operation"""
+input TopicUpdateGQLModel {
+  """primary key client generated"""
+  id: UUID!
+
+  """timestamp for concurrent update"""
+  lastchange: DateTime!
+
+  """topic name"""
+  name: String = null
+
+  """topic name"""
+  nameEn: String = null
+
+  """topic name"""
+  order: Int = null
+
+  """topic description"""
+  description: String = null
+
+  """semester id"""
+  semesterId: UUID = null
+}
+
+scalar UUID
+
+extend type UserGQLModel @key(fields: "id") {
+  id: UUID! @external
+
+  """studies, aka what user is studying (with state)"""
+  studies(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+}
+
+"""Integer filter methods, only one constrain allowed"""
+input UuidFilter {
+  """operation for select.filter() method"""
+  _eq: UUID = null
+
+  """operation for select.filter() method"""
+  _in: [UUID!] = null
+}
+
+scalar _Any
+
+union _Entity = DocumentGQLModel | EvaluationGQLModel | EventGQLModel | ExamGQLModel | GroupGQLModel | LessonGQLModel | LessonTypeGQLModel | ProgramFormTypeGQLModel | ProgramGQLModel | ProgramLanguageTypeGQLModel | ProgramLevelTypeGQLModel | ProgramTitleTypeGQLModel | ProgramTypeGQLModel | RBACObjectGQLModel | SemesterGQLModel | StudentDocumentGQLModel | StudentGQLModel | StudyPlanGQLModel | StudyPlanLessonGQLModel | SubjectGQLModel | TopicGQLModel | UserGQLModel
+
+type _Service {
+  sdl: String!
+}

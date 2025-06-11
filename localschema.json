@@ -1,0 +1,359 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ProgramInputFilter",
+    "type": "object",
+    "description": "Operators definition on ProgramInputFilter",
+    "properties": {
+        "_or": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "$ref": "#/definitions/ProgramInputFilterOr"
+            },
+            "description": "Filter method"
+        },
+        "_and": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "$ref": "#/definitions/ProgramInputFilterAnd"
+            },
+            "description": "Filter method"
+        },
+        "id": {
+            "$ref": "#/definitions/UuidFilter",
+            "description": "Filter method"
+        },
+        "name": {
+            "$ref": "#/definitions/StrFilter",
+            "description": "Filter method"
+        }
+    },
+    "definitions": {
+        "ProgramInputFilter": {
+            "type": "object",
+            "description": "Operators definition on ProgramInputFilter",
+            "properties": {
+                "_or": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/ProgramInputFilterOr"
+                    },
+                    "description": "Filter method"
+                },
+                "_and": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/ProgramInputFilterAnd"
+                    },
+                    "description": "Filter method"
+                },
+                "id": {
+                    "$ref": "#/definitions/UuidFilter",
+                    "description": "Filter method"
+                },
+                "name": {
+                    "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_or"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_and"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "id"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "ProgramInputFilterOr": {
+            "type": "object",
+            "description": "Or operator definition on ProgramInputFilter",
+            "properties": {
+                "_and": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/ProgramInputFilterAnd"
+                    },
+                    "description": "Filter method"
+                },
+                "id": {
+                    "$ref": "#/definitions/UuidFilter",
+                    "description": "Filter method"
+                },
+                "name": {
+                    "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_and"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "id"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "ProgramInputFilterAnd": {
+            "type": "object",
+            "description": "And operator definition on ProgramInputFilter",
+            "properties": {
+                "_or": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/ProgramInputFilterOr"
+                    },
+                    "description": "Filter method"
+                },
+                "id": {
+                    "$ref": "#/definitions/UuidFilter",
+                    "description": "Filter method"
+                },
+                "name": {
+                    "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_or"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "id"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "UuidFilter": {
+            "type": "object",
+            "description": "Integer filter methods, only one constrain allowed",
+            "properties": {
+                "_eq": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "uuid",
+                    "description": "operation for select.filter() method"
+                },
+                "_in": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "description": "operation for select.filter() method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_eq"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_in"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "StrFilter": {
+            "type": "object",
+            "description": "Str filter methods, only one constrain allowed",
+            "properties": {
+                "_eq": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_le": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_lt": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_ge": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_gt": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_like": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_ilike": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_startswith": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                },
+                "_endswith": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "operation for select.filter() method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_eq"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_le"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_lt"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_ge"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_gt"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_like"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_ilike"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_startswith"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_endswith"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        }
+    },
+    "additionalProperties": false
+}

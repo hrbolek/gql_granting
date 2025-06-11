@@ -40,7 +40,7 @@ class ProgramFormTypeInputFilter:
     name_en: str
 
 @strawberry.federation.type(
-    description="",
+    description="Describes the form of Program, something like Distant",
     keys=["id"]
 )
 class ProgramFormTypeGQLModel(BaseGQLModel):

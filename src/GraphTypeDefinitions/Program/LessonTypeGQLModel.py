@@ -50,6 +50,7 @@ class LessonTypeGQLModel(BaseGQLModel):
 
     name: typing.Optional[str] = strawberry.field(
         description="name",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -57,6 +58,7 @@ class LessonTypeGQLModel(BaseGQLModel):
 
     name_en: typing.Optional[str] = strawberry.field(
         description="english name",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -64,6 +66,7 @@ class LessonTypeGQLModel(BaseGQLModel):
 
     abbr: typing.Optional[str] = strawberry.field(
         description="abbreviation",
+        default=None,
         permission_classes=[
             OnlyForAuthentized
         ]

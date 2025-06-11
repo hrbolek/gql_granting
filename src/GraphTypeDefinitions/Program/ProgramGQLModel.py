@@ -195,12 +195,15 @@ class ProgramDeleteGQLModel:
 
 
 @strawberry.interface(
-    description=""
+    description="set of mutations on ProgramGQLModel"
 )
 class ProgramMutation:
 
     @strawberry.mutation(
-        description="create a new program"
+        description="create a new program",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
     )
     async def program_insert(self, info: strawberry.types.Info, program: ProgramInsertGQLModel) -> typing.Union[ProgramGQLModel, InsertError[ProgramGQLModel]]:
         result = await Insert[ProgramGQLModel].DoItSafeWay(info=info, entity=program)

@@ -159,12 +159,12 @@ class ProgramTypeQuery:
 )
 class ProgramTypeInsertGQLModel:
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
-    name: typing.Optional[str] = strawberry.field(description="name of the program_type")
-    name_en: typing.Optional[str] = strawberry.field(description="name of the program_type")
-    level_id: typing.Optional[IDType] = strawberry.field(description="level of programme")
-    title_id: typing.Optional[IDType] = strawberry.field(description="title given to student")
-    language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme")
-    form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.")
+    name: typing.Optional[str] = strawberry.field(description="name of the program_type", default=None)
+    name_en: typing.Optional[str] = strawberry.field(description="name of the program_type", default=None)
+    level_id: typing.Optional[IDType] = strawberry.field(description="level of programme", default=None)
+    title_id: typing.Optional[IDType] = strawberry.field(description="title given to student", default=None)
+    language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme", default=None)
+    form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.", default=None)
 
 
 
@@ -174,12 +174,12 @@ class ProgramTypeInsertGQLModel:
 class ProgramTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    name: typing.Optional[str] = strawberry.field(description="name of the program_type")
-    name_en: typing.Optional[str] = strawberry.field(description="name of the program_type")
-    level_id: typing.Optional[IDType] = strawberry.field(description="level of programme")
-    title_id: typing.Optional[IDType] = strawberry.field(description="title given to student")
-    language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme")
-    form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.")
+    name: typing.Optional[str] = strawberry.field(description="name of the program_type", default=None)
+    name_en: typing.Optional[str] = strawberry.field(description="name of the program_type", default=None)
+    level_id: typing.Optional[IDType] = strawberry.field(description="level of programme", default=None)
+    title_id: typing.Optional[IDType] = strawberry.field(description="title given to student", default=None)
+    language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme", default=None)
+    form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.", default=None)
 
 @strawberry.input(
     description="parameter for delete operation"

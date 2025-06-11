@@ -114,7 +114,7 @@ class StudentDocumentQuery:
 )
 class StudentDocumentInsertGQLModel:
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
-    description: typing.Optional[str] = strawberry.field(description="description")
+    description: typing.Optional[str] = strawberry.field(description="description", default=None)
     student_id: typing.Optional[IDType] = strawberry.field(description="id of the student")
     document_id: typing.Optional[IDType] = strawberry.field(description="id of the document")
 
@@ -126,9 +126,9 @@ class StudentDocumentInsertGQLModel:
 class StudentDocumentUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    description: typing.Optional[str] = strawberry.field(description="description")
-    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student")
-    document_id: typing.Optional[IDType] = strawberry.field(description="id of the document")
+    description: typing.Optional[str] = strawberry.field(description="description", default=None)
+    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student", default=None)
+    document_id: typing.Optional[IDType] = strawberry.field(description="id of the document", default=None)
     
 @strawberry.input(
     description="parameter for delete operation"
