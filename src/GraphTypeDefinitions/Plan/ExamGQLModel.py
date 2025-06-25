@@ -308,7 +308,8 @@ class ExamMutation:
         from .StudyPlanGQLModel import StudyPlanGQLModel, StudyPlanUpdateGQLModel
         if exam.plan_id is None:
             return result
-        planEntity = StudyPlanUpdateGQLModel(id=exam.plan_id, exam_id=result.id)
+        planRow = await StudyPlanGQLModel.load_with_loader(info=info, id=exam.plan_id)
+        planEntity = StudyPlanUpdateGQLModel(id=exam.plan_id, exam_id=result.id, lastchange=planRow.lastchange)
         planResult = await Update[StudyPlanGQLModel].DoItSafeWay(info=info, entity=planEntity)
         if getattr(planResult, "failed", False):
             return InsertError[ExamGQLModel](
