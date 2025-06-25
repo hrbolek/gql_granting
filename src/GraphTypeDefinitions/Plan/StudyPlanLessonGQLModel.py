@@ -434,7 +434,7 @@ class StudyPlanLessonMutation:
     async def study_plan_lesson_add_facility(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveFacility) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemFacilityModel
-        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, group_id=study_plan_lesson.group_id)
+        rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
         row = next(rows, None)
         if row:
             return UpdateError[StudyPlanLessonGQLModel](

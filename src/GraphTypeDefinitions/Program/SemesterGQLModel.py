@@ -132,16 +132,30 @@ class SemesterQuery:
         resolver=PageResolver["SemesterGQLModel"](whereType=SemesterInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class SemesterInsertGQLModel:
-    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
-    order: typing.Optional[int] = strawberry.field(description="order in same subject", default=None)
-    mandatory: typing.Optional[bool] = strawberry.field(description="True if every student must pass this subject", default=None)
-    credits: typing.Optional[int] = strawberry.field(description="credits", default=None)
-    classificationtype_id: typing.Optional[IDType] = strawberry.field(description="subject id", default=None)
-    subject_id: typing.Optional[IDType] = strawberry.field(description="subject id", default=None)
+class SemesterInsertGQLModel(InputModelMixin):
+    id: typing.Optional[IDType] = strawberry.field(
+        description="primary key client generated", default=None)
+    order: typing.Optional[int] = strawberry.field(
+        description="order in same subject", default=None)
+    mandatory: typing.Optional[bool] = strawberry.field(
+        description="True if every student must pass this subject", default=None)
+    credits: typing.Optional[int] = strawberry.field(
+        description="credits", default=None)
+    classificationtype_id: typing.Optional[IDType] = strawberry.field(
+        description="subject id", default=None)
+    subject_id: typing.Optional[IDType] = strawberry.field(
+        description="subject id", default=None)
+
+    from .TopicGQLModel import TopicInsertGQLModel
+    topics: typing.Optional[typing.List[TopicInsertGQLModel]] = strawberry.field(
+        description="topics of semester",
+        default_factory=list,
+    )
+
 
 
 

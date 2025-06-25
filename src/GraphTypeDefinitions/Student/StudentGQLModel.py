@@ -156,8 +156,6 @@ class StudentInsertGQLModel:
     state_id: typing.Optional[IDType] = strawberry.field(description="id of the state")
     semester_number: typing.Optional[int] = strawberry.field(description="semester of study", default=None)
 
-
-
 @strawberry.input(
     description="parameter for update operation"
 )

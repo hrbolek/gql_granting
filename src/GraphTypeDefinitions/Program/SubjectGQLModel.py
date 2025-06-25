@@ -128,17 +128,30 @@ class SubjectQuery:
         resolver=PageResolver["SubjectGQLModel"](whereType=SubjectInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class SubjectInsertGQLModel:
-    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
-    name: typing.Optional[str] = strawberry.field(description="subject name", default=None)
-    name_en: typing.Optional[str] = strawberry.field(description="subject name in english", default=None)
-    description: typing.Optional[str] = strawberry.field(description="subject description", default=None)
-    description_en: typing.Optional[str] = strawberry.field(description="subject description in english", default=None)
-    program_id: typing.Optional[IDType] = strawberry.field(description="program id", default=None)
-    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme", default=None)
+class SubjectInsertGQLModel(InputModelMixin):
+    id: typing.Optional[IDType] = strawberry.field(
+        description="primary key client generated", default=None)
+    name: typing.Optional[str] = strawberry.field(
+        description="subject name", default=None)
+    name_en: typing.Optional[str] = strawberry.field(
+        description="subject name in english", default=None)
+    description: typing.Optional[str] = strawberry.field(
+        description="subject description", default=None)
+    description_en: typing.Optional[str] = strawberry.field(
+        description="subject description in english", default=None)
+    program_id: typing.Optional[IDType] = strawberry.field(
+        description="program id", default=None)
+    group_id: typing.Optional[IDType] = strawberry.field(
+        description="guarantors of programme", default=None)
+    from .SemesterGQLModel import SemesterInsertGQLModel
+    semesters: typing.Optional[typing.List[SemesterInsertGQLModel]] = strawberry.field(
+        description="semesters of subject",
+        default_factory=list,
+    )
 
 
 @strawberry.input(

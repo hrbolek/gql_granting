@@ -111,16 +111,29 @@ class TopicQuery:
         resolver=PageResolver["TopicGQLModel"](whereType=TopicInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class TopicInsertGQLModel:
-    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
-    name: typing.Optional[str] = strawberry.field(description="topic name", default=None)
-    name_en: typing.Optional[str] = strawberry.field(description="topic name", default=None)
-    order: typing.Optional[int] = strawberry.field(description="topic name", default=None)
-    description: typing.Optional[str] = strawberry.field(description="topic description", default=None)
-    semester_id: typing.Optional[IDType] = strawberry.field(description="semester id", default=None)
+class TopicInsertGQLModel(InputModelMixin):
+    id: typing.Optional[IDType] = strawberry.field(
+        description="primary key client generated", default=None)
+    name: typing.Optional[str] = strawberry.field(
+        description="topic name", default=None)
+    name_en: typing.Optional[str] = strawberry.field(
+        description="topic name", default=None)
+    order: typing.Optional[int] = strawberry.field(
+        description="topic name", default=None)
+    description: typing.Optional[str] = strawberry.field(
+        description="topic description", default=None)
+    semester_id: typing.Optional[IDType] = strawberry.field(
+        description="semester id", default=None)
+
+    from .LessonGQLModel import LessonInsertGQLModel
+    lessons: typing.Optional[typing.List[LessonInsertGQLModel]] = strawberry.field(
+        description="lessons",
+        default_factory=list,
+    )
     
 
 

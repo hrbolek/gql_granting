@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .BaseModel import BaseModel, UUIDColumn, UUIDFKey, IDType
 
@@ -10,3 +10,15 @@ class LessonModel(BaseModel):
     topic_id: Mapped[IDType] = mapped_column(ForeignKey("actopics.id"), index=True, default=None, nullable=True)
     type_id: Mapped[IDType] = mapped_column(ForeignKey("aclessontypes.id"), index=True, default=None, nullable=True)
     count: Mapped[int] = mapped_column(default=None, nullable=True)
+
+    topic = relationship(
+        "TopicModel",
+        back_populates="lessons",
+        uselist=False,
+    )
+
+    type = relationship(
+        "LessonTypeModel",
+        uselist=False,
+        viewonly=True
+    )

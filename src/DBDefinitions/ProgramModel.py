@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .BaseModel import BaseModel, UUIDColumn, UUIDFKey, IDType
 
@@ -19,3 +19,17 @@ class ProgramModel(BaseModel):
     group_id: Mapped[IDType] = UUIDFKey(ForeignKey("groups.id"), default=None, nullable=True) # garanti programu
     licenced_group_id: Mapped[IDType] = UUIDFKey(ForeignKey("groups.id"), default=None, nullable=True) # fakulta nebo skola
 
+    students = relationship(
+        "ProgramStudentModel", 
+        foreign_keys="[ProgramStudentModel.program_id]",
+        uselist=True
+    )
+
+    subjects = relationship(
+        "SubjectModel", 
+        foreign_keys="[SubjectModel.program_id]",
+        uselist=True,
+        back_populates="program",
+        cascade="save-update",
+        init=True
+    )

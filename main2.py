@@ -12,6 +12,13 @@ from graphql.language.ast import (
     NonNullTypeNode,
 )
 
+def is_list(type_node):
+    if isinstance(type_node, ListTypeNode):
+        return True
+    if hasattr(type_node, "ofType"):
+        return is_list(type_node.ofType)
+    return False
+
 def graphql_type_to_json(type_node):
     """
     Převede GraphQL typové uzly na JSON Schema fragment.

@@ -12,7 +12,7 @@ from uoishelpers.gqlpermissions import (
 )    
 from uoishelpers.resolvers import (
     getLoadersFromInfo, 
-    createInputs,
+    createInputs2,
 
     InsertError, 
     Insert, 
@@ -36,8 +36,7 @@ ExamGQLModel = typing.Annotated["ExamGQLModel", strawberry.lazy(".ExamGQLModel")
 # ExamInputFilter = typing.Annotated["ExamGQLModel", strawberry.lazy(".ExamGQLModel")]
 EventGQLModel = typing.Annotated["EventGQLModel", strawberry.lazy("..EventGQLModel")]
 
-@createInputs
-@dataclasses.dataclass
+@createInputs2
 class StudyPlanInputFilter:
     id: IDType
     semester_id: IDType
@@ -130,16 +129,21 @@ class StudyPlanQuery:
     )
 
 
-
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create"
 )
-class StudyPlanInsertGQLModel:
+class StudyPlanInsertGQLModel(InputModelMixin):
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
     semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
     event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=None)
-    
+
+    from .StudyPlanLessonGQLModel import StudyPlanLessonInsertGQLModel
+    lessons: typing.Optional[typing.List[StudyPlanLessonInsertGQLModel]] = strawberry.field(
+        description="part of study plan",
+        default_factory=list
+    )  
     createdby_id: strawberry.Private[IDType] = None
 
 

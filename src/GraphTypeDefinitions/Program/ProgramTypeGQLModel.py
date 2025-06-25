@@ -13,7 +13,7 @@ from uoishelpers.gqlpermissions import (
 )    
 from uoishelpers.resolvers import (
     getLoadersFromInfo, 
-    createInputs,
+    createInputs2,
 
     InsertError, 
     Insert, 
@@ -36,8 +36,7 @@ ProgramLanguageTypeGQLModel = typing.Annotated["ProgramLanguageTypeGQLModel", st
 ProgramFormTypeGQLModel = typing.Annotated["ProgramFormTypeGQLModel", strawberry.lazy(".ProgramFormTypeGQLModel")]
 
 
-@createInputs
-@dataclasses.dataclass
+@createInputs2
 class ProgramTypeInputFilter:
     id: IDType
     name: str
@@ -46,6 +45,8 @@ class ProgramTypeInputFilter:
     title_id: IDType
     language_id: IDType
     form_id: IDType
+    # from .ProgramLevelTypeGQLModel import ProgramLevelTypeInputFilter
+    # level: ProgramLevelTypeInputFilter
 
 
 @strawberry.federation.type(

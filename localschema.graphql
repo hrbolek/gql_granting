@@ -184,7 +184,19 @@ type EvaluationGQLModel implements BaseGQLModel @key(fields: "id") {
   parent: EvaluationGQLModel
 
   """sub parts of this evaluation"""
-  parts(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+  parts(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: EvaluationInputFilter = null
+  ): [EvaluationGQLModel!]!
 
   """Formal given grade"""
   classificationlevelId: UUID
@@ -452,7 +464,19 @@ interface EvaluationQuery {
   evaluationById(id: UUID!): EvaluationGQLModel
 
   """list of evaluations"""
-  evaluationPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+  evaluationPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: EvaluationInputFilter = null
+  ): [EvaluationGQLModel!]!
 }
 
 """parameter for update"""
@@ -567,10 +591,34 @@ type ExamGQLModel implements BaseGQLModel @key(fields: "id") {
   parent: ExamGQLModel
 
   """exam parts"""
-  parts(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+  parts(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ExamInputFilter = null
+  ): [ExamGQLModel!]!
 
   """evaluations of users during exams"""
-  evaluations(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+  evaluations(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: EvaluationInputFilter = null
+  ): [EvaluationGQLModel!]!
 
   """study plan which the exam belongs to"""
   planId: UUID
@@ -739,7 +787,19 @@ interface ExamQuery {
   examById(id: UUID!): ExamGQLModel
 
   """filtered exams"""
-  examPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+  examPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ExamInputFilter = null
+  ): [ExamGQLModel!]!
 }
 
 """parameter for update"""
@@ -980,7 +1040,19 @@ interface LessonQuery {
   lessonById(id: UUID!): LessonGQLModel
 
   """returns lessons defined by filter"""
-  lessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+  lessonPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonInputFilter = null
+  ): [LessonGQLModel!]!
 }
 
 """LessonType entity"""
@@ -1137,7 +1209,19 @@ interface LessonTypeQuery {
   lessonTypeById(id: UUID!): LessonTypeGQLModel
 
   """returns programs defined by filter"""
-  lessonTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonTypeInputFilter = null): [LessonTypeGQLModel!]!
+  lessonTypePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonTypeInputFilter = null
+  ): [LessonTypeGQLModel!]!
 }
 
 """parameter for update"""
@@ -1411,25 +1495,73 @@ interface PlanQuery implements EvaluationQuery & ExamQuery & StudyPlanQuery & St
   evaluationById(id: UUID!): EvaluationGQLModel
 
   """list of evaluations"""
-  evaluationPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+  evaluationPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: EvaluationInputFilter = null
+  ): [EvaluationGQLModel!]!
 
   """Exam by it id"""
   examById(id: UUID!): ExamGQLModel
 
   """filtered exams"""
-  examPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+  examPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ExamInputFilter = null
+  ): [ExamGQLModel!]!
 
   """study plan"""
   studyPlanById(id: UUID!): StudyPlanGQLModel
 
   """filtered list of study plan"""
-  studyPlanPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+  studyPlanPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanInputFilter = null
+  ): [StudyPlanGQLModel!]!
 
   """study plan lesson"""
   studyPlanLessonById(id: UUID!): StudyPlanLessonGQLModel
 
   """filtered list of study plan lessons"""
-  studyPlanLessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+  studyPlanLessonPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanLessonInputFilter = null
+  ): [StudyPlanLessonGQLModel!]!
 }
 
 interface ProgramAllMutation implements ProgramMutation & ProgramFormTypeMutation & ProgramLanguageTypeMutation & ProgramLevelTypeMutation & ProgramTitleTypeMutation & ProgramTypeMutation & SemesterMutation & SubjectMutation & TopicMutation & LessonMutation & LessonTypeMutation {
@@ -1538,67 +1670,199 @@ interface ProgramAllQuery implements ProgramQuery & ProgramFormTypeQuery & Progr
   programById(id: UUID!): ProgramGQLModel
 
   """returns programs defined by filter"""
-  programPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramInputFilter = null): [ProgramGQLModel!]!
+  programPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramInputFilter = null
+  ): [ProgramGQLModel!]!
 
   """returns programform by its id"""
   programFormById(id: UUID!): ProgramFormTypeGQLModel
 
   """returns programforms defined by filter"""
-  programFormPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramFormTypeInputFilter = null): [ProgramFormTypeGQLModel!]!
+  programFormPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramFormTypeInputFilter = null
+  ): [ProgramFormTypeGQLModel!]!
 
   """returns programlanguage by its id"""
   programLanguageById(id: UUID!): ProgramLanguageTypeGQLModel
 
   """returns programlanguages defined by filter"""
-  programLanguagePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLanguageTypeInputFilter = null): [ProgramLanguageTypeGQLModel!]!
+  programLanguagePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramLanguageTypeInputFilter = null
+  ): [ProgramLanguageTypeGQLModel!]!
 
   """returns programlevel by its id"""
   programLevelById(id: UUID!): ProgramLevelTypeGQLModel
 
   """returns programlevels defined by filter"""
-  programLevelPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLevelTypeInputFilter = null): [ProgramLevelTypeGQLModel!]!
+  programLevelPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramLevelTypeInputFilter = null
+  ): [ProgramLevelTypeGQLModel!]!
 
   """returns programtitle by its id"""
   programTitleById(id: UUID!): ProgramTitleTypeGQLModel
 
   """returns programtitles defined by filter"""
-  programTitlePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTitleTypeInputFilter = null): [ProgramTitleTypeGQLModel!]!
+  programTitlePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramTitleTypeInputFilter = null
+  ): [ProgramTitleTypeGQLModel!]!
 
   """returns programtype by its id"""
   programTypeById(id: UUID!): ProgramTypeGQLModel
 
   """returns programtypes defined by filter"""
-  programTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTypeInputFilter = null): [ProgramTypeGQLModel!]!
+  programTypePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramTypeInputFilter = null
+  ): [ProgramTypeGQLModel!]!
 
   """returns semester by its id"""
   semesterById(id: UUID!): SemesterGQLModel
 
   """returns semesters defined by filter"""
-  semesterPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+  semesterPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SemesterInputFilter = null
+  ): [SemesterGQLModel!]!
 
   """returns subject by its id"""
   subjectById(id: UUID!): SubjectGQLModel
 
   """returns subjects defined by filter"""
-  subjectPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+  subjectPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SubjectInputFilter = null
+  ): [SubjectGQLModel!]!
 
   """returns topic by its id"""
   topicById(id: UUID!): TopicGQLModel
 
   """returns topics defined by filter"""
-  topicPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+  topicPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: TopicInputFilter = null
+  ): [TopicGQLModel!]!
 
   """returns lesson by its id"""
   lessonById(id: UUID!): LessonGQLModel
 
   """returns lessons defined by filter"""
-  lessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+  lessonPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonInputFilter = null
+  ): [LessonGQLModel!]!
 
   """returns program by its id"""
   lessonTypeById(id: UUID!): LessonTypeGQLModel
 
   """returns programs defined by filter"""
-  lessonTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonTypeInputFilter = null): [LessonTypeGQLModel!]!
+  lessonTypePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonTypeInputFilter = null
+  ): [LessonTypeGQLModel!]!
 }
 
 """parameter for delete operation"""
@@ -1764,7 +2028,19 @@ interface ProgramFormTypeQuery {
   programFormById(id: UUID!): ProgramFormTypeGQLModel
 
   """returns programforms defined by filter"""
-  programFormPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramFormTypeInputFilter = null): [ProgramFormTypeGQLModel!]!
+  programFormPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramFormTypeInputFilter = null
+  ): [ProgramFormTypeGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -1815,10 +2091,34 @@ type ProgramGQLModel implements BaseGQLModel @key(fields: "id") {
   nameEn: String
 
   """Program subjects"""
-  subjects(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+  subjects(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SubjectInputFilter = null
+  ): [SubjectGQLModel!]!
 
   """students"""
-  students(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+  students(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentInputFilter = null
+  ): [StudentGQLModel!]!
 
   """guarantors of programme"""
   groupId: UUID
@@ -1877,43 +2177,52 @@ type ProgramGQLModelUpdateError {
   input: JSON
 }
 
-"""Operators definition on ProgramInputFilter"""
+"""ProgramInputFilter operator for ProgramInputFilter"""
 input ProgramInputFilter {
   """Filter method"""
-  _or: [ProgramInputFilterOr!] = null
+  _or: [ProgramInputFilter_or!] = null
 
   """Filter method"""
-  _and: [ProgramInputFilterAnd!] = null
+  _and: [ProgramInputFilter_and!] = null
 
   """Filter method"""
   id: UuidFilter = null
 
   """Filter method"""
   name: StrFilter = null
+
+  """Filter method"""
+  subjects: SubjectInputFilter = null
 }
 
-"""And operator definition on ProgramInputFilter"""
-input ProgramInputFilterAnd {
+"""ProgramInputFilter_and operator for ProgramInputFilter"""
+input ProgramInputFilter_and {
   """Filter method"""
-  _or: [ProgramInputFilterOr!] = null
+  _or: [ProgramInputFilter_or!] = null
 
   """Filter method"""
   id: UuidFilter = null
 
   """Filter method"""
   name: StrFilter = null
+
+  """Filter method"""
+  subjects: SubjectInputFilter = null
 }
 
-"""Or operator definition on ProgramInputFilter"""
-input ProgramInputFilterOr {
+"""ProgramInputFilter_or operator for ProgramInputFilter"""
+input ProgramInputFilter_or {
   """Filter method"""
-  _and: [ProgramInputFilterAnd!] = null
+  _and: [ProgramInputFilter_and!] = null
 
   """Filter method"""
   id: UuidFilter = null
 
   """Filter method"""
   name: StrFilter = null
+
+  """Filter method"""
+  subjects: SubjectInputFilter = null
 }
 
 """parameter for create operation"""
@@ -1943,7 +2252,19 @@ interface ProgramLanguageQuery {
   programLanguageById(id: UUID!): ProgramLanguageTypeGQLModel
 
   """returns programlanguages defined by filter"""
-  programLanguagePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLanguageTypeInputFilter = null): [ProgramLanguageTypeGQLModel!]!
+  programLanguagePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramLanguageTypeInputFilter = null
+  ): [ProgramLanguageTypeGQLModel!]!
 }
 
 """parameter for delete operation"""
@@ -2112,7 +2433,19 @@ interface ProgramLevelQuery {
   programLevelById(id: UUID!): ProgramLevelTypeGQLModel
 
   """returns programlevels defined by filter"""
-  programLevelPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLevelTypeInputFilter = null): [ProgramLevelTypeGQLModel!]!
+  programLevelPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramLevelTypeInputFilter = null
+  ): [ProgramLevelTypeGQLModel!]!
 }
 
 """parameter for delete operation"""
@@ -2305,7 +2638,19 @@ interface ProgramQuery {
   programById(id: UUID!): ProgramGQLModel
 
   """returns programs defined by filter"""
-  programPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramInputFilter = null): [ProgramGQLModel!]!
+  programPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramInputFilter = null
+  ): [ProgramGQLModel!]!
 }
 
 """"""
@@ -2314,7 +2659,19 @@ interface ProgramTitleQuery {
   programTitleById(id: UUID!): ProgramTitleTypeGQLModel
 
   """returns programtitles defined by filter"""
-  programTitlePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTitleTypeInputFilter = null): [ProgramTitleTypeGQLModel!]!
+  programTitlePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramTitleTypeInputFilter = null
+  ): [ProgramTitleTypeGQLModel!]!
 }
 
 """parameter for delete operation"""
@@ -2709,7 +3066,19 @@ interface ProgramTypeQuery {
   programTypeById(id: UUID!): ProgramTypeGQLModel
 
   """returns programtypes defined by filter"""
-  programTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTypeInputFilter = null): [ProgramTypeGQLModel!]!
+  programTypePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramTypeInputFilter = null
+  ): [ProgramTypeGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -2771,103 +3140,307 @@ type Query implements ProgramAllQuery & ProgramQuery & ProgramFormTypeQuery & Pr
   programById(id: UUID!): ProgramGQLModel
 
   """returns programs defined by filter"""
-  programPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramInputFilter = null): [ProgramGQLModel!]!
+  programPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramInputFilter = null
+  ): [ProgramGQLModel!]!
 
   """returns programform by its id"""
   programFormById(id: UUID!): ProgramFormTypeGQLModel
 
   """returns programforms defined by filter"""
-  programFormPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramFormTypeInputFilter = null): [ProgramFormTypeGQLModel!]!
+  programFormPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramFormTypeInputFilter = null
+  ): [ProgramFormTypeGQLModel!]!
 
   """returns programlanguage by its id"""
   programLanguageById(id: UUID!): ProgramLanguageTypeGQLModel
 
   """returns programlanguages defined by filter"""
-  programLanguagePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLanguageTypeInputFilter = null): [ProgramLanguageTypeGQLModel!]!
+  programLanguagePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramLanguageTypeInputFilter = null
+  ): [ProgramLanguageTypeGQLModel!]!
 
   """returns programlevel by its id"""
   programLevelById(id: UUID!): ProgramLevelTypeGQLModel
 
   """returns programlevels defined by filter"""
-  programLevelPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramLevelTypeInputFilter = null): [ProgramLevelTypeGQLModel!]!
+  programLevelPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramLevelTypeInputFilter = null
+  ): [ProgramLevelTypeGQLModel!]!
 
   """returns programtitle by its id"""
   programTitleById(id: UUID!): ProgramTitleTypeGQLModel
 
   """returns programtitles defined by filter"""
-  programTitlePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTitleTypeInputFilter = null): [ProgramTitleTypeGQLModel!]!
+  programTitlePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramTitleTypeInputFilter = null
+  ): [ProgramTitleTypeGQLModel!]!
 
   """returns programtype by its id"""
   programTypeById(id: UUID!): ProgramTypeGQLModel
 
   """returns programtypes defined by filter"""
-  programTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ProgramTypeInputFilter = null): [ProgramTypeGQLModel!]!
+  programTypePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ProgramTypeInputFilter = null
+  ): [ProgramTypeGQLModel!]!
 
   """returns semester by its id"""
   semesterById(id: UUID!): SemesterGQLModel
 
   """returns semesters defined by filter"""
-  semesterPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+  semesterPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SemesterInputFilter = null
+  ): [SemesterGQLModel!]!
 
   """returns subject by its id"""
   subjectById(id: UUID!): SubjectGQLModel
 
   """returns subjects defined by filter"""
-  subjectPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+  subjectPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SubjectInputFilter = null
+  ): [SubjectGQLModel!]!
 
   """returns topic by its id"""
   topicById(id: UUID!): TopicGQLModel
 
   """returns topics defined by filter"""
-  topicPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+  topicPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: TopicInputFilter = null
+  ): [TopicGQLModel!]!
 
   """returns lesson by its id"""
   lessonById(id: UUID!): LessonGQLModel
 
   """returns lessons defined by filter"""
-  lessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+  lessonPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonInputFilter = null
+  ): [LessonGQLModel!]!
 
   """returns program by its id"""
   lessonTypeById(id: UUID!): LessonTypeGQLModel
 
   """returns programs defined by filter"""
-  lessonTypePage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonTypeInputFilter = null): [LessonTypeGQLModel!]!
+  lessonTypePage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonTypeInputFilter = null
+  ): [LessonTypeGQLModel!]!
 
   """returns student by its id"""
   studentById(id: UUID!): StudentGQLModel
 
   """returns students defined by filter"""
-  studentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+  studentPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentInputFilter = null
+  ): [StudentGQLModel!]!
 
   """returns student_document by its id"""
   studentDocumentById(id: UUID!): StudentDocumentGQLModel
 
   """returns student_documents defined by filter"""
-  studentDocumentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentDocumentInputFilter = null): [StudentDocumentGQLModel!]!
+  studentDocumentPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentDocumentInputFilter = null
+  ): [StudentDocumentGQLModel!]!
 
   """find an evaluation by its id"""
   evaluationById(id: UUID!): EvaluationGQLModel
 
   """list of evaluations"""
-  evaluationPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+  evaluationPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: EvaluationInputFilter = null
+  ): [EvaluationGQLModel!]!
 
   """Exam by it id"""
   examById(id: UUID!): ExamGQLModel
 
   """filtered exams"""
-  examPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: ExamInputFilter = null): [ExamGQLModel!]!
+  examPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: ExamInputFilter = null
+  ): [ExamGQLModel!]!
 
   """study plan"""
   studyPlanById(id: UUID!): StudyPlanGQLModel
 
   """filtered list of study plan"""
-  studyPlanPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+  studyPlanPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanInputFilter = null
+  ): [StudyPlanGQLModel!]!
 
   """study plan lesson"""
   studyPlanLessonById(id: UUID!): StudyPlanLessonGQLModel
 
   """filtered list of study plan lessons"""
-  studyPlanLessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+  studyPlanLessonPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanLessonInputFilter = null
+  ): [StudyPlanLessonGQLModel!]!
 }
 
 extend type RBACObjectGQLModel @key(fields: "id") {
@@ -2934,10 +3507,34 @@ type SemesterGQLModel implements BaseGQLModel @key(fields: "id") {
   prerequisites: [SubjectGQLModel!]!
 
   """Semester topics"""
-  topics(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+  topics(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: TopicInputFilter = null
+  ): [TopicGQLModel!]!
 
   """plans of study execution"""
-  plans(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+  plans(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanInputFilter = null
+  ): [StudyPlanGQLModel!]!
 }
 
 """Error object returned as an result of Delete operation"""
@@ -3052,7 +3649,19 @@ interface SemesterQuery {
   semesterById(id: UUID!): SemesterGQLModel
 
   """returns semesters defined by filter"""
-  semesterPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+  semesterPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SemesterInputFilter = null
+  ): [SemesterGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -3138,13 +3747,37 @@ interface StudentAllQuery implements StudentQuery & StudentDocumentQuery {
   studentById(id: UUID!): StudentGQLModel
 
   """returns students defined by filter"""
-  studentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+  studentPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentInputFilter = null
+  ): [StudentGQLModel!]!
 
   """returns student_document by its id"""
   studentDocumentById(id: UUID!): StudentDocumentGQLModel
 
   """returns student_documents defined by filter"""
-  studentDocumentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentDocumentInputFilter = null): [StudentDocumentGQLModel!]!
+  studentDocumentPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentDocumentInputFilter = null
+  ): [StudentDocumentGQLModel!]!
 }
 
 """parameter for delete operation"""
@@ -3307,7 +3940,19 @@ interface StudentDocumentQuery {
   studentDocumentById(id: UUID!): StudentDocumentGQLModel
 
   """returns student_documents defined by filter"""
-  studentDocumentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentDocumentInputFilter = null): [StudentDocumentGQLModel!]!
+  studentDocumentPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentDocumentInputFilter = null
+  ): [StudentDocumentGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -3381,7 +4026,19 @@ type StudentGQLModel implements BaseGQLModel @key(fields: "id") {
   state: StateGQLModel
 
   """given grades"""
-  evaluations(skip: Int = 0, limit: Int = 10, orderby: String = null, where: EvaluationInputFilter = null): [EvaluationGQLModel!]!
+  evaluations(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: EvaluationInputFilter = null
+  ): [EvaluationGQLModel!]!
 }
 
 """Error object returned as an result of Delete operation"""
@@ -3520,7 +4177,19 @@ interface StudentQuery {
   studentById(id: UUID!): StudentGQLModel
 
   """returns students defined by filter"""
-  studentPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+  studentPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentInputFilter = null
+  ): [StudentGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -3583,7 +4252,19 @@ type StudyPlanGQLModel implements BaseGQLModel @key(fields: "id") {
   examId: UUID
 
   """part of study plan"""
-  lessons(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+  lessons(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanLessonInputFilter = null
+  ): [StudyPlanLessonGQLModel!]!
 
   """Exam Rules"""
   exam: ExamGQLModel
@@ -4012,7 +4693,19 @@ interface StudyPlanLessonQuery {
   studyPlanLessonById(id: UUID!): StudyPlanLessonGQLModel
 
   """filtered list of study plan lessons"""
-  studyPlanLessonPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanLessonInputFilter = null): [StudyPlanLessonGQLModel!]!
+  studyPlanLessonPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanLessonInputFilter = null
+  ): [StudyPlanLessonGQLModel!]!
 }
 
 """parameter for update"""
@@ -4073,7 +4766,19 @@ interface StudyPlanQuery {
   studyPlanById(id: UUID!): StudyPlanGQLModel
 
   """filtered list of study plan"""
-  studyPlanPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudyPlanInputFilter = null): [StudyPlanGQLModel!]!
+  studyPlanPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudyPlanInputFilter = null
+  ): [StudyPlanGQLModel!]!
 }
 
 """parameter for update"""
@@ -4151,7 +4856,19 @@ type SubjectGQLModel implements BaseGQLModel @key(fields: "id") {
   program: ProgramGQLModel
 
   """subject semesters"""
-  semesters(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SemesterInputFilter = null): [SemesterGQLModel!]!
+  semesters(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SemesterInputFilter = null
+  ): [SemesterGQLModel!]!
 
   """guarantors of programme"""
   groupId: UUID
@@ -4275,7 +4992,19 @@ interface SubjectQuery {
   subjectById(id: UUID!): SubjectGQLModel
 
   """returns subjects defined by filter"""
-  subjectPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: SubjectInputFilter = null): [SubjectGQLModel!]!
+  subjectPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: SubjectInputFilter = null
+  ): [SubjectGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -4362,7 +5091,19 @@ type TopicGQLModel implements BaseGQLModel @key(fields: "id") {
   semester: SemesterGQLModel
 
   """lessons"""
-  lessons(skip: Int = 0, limit: Int = 10, orderby: String = null, where: LessonInputFilter = null): [LessonGQLModel!]!
+  lessons(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: LessonInputFilter = null
+  ): [LessonGQLModel!]!
 }
 
 """Error object returned as an result of Delete operation"""
@@ -4477,7 +5218,19 @@ interface TopicQuery {
   topicById(id: UUID!): TopicGQLModel
 
   """returns topics defined by filter"""
-  topicPage(skip: Int = 0, limit: Int = 10, orderby: String = null, where: TopicInputFilter = null): [TopicGQLModel!]!
+  topicPage(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: TopicInputFilter = null
+  ): [TopicGQLModel!]!
 }
 
 """parameter for update operation"""
@@ -4510,7 +5263,19 @@ extend type UserGQLModel @key(fields: "id") {
   id: UUID! @external
 
   """studies, aka what user is studying (with state)"""
-  studies(skip: Int = 0, limit: Int = 10, orderby: String = null, where: StudentInputFilter = null): [StudentGQLModel!]!
+  studies(
+    """how many entities will be ignored"""
+    skip: Int = 0
+
+    """how many entities will be taken"""
+    limit: Int = 10
+
+    """name of field which will determite the order"""
+    orderby: String = null
+
+    """filter"""
+    where: StudentInputFilter = null
+  ): [StudentGQLModel!]!
 }
 
 """Integer filter methods, only one constrain allowed"""

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "ProgramInputFilter",
     "type": "object",
-    "description": "Operators definition on ProgramInputFilter",
+    "description": "ProgramInputFilter operator for ProgramInputFilter",
     "properties": {
         "_or": {
             "type": [
@@ -10,7 +10,7 @@
                 "null"
             ],
             "items": {
-                "$ref": "#/definitions/ProgramInputFilterOr"
+                "$ref": "#/definitions/ProgramInputFilter_or"
             },
             "description": "Filter method"
         },
@@ -20,7 +20,7 @@
                 "null"
             ],
             "items": {
-                "$ref": "#/definitions/ProgramInputFilterAnd"
+                "$ref": "#/definitions/ProgramInputFilter_and"
             },
             "description": "Filter method"
         },
@@ -31,12 +31,16 @@
         "name": {
             "$ref": "#/definitions/StrFilter",
             "description": "Filter method"
+        },
+        "subjects": {
+            "$ref": "#/definitions/SubjectInputFilter",
+            "description": "Filter method"
         }
     },
     "definitions": {
         "ProgramInputFilter": {
             "type": "object",
-            "description": "Operators definition on ProgramInputFilter",
+            "description": "ProgramInputFilter operator for ProgramInputFilter",
             "properties": {
                 "_or": {
                     "type": [
@@ -44,7 +48,7 @@
                         "null"
                     ],
                     "items": {
-                        "$ref": "#/definitions/ProgramInputFilterOr"
+                        "$ref": "#/definitions/ProgramInputFilter_or"
                     },
                     "description": "Filter method"
                 },
@@ -54,7 +58,7 @@
                         "null"
                     ],
                     "items": {
-                        "$ref": "#/definitions/ProgramInputFilterAnd"
+                        "$ref": "#/definitions/ProgramInputFilter_and"
                     },
                     "description": "Filter method"
                 },
@@ -64,6 +68,10 @@
                 },
                 "name": {
                     "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                },
+                "subjects": {
+                    "$ref": "#/definitions/SubjectInputFilter",
                     "description": "Filter method"
                 }
             },
@@ -92,12 +100,18 @@
                         "name"
                     ],
                     "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "subjects"
+                    ],
+                    "maxProperties": 1
                 }
             ]
         },
-        "ProgramInputFilterOr": {
+        "ProgramInputFilter_or": {
             "type": "object",
-            "description": "Or operator definition on ProgramInputFilter",
+            "description": "ProgramInputFilter_or operator for ProgramInputFilter",
             "properties": {
                 "_and": {
                     "type": [
@@ -105,7 +119,7 @@
                         "null"
                     ],
                     "items": {
-                        "$ref": "#/definitions/ProgramInputFilterAnd"
+                        "$ref": "#/definitions/ProgramInputFilter_and"
                     },
                     "description": "Filter method"
                 },
@@ -115,6 +129,10 @@
                 },
                 "name": {
                     "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                },
+                "subjects": {
+                    "$ref": "#/definitions/SubjectInputFilter",
                     "description": "Filter method"
                 }
             },
@@ -137,12 +155,18 @@
                         "name"
                     ],
                     "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "subjects"
+                    ],
+                    "maxProperties": 1
                 }
             ]
         },
-        "ProgramInputFilterAnd": {
+        "ProgramInputFilter_and": {
             "type": "object",
-            "description": "And operator definition on ProgramInputFilter",
+            "description": "ProgramInputFilter_and operator for ProgramInputFilter",
             "properties": {
                 "_or": {
                     "type": [
@@ -150,7 +174,7 @@
                         "null"
                     ],
                     "items": {
-                        "$ref": "#/definitions/ProgramInputFilterOr"
+                        "$ref": "#/definitions/ProgramInputFilter_or"
                     },
                     "description": "Filter method"
                 },
@@ -160,6 +184,10 @@
                 },
                 "name": {
                     "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                },
+                "subjects": {
+                    "$ref": "#/definitions/SubjectInputFilter",
                     "description": "Filter method"
                 }
             },
@@ -180,6 +208,12 @@
                 {
                     "required": [
                         "name"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "subjects"
                     ],
                     "maxProperties": 1
                 }
@@ -349,6 +383,157 @@
                 {
                     "required": [
                         "_endswith"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "SubjectInputFilter": {
+            "type": "object",
+            "description": "Operators definition on SubjectInputFilter",
+            "properties": {
+                "_or": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/SubjectInputFilterOr"
+                    },
+                    "description": "Filter method"
+                },
+                "_and": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/SubjectInputFilterAnd"
+                    },
+                    "description": "Filter method"
+                },
+                "id": {
+                    "$ref": "#/definitions/UuidFilter",
+                    "description": "Filter method"
+                },
+                "name": {
+                    "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_or"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "_and"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "id"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "SubjectInputFilterOr": {
+            "type": "object",
+            "description": "Or operator definition on SubjectInputFilter",
+            "properties": {
+                "_and": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/SubjectInputFilterAnd"
+                    },
+                    "description": "Filter method"
+                },
+                "id": {
+                    "$ref": "#/definitions/UuidFilter",
+                    "description": "Filter method"
+                },
+                "name": {
+                    "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_and"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "id"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "maxProperties": 1
+                }
+            ]
+        },
+        "SubjectInputFilterAnd": {
+            "type": "object",
+            "description": "And operator definition on SubjectInputFilter",
+            "properties": {
+                "_or": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/SubjectInputFilterOr"
+                    },
+                    "description": "Filter method"
+                },
+                "id": {
+                    "$ref": "#/definitions/UuidFilter",
+                    "description": "Filter method"
+                },
+                "name": {
+                    "$ref": "#/definitions/StrFilter",
+                    "description": "Filter method"
+                }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+                {
+                    "required": [
+                        "_or"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "id"
+                    ],
+                    "maxProperties": 1
+                },
+                {
+                    "required": [
+                        "name"
                     ],
                     "maxProperties": 1
                 }

@@ -13,7 +13,7 @@ from uoishelpers.gqlpermissions import (
 )    
 from uoishelpers.resolvers import (
     getLoadersFromInfo, 
-    createInputs,
+    createInputs2,
 
     InsertError, 
     Insert, 
@@ -36,11 +36,19 @@ StudentInputFilter = typing.Annotated["StudentInputFilter", strawberry.lazy("..S
 GroupGQLModel = typing.Annotated["GroupGQLModel", strawberry.lazy("..GroupGQLModel")]
 ProgramTypeGQLModel = typing.Annotated["ProgramTypeGQLModel", strawberry.lazy(".ProgramTypeGQLModel")]
 
-@createInputs
-@dataclasses.dataclass
+@createInputs2
 class ProgramInputFilter:
-    id: IDType
-    name: str
+    id: IDType# = strawberry.field(description="filter with operators on id field")
+    name: str# = strawberry.field(description="filter with operators on name field")
+    name_en: str
+
+    licenced_group_id: IDType
+    type_id: IDType
+    
+    from .SubjectGQLModel import SubjectInputFilter
+    subjects: SubjectInputFilter
+    from ..Student.StudentGQLModel import StudentInputFilter
+    students: StudentInputFilter
 
 
 @strawberry.federation.type(
@@ -153,21 +161,37 @@ class ProgramQuery:
         resolver=PageResolver["ProgramGQLModel"](whereType=ProgramInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class ProgramInsertGQLModel:
-    id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+class ProgramInsertGQLModel(InputModelMixin):
+    id: typing.Optional[IDType] = strawberry.field(
+        description="primary key client generated", 
+        default=None
+    )
     name: typing.Optional[str] = strawberry.field(
-        description="name of the program", default=None
+        description="name of the program", 
+        default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
         description="name of the program", default=None
     )
-    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=None)
-    licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=None)
-    type_id: typing.Optional[IDType] = strawberry.field(description="programme type", default=None)
+    group_id: typing.Optional[IDType] = strawberry.field(
+        description="guarantors", default=None
+    )
+    licenced_group_id: typing.Optional[IDType] = strawberry.field(
+        description="who is licenced to teach", default=None
+    )
+    type_id: typing.Optional[IDType] = strawberry.field(
+        description="programme type", default=None
+    )
     
+    from .SubjectGQLModel import SubjectInsertGQLModel
+    subjects: typing.Optional[typing.List[SubjectInsertGQLModel]] = strawberry.field(
+        description="subjects of the program",
+        default_factory=list
+    )
 
 
 @strawberry.input(
