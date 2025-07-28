@@ -45,6 +45,9 @@ schema = strawberry.federation.Schema(
 from uoishelpers.schema import WhoAmIExtension
 schema.extensions.append(WhoAmIExtension)
 
+from uoishelpers.gqlpermissions.RolePermissionSchemaExtension import RolePermissionSchemaExtension, GraphQLBatchLoader
+schema.extensions.append(RolePermissionSchemaExtension)
+
 # from typing import Dict, Any, Optional
 # from strawberry.extensions import SchemaExtension
 # from graphql import DocumentNode, OperationDefinitionNode, FieldNode
