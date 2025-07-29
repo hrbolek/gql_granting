@@ -26,6 +26,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -84,11 +89,13 @@ class ProgramFormTypeQuery:
         resolver=PageResolver["ProgramFormTypeGQLModel"](whereType=ProgramFormTypeInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 
 @strawberry.input(
     description="parameter for create operation"
 )
-class ProgramFormTypeInsertGQLModel:
+class ProgramFormTypeInsertGQLModel(InputModelMixin):
+    getLoader = ProgramFormTypeGQLModel.getLoader
     name: str = strawberry.field(
         description="name of the program_form_type"
     )

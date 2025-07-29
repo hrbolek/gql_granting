@@ -26,6 +26,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -45,9 +50,9 @@ class ProgramInputFilter:
     licenced_group_id: IDType
     type_id: IDType
     
-    from .SubjectGQLModel import SubjectInputFilter
+    # from .SubjectGQLModel import SubjectInputFilter
     subjects: SubjectInputFilter
-    from ..Student.StudentGQLModel import StudentInputFilter
+    # from ..Student.StudentGQLModel import StudentInputFilter
     students: StudentInputFilter
 
 
@@ -222,14 +227,32 @@ class ProgramDeleteGQLModel:
     description="set of mutations on ProgramGQLModel"
 )
 class ProgramMutation:
-
+    
     @strawberry.mutation(
         description="create a new program",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, ProgramGQLModel](
+                roles=[
+                    "administrátor", 
+                    "personalista"
+                ]
+            ),
+            UserRoleProviderExtension[InsertError, ProgramGQLModel](),
+            RbacProviderExtension[InsertError, ProgramGQLModel](),
+            LoadDataExtension[InsertError, ProgramGQLModel]()
         ]
     )
-    async def program_insert(self, info: strawberry.types.Info, program: ProgramInsertGQLModel) -> typing.Union[ProgramGQLModel, InsertError[ProgramGQLModel]]:
+    async def program_insert(
+        self, 
+        info: strawberry.types.Info, 
+        program: ProgramInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[ProgramGQLModel, InsertError[ProgramGQLModel]]:
         result = await Insert[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
         return result
     
@@ -237,9 +260,27 @@ class ProgramMutation:
         description="updates existing program",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, ProgramGQLModel](
+                roles=[
+                    "administrátor", 
+                    "personalista"
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, ProgramGQLModel](),
+            RbacProviderExtension[UpdateError, ProgramGQLModel](),
+            LoadDataExtension[UpdateError, ProgramGQLModel]()
         ]
     )
-    async def program_update(self, info: strawberry.types.Info, program: ProgramUpdateGQLModel) -> typing.Union[ProgramGQLModel, UpdateError[ProgramGQLModel]]:
+    async def program_update(
+        self, 
+        info: strawberry.types.Info, 
+        program: ProgramUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[ProgramGQLModel, UpdateError[ProgramGQLModel]]:
         result = await Update[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
         return result
 
@@ -247,9 +288,27 @@ class ProgramMutation:
         description="delete existing program",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, ProgramGQLModel](
+                roles=[
+                    "administrátor", 
+                    "personalista"
+                ]
+            ),
+            UserRoleProviderExtension[DeleteError, ProgramGQLModel](),
+            RbacProviderExtension[DeleteError, ProgramGQLModel](),
+            LoadDataExtension[DeleteError, ProgramGQLModel]()
         ]
     )
-    async def program_delete(self, info: strawberry.types.Info, program: ProgramDeleteGQLModel) -> typing.Optional[DeleteError[ProgramGQLModel]]:
+    async def program_delete(
+        self, 
+        info: strawberry.types.Info, 
+        program: ProgramDeleteGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[ProgramGQLModel]]:
         result = await Delete[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
         return result
 

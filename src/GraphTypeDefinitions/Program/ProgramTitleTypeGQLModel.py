@@ -26,6 +26,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -81,11 +86,13 @@ class ProgramTitleQuery:
         resolver=PageResolver["ProgramTitleTypeGQLModel"](whereType=ProgramTitleTypeInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 
 @strawberry.input(
     description="parameter for create operation"
 )
-class ProgramTitleTypeInsertGQLModel:
+class ProgramTitleTypeInsertGQLModel(InputModelMixin):
+    getLoader = ProgramTitleTypeGQLModel.getLoader
     name: str = strawberry.field(
         description="name of the program_title_type"
     )
@@ -115,9 +122,24 @@ class ProgramTitleTypeDeleteGQLModel:
 class ProgramTitleTypeMutation:
 
     @strawberry.mutation(
-        description="create a new program_title_type"
+        description="create a new program_title_type",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[InsertError, ProgramTitleTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_title_type_insert(self, info: strawberry.types.Info, program_title_type: ProgramTitleTypeInsertGQLModel) -> typing.Union[ProgramTitleTypeGQLModel, InsertError[ProgramTitleTypeGQLModel]]:
+    async def program_title_type_insert(
+        self, 
+        info: strawberry.types.Info, 
+        program_title_type: ProgramTitleTypeInsertGQLModel
+    ) -> typing.Union[ProgramTitleTypeGQLModel, InsertError[ProgramTitleTypeGQLModel]]:
         result = await Insert[ProgramTitleTypeGQLModel].DoItSafeWay(info=info, entity=program_title_type)
         return result
     
@@ -125,9 +147,21 @@ class ProgramTitleTypeMutation:
         description="updates existing program_title_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[UpdateError, ProgramTitleTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_title_type_update(self, info: strawberry.types.Info, program_title_type: ProgramTitleTypeUpdateGQLModel) -> typing.Union[ProgramTitleTypeGQLModel, UpdateError[ProgramTitleTypeGQLModel]]:
+    async def program_title_type_update(
+        self, 
+        info: strawberry.types.Info, 
+        program_title_type: ProgramTitleTypeUpdateGQLModel
+    ) -> typing.Union[ProgramTitleTypeGQLModel, UpdateError[ProgramTitleTypeGQLModel]]:
         result = await Update[ProgramTitleTypeGQLModel].DoItSafeWay(info=info, entity=program_title_type)
         return result
 
@@ -135,9 +169,21 @@ class ProgramTitleTypeMutation:
         description="delete existing program_title_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[DeleteError, ProgramTitleTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_title_type_delete(self, info: strawberry.types.Info, program_title_type: ProgramTitleTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramTitleTypeGQLModel]]:
+    async def program_title_type_delete(
+        self, 
+        info: strawberry.types.Info, 
+        program_title_type: ProgramTitleTypeDeleteGQLModel
+    ) -> typing.Optional[DeleteError[ProgramTitleTypeGQLModel]]:
         result = await Delete[ProgramTitleTypeGQLModel].DoItSafeWay(info=info, entity=program_title_type)
         return result
 

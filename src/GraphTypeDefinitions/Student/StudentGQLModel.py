@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType, Relation
 
@@ -65,7 +70,7 @@ class StudentGQLModel(BaseGQLModel):
         default=None
     )
 
-    student: typing.Optional["UserGQLModel"] = strawberry.field(
+    user: typing.Optional["UserGQLModel"] = strawberry.field(
         description="who is student",
         permission_classes=[
             OnlyForAuthentized
@@ -181,9 +186,25 @@ class StudentDeleteGQLModel:
 class StudentMutation:
 
     @strawberry.mutation(
-        description="create a new student"
+        description="create a new student",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, StudentGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[InsertError, StudentGQLModel](),
+            RbacProviderExtension[InsertError, StudentGQLModel](),
+            LoadDataExtension[InsertError, StudentGQLModel]()
+        ]
     )
-    async def student_insert(self, info: strawberry.types.Info, student: StudentInsertGQLModel) -> typing.Union[StudentGQLModel, InsertError[StudentGQLModel]]:
+    async def student_insert(
+        self, 
+        info: strawberry.types.Info, 
+        student: StudentInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudentGQLModel, InsertError[StudentGQLModel]]:
         result = await Insert[StudentGQLModel].DoItSafeWay(info=info, entity=student)
         return result
     
@@ -191,9 +212,22 @@ class StudentMutation:
         description="updates existing student",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudentGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[UpdateError, StudentGQLModel](),
+            RbacProviderExtension[UpdateError, StudentGQLModel](),
+            LoadDataExtension[UpdateError, StudentGQLModel]()
         ]
     )
-    async def student_update(self, info: strawberry.types.Info, student: StudentUpdateGQLModel) -> typing.Union[StudentGQLModel, UpdateError[StudentGQLModel]]:
+    async def student_update(
+        self, 
+        info: strawberry.types.Info, 
+        student: StudentUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudentGQLModel, UpdateError[StudentGQLModel]]:
         result = await Update[StudentGQLModel].DoItSafeWay(info=info, entity=student)
         return result
 
@@ -201,9 +235,22 @@ class StudentMutation:
         description="delete existing student",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, StudentGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[DeleteError, StudentGQLModel](),
+            RbacProviderExtension[DeleteError, StudentGQLModel](),
+            LoadDataExtension[DeleteError, StudentGQLModel]()
         ]
     )
-    async def student_delete(self, info: strawberry.types.Info, student: StudentDeleteGQLModel) -> typing.Optional[DeleteError[StudentGQLModel]]:
+    async def student_delete(
+        self, 
+        info: strawberry.types.Info,
+        student: StudentDeleteGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[StudentGQLModel]]:
         result = await Delete[StudentGQLModel].DoItSafeWay(info=info, entity=student)
         return result
 

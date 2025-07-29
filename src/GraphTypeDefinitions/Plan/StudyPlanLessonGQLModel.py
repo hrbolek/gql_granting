@@ -27,6 +27,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -342,14 +347,36 @@ class StudyPlanLessonAddRemoveStudyGroup:
     description=""
 )
 class StudyPlanLessonMutation:
-
+    from .StudyPlanGQLModel import StudyPlanGQLModel
     @strawberry.mutation(
         description="inserts a new study_plan_lesson",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel](
+                primary_key_name="plan_id",
+                getLoader=StudyPlanGQLModel.getLoader
+            )
         ]
     )
-    async def study_plan_lesson_insert(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonInsertGQLModel) -> typing.Union[StudyPlanLessonGQLModel, InsertError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_insert(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, InsertError[StudyPlanLessonGQLModel]]:
         result = await Insert[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
         return result
     
@@ -357,9 +384,28 @@ class StudyPlanLessonMutation:
         description="updates an existing evaluatio",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_update(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonUpdateGQLModel) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_update(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         result = await Update[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
         return result
 
@@ -367,9 +413,28 @@ class StudyPlanLessonMutation:
         description="deletes an existing study_plan_lesson",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[DeleteError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[DeleteError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[DeleteError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_delete(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonDeleteGQLModel) -> typing.Optional[DeleteError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_delete(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonDeleteGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[StudyPlanLessonGQLModel]]:
         result = await Delete[StudyPlanLessonGQLModel].DoItSafeWay(info=info, entity=study_plan_lesson)
         return result
 
@@ -377,9 +442,28 @@ class StudyPlanLessonMutation:
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_add_instructor(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveInstructor) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_add_instructor(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonAddRemoveInstructor,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemTeacherModel
         rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, user_id=study_plan_lesson.user_id)
@@ -404,9 +488,28 @@ class StudyPlanLessonMutation:
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_remove_instructor(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveInstructor) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_remove_instructor(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonAddRemoveInstructor,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemTeacherModel
         rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, user_id=study_plan_lesson.user_id)
@@ -431,9 +534,28 @@ class StudyPlanLessonMutation:
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_add_facility(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveFacility) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_add_facility(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonAddRemoveFacility,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemFacilityModel
         rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
@@ -458,9 +580,28 @@ class StudyPlanLessonMutation:
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_remove_facility(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveFacility) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_remove_facility(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonAddRemoveFacility,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemFacilityModel
         rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, facility_id=study_plan_lesson.facility_id)
@@ -485,9 +626,28 @@ class StudyPlanLessonMutation:
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_add_group(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_add_group(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemGroupModel
         rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, group_id=study_plan_lesson.group_id)
@@ -512,9 +672,28 @@ class StudyPlanLessonMutation:
         description="",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanLessonGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanLessonGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanLessonGQLModel]()
         ]
     )
-    async def study_plan_lesson_remove_group(self, info: strawberry.types.Info, study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
+    async def study_plan_lesson_remove_group(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan_lesson: StudyPlanLessonAddRemoveStudyGroup,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanLessonGQLModel, UpdateError[StudyPlanLessonGQLModel]]:
         studyplanlesson = await StudyPlanLessonGQLModel.load_with_loader(info, id=study_plan_lesson.planitem_id)
         loader = getLoadersFromInfo(info).PlanItemGroupModel
         rows = await loader.filter_by(planitem_id=study_plan_lesson.planitem_id, group_id=study_plan_lesson.group_id)

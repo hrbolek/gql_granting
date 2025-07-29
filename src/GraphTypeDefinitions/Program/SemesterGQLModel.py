@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -137,6 +142,10 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class SemesterInsertGQLModel(InputModelMixin):
+    subject_id: typing.Optional[IDType] = strawberry.field(
+        description="subject id", 
+        # default=None
+    )
     id: typing.Optional[IDType] = strawberry.field(
         description="primary key client generated", default=None)
     order: typing.Optional[int] = strawberry.field(
@@ -147,14 +156,13 @@ class SemesterInsertGQLModel(InputModelMixin):
         description="credits", default=None)
     classificationtype_id: typing.Optional[IDType] = strawberry.field(
         description="subject id", default=None)
-    subject_id: typing.Optional[IDType] = strawberry.field(
-        description="subject id", default=None)
 
     from .TopicGQLModel import TopicInsertGQLModel
     topics: typing.Optional[typing.List[TopicInsertGQLModel]] = strawberry.field(
         description="topics of semester",
         default_factory=list,
     )
+    rbacobject_id: strawberry.Private[IDType] = None
 
 
 
@@ -183,11 +191,37 @@ class SemesterDeleteGQLModel:
     description=""
 )
 class SemesterMutation:
-
+    from .SubjectGQLModel import SubjectGQLModel
     @strawberry.mutation(
-        description="create a new semester"
+        description="create a new semester",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, SemesterGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[InsertError, SemesterGQLModel](),
+            RbacProviderExtension[InsertError, SemesterGQLModel](),
+            LoadDataExtension[InsertError, SemesterGQLModel](
+                primary_key_name="subject_id",
+                getLoader=SubjectGQLModel.getLoader
+            )
+        ]
     )
-    async def semester_insert(self, info: strawberry.types.Info, semester: SemesterInsertGQLModel) -> typing.Union[SemesterGQLModel, InsertError[SemesterGQLModel]]:
+    async def semester_insert(
+        self, 
+        info: strawberry.types.Info, 
+        semester: SemesterInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[SemesterGQLModel, InsertError[SemesterGQLModel]]:
+        semester.rbacobject_id = rbacobject_id
         result = await Insert[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
         return result
     
@@ -195,9 +229,28 @@ class SemesterMutation:
         description="updates existing semester",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, SemesterGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, SemesterGQLModel](),
+            RbacProviderExtension[UpdateError, SemesterGQLModel](),
+            LoadDataExtension[UpdateError, SemesterGQLModel]()
         ]
     )
-    async def semester_update(self, info: strawberry.types.Info, semester: SemesterUpdateGQLModel) -> typing.Union[SemesterGQLModel, UpdateError[SemesterGQLModel]]:
+    async def semester_update(
+        self, 
+        info: strawberry.types.Info, 
+        semester: SemesterUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[SemesterGQLModel, UpdateError[SemesterGQLModel]]:
         result = await Update[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
         return result
 
@@ -205,9 +258,28 @@ class SemesterMutation:
         description="delete existing semester",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, SemesterGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[DeleteError, SemesterGQLModel](),
+            RbacProviderExtension[DeleteError, SemesterGQLModel](),
+            LoadDataExtension[DeleteError, SemesterGQLModel]()
         ]
     )
-    async def semester_delete(self, info: strawberry.types.Info, semester: SemesterDeleteGQLModel) -> typing.Optional[DeleteError[SemesterGQLModel]]:
+    async def semester_delete(
+        self, 
+        info: strawberry.types.Info, 
+        semester: SemesterDeleteGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[SemesterGQLModel]]:
         result = await Delete[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
         return result
 

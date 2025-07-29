@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -135,18 +140,27 @@ from uoishelpers.resolvers import InputModelMixin
 )
 class StudyPlanInsertGQLModel(InputModelMixin):
     getLoader = StudyPlanGQLModel.getLoader
-    id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
-    semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
+    semester_id: IDType = strawberry.field(
+        description="Semester to which the plan is linked.",
+        # default=None
+    )
+    event_id: IDType = strawberry.field(
+        description="Time period when the plan will live", 
+        # default=None
+    )
+    id: typing.Optional[IDType] = strawberry.field(
+        description="optional client generated primary key value", 
+        default=None
+    )
     exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
-    event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=None)
-
+    
     from .StudyPlanLessonGQLModel import StudyPlanLessonInsertGQLModel
     lessons: typing.Optional[typing.List[StudyPlanLessonInsertGQLModel]] = strawberry.field(
         description="part of study plan",
         default_factory=list
     )  
     createdby_id: strawberry.Private[IDType] = None
-    rbacobject: strawberry.Private["IDType"] = None    
+    rbacobject_id: strawberry.Private["IDType"] = None    
 
 
 
@@ -156,7 +170,7 @@ class StudyPlanInsertGQLModel(InputModelMixin):
 class StudyPlanUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the studyplan to update", default=None)
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update", default=None)
-    semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
+    # semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
     event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=None)
 
@@ -171,14 +185,37 @@ class StudyPlanDeleteGQLModel:
     description=""
 )
 class StudyPlanMutation:
-
+    from ..Program.SemesterGQLModel import SemesterGQLModel
     @strawberry.mutation(
         description="inserts a new studyplan",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, StudyPlanGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[InsertError, StudyPlanGQLModel](),
+            RbacProviderExtension[InsertError, StudyPlanGQLModel](),
+            LoadDataExtension[InsertError, StudyPlanGQLModel](
+                primary_key_name="semester_id",
+                getLoader=SemesterGQLModel.getLoader
+            )
         ]
     )
-    async def study_plan_insert(self, info: strawberry.types.Info, study_plan: StudyPlanInsertGQLModel) -> typing.Union[StudyPlanGQLModel, InsertError[StudyPlanGQLModel]]:
+    async def study_plan_insert(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan: StudyPlanInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanGQLModel, InsertError[StudyPlanGQLModel]]:
+        study_plan.rbacobject_id = rbacobject_id
         result = await Insert[StudyPlanGQLModel].DoItSafeWay(info=info, entity=study_plan)
         return result
     
@@ -186,9 +223,28 @@ class StudyPlanMutation:
         description="updates an existing studyplan",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudyPlanGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, StudyPlanGQLModel](),
+            RbacProviderExtension[UpdateError, StudyPlanGQLModel](),
+            LoadDataExtension[UpdateError, StudyPlanGQLModel]()
         ]
     )
-    async def study_plan_update(self, info: strawberry.types.Info, study_plan: StudyPlanUpdateGQLModel) -> typing.Union[StudyPlanGQLModel, UpdateError[StudyPlanGQLModel]]:
+    async def study_plan_update(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan: StudyPlanUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudyPlanGQLModel, UpdateError[StudyPlanGQLModel]]:
         result = await Update[StudyPlanGQLModel].DoItSafeWay(info=info, entity=study_plan)
         return result
 
@@ -196,9 +252,22 @@ class StudyPlanMutation:
         description="deletes an existing studyplan",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, StudyPlanGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[DeleteError, StudyPlanGQLModel](),
+            RbacProviderExtension[DeleteError, StudyPlanGQLModel](),
+            LoadDataExtension[DeleteError, StudyPlanGQLModel]()
         ]
     )
-    async def study_plan_delete(self, info: strawberry.types.Info, study_plan: StudyPlanUpdateGQLModel) -> typing.Optional[DeleteError[StudyPlanGQLModel]]:
+    async def study_plan_delete(
+        self, 
+        info: strawberry.types.Info, 
+        study_plan: StudyPlanUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[StudyPlanGQLModel]]:
         result = await Delete[StudyPlanGQLModel].DoItSafeWay(info=info, entity=study_plan)
         return result
 

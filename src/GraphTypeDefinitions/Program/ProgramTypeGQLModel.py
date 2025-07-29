@@ -26,6 +26,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -154,11 +159,12 @@ class ProgramTypeQuery:
         resolver=PageResolver["ProgramTypeGQLModel"](whereType=ProgramTypeInputFilter)
     )
 
-
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class ProgramTypeInsertGQLModel:
+class ProgramTypeInsertGQLModel(InputModelMixin):
+    getLoader = ProgramTypeGQLModel.getLoader
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
     name: typing.Optional[str] = strawberry.field(description="name of the program_type", default=None)
     name_en: typing.Optional[str] = strawberry.field(description="name of the program_type", default=None)
@@ -196,9 +202,24 @@ class ProgramTypeDeleteGQLModel:
 class ProgramTypeMutation:
 
     @strawberry.mutation(
-        description="create a new program_type"
+        description="create a new program_type",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[InsertError, ProgramTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_type_insert(self, info: strawberry.types.Info, program_type: ProgramTypeInsertGQLModel) -> typing.Union[ProgramTypeGQLModel, InsertError[ProgramTypeGQLModel]]:
+    async def program_type_insert(
+        self, 
+        info: strawberry.types.Info, 
+        program_type: ProgramTypeInsertGQLModel
+    ) -> typing.Union[ProgramTypeGQLModel, InsertError[ProgramTypeGQLModel]]:
         result = await Insert[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
         return result
     
@@ -206,9 +227,21 @@ class ProgramTypeMutation:
         description="updates existing program_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[UpdateError, ProgramTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_type_update(self, info: strawberry.types.Info, program_type: ProgramTypeUpdateGQLModel) -> typing.Union[ProgramTypeGQLModel, UpdateError[ProgramTypeGQLModel]]:
+    async def program_type_update(
+        self, 
+        info: strawberry.types.Info, 
+        program_type: ProgramTypeUpdateGQLModel
+    ) -> typing.Union[ProgramTypeGQLModel, UpdateError[ProgramTypeGQLModel]]:
         result = await Update[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
         return result
 
@@ -216,7 +249,15 @@ class ProgramTypeMutation:
         description="delete existing program_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[DeleteError, ProgramTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
     async def program_type_delete(self, info: strawberry.types.Info, program_type: ProgramTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramTypeGQLModel]]:
         result = await Delete[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)

@@ -26,6 +26,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -96,11 +101,13 @@ class ProgramLevelQuery:
         resolver=PageResolver["ProgramLevelTypeGQLModel"](whereType=ProgramLevelTypeInputFilter)
     )    
 
+from uoishelpers.resolvers import InputModelMixin
 
 @strawberry.input(
     description="parameter for create operation"
 )
-class ProgramLevelTypeInsertGQLModel:
+class ProgramLevelTypeInsertGQLModel(InputModelMixin):
+    getLoader = ProgramLevelTypeGQLModel.getLoader
     name: str = strawberry.field(
         description="name of the program_level_type"
     )
@@ -131,9 +138,24 @@ class ProgramLevelTypeDeleteGQLModel:
 class ProgramLevelTypeMutation:
 
     @strawberry.mutation(
-        description="create a new program_level_type"
+        description="create a new program_level_type",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[InsertError, ProgramLevelTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_level_type_insert(self, info: strawberry.types.Info, program_level_type: ProgramLevelTypeInsertGQLModel) -> typing.Union[ProgramLevelTypeGQLModel, InsertError[ProgramLevelTypeGQLModel]]:
+    async def program_level_type_insert(
+        self, 
+        info: strawberry.types.Info, 
+        program_level_type: ProgramLevelTypeInsertGQLModel
+    ) -> typing.Union[ProgramLevelTypeGQLModel, InsertError[ProgramLevelTypeGQLModel]]:
         result = await Insert[ProgramLevelTypeGQLModel].DoItSafeWay(info=info, entity=program_level_type)
         return result
     
@@ -141,9 +163,21 @@ class ProgramLevelTypeMutation:
         description="updates existing program_level_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[UpdateError, ProgramLevelTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_level_type_update(self, info: strawberry.types.Info, program_level_type: ProgramLevelTypeUpdateGQLModel) -> typing.Union[ProgramLevelTypeGQLModel, UpdateError[ProgramLevelTypeGQLModel]]:
+    async def program_level_type_update(
+        self, 
+        info: strawberry.types.Info, 
+        program_level_type: ProgramLevelTypeUpdateGQLModel
+    ) -> typing.Union[ProgramLevelTypeGQLModel, UpdateError[ProgramLevelTypeGQLModel]]:
         result = await Update[ProgramLevelTypeGQLModel].DoItSafeWay(info=info, entity=program_level_type)
         return result
 
@@ -151,9 +185,21 @@ class ProgramLevelTypeMutation:
         description="delete existing program_level_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[DeleteError, ProgramLevelTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_level_type_delete(self, info: strawberry.types.Info, program_level_type: ProgramLevelTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramLevelTypeGQLModel]]:
+    async def program_level_type_delete(
+        self, 
+        info: strawberry.types.Info, 
+        program_level_type: ProgramLevelTypeDeleteGQLModel
+    ) -> typing.Optional[DeleteError[ProgramLevelTypeGQLModel]]:
         result = await Delete[ProgramLevelTypeGQLModel].DoItSafeWay(info=info, entity=program_level_type)
         return result
 

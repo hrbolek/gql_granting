@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -134,6 +139,7 @@ class TopicInsertGQLModel(InputModelMixin):
         description="lessons",
         default_factory=list,
     )
+    rbacobject_id: strawberry.Private[IDType] = None
     
 
 
@@ -161,11 +167,37 @@ class TopicDeleteGQLModel:
     description=""
 )
 class TopicMutation:
-
+    from .SemesterGQLModel import SemesterGQLModel
     @strawberry.mutation(
-        description="create a new topic"
+        description="create a new topic",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, TopicGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[InsertError, TopicGQLModel](),
+            RbacProviderExtension[InsertError, TopicGQLModel](),
+            LoadDataExtension[InsertError, TopicGQLModel](
+                primary_key_name="semester_id",
+                getLoader=SemesterGQLModel.getLoader
+            )
+        ]
     )
-    async def topic_insert(self, info: strawberry.types.Info, topic: TopicInsertGQLModel) -> typing.Union[TopicGQLModel, InsertError[TopicGQLModel]]:
+    async def topic_insert(
+        self, 
+        info: strawberry.types.Info, 
+        topic: TopicInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[TopicGQLModel, InsertError[TopicGQLModel]]:
+        topic.rbacobject_id = rbacobject_id
         result = await Insert[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
         return result
     
@@ -173,9 +205,28 @@ class TopicMutation:
         description="updates existing topic",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, TopicGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, TopicGQLModel](),
+            RbacProviderExtension[UpdateError, TopicGQLModel](),
+            LoadDataExtension[UpdateError, TopicGQLModel]()
         ]
     )
-    async def topic_update(self, info: strawberry.types.Info, topic: TopicUpdateGQLModel) -> typing.Union[TopicGQLModel, UpdateError[TopicGQLModel]]:
+    async def topic_update(
+        self, 
+        info: strawberry.types.Info, 
+        topic: TopicUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[TopicGQLModel, UpdateError[TopicGQLModel]]:
         result = await Update[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
         return result
 
@@ -183,9 +234,28 @@ class TopicMutation:
         description="delete existing topic",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, TopicGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[DeleteError, TopicGQLModel](),
+            RbacProviderExtension[DeleteError, TopicGQLModel](),
+            LoadDataExtension[DeleteError, TopicGQLModel]()
         ]
     )
-    async def topic_delete(self, info: strawberry.types.Info, topic: TopicDeleteGQLModel) -> typing.Optional[DeleteError[TopicGQLModel]]:
+    async def topic_delete(
+        self, 
+        info: strawberry.types.Info, 
+        topic: TopicDeleteGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[TopicGQLModel]]:
         result = await Delete[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
         return result
 

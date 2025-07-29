@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from uoishelpers.dataloaders import IDLoader
 from ..BaseGQLModel import BaseGQLModel, IDType
@@ -144,9 +149,25 @@ class StudentDocumentDeleteGQLModel:
 class StudentDocumentMutation:
 
     @strawberry.mutation(
-        description="create a new student_document"
+        description="create a new student_document",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, StudentDocumentGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[InsertError, StudentDocumentGQLModel](),
+            RbacProviderExtension[InsertError, StudentDocumentGQLModel](),
+            LoadDataExtension[InsertError, StudentDocumentGQLModel]()
+        ]
     )
-    async def student_document_insert(self, info: strawberry.types.Info, student_document: StudentDocumentInsertGQLModel) -> typing.Union[StudentDocumentGQLModel, InsertError[StudentDocumentGQLModel]]:
+    async def student_document_insert(
+        self, 
+        info: strawberry.types.Info, 
+        student_document: StudentDocumentInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudentDocumentGQLModel, InsertError[StudentDocumentGQLModel]]:
         result = await Insert[StudentDocumentGQLModel].DoItSafeWay(info=info, entity=student_document)
         return result
     
@@ -154,9 +175,22 @@ class StudentDocumentMutation:
         description="updates existing student_document",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, StudentDocumentGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[UpdateError, StudentDocumentGQLModel](),
+            RbacProviderExtension[UpdateError, StudentDocumentGQLModel](),
+            LoadDataExtension[UpdateError, StudentDocumentGQLModel]()
         ]
     )
-    async def student_document_update(self, info: strawberry.types.Info, student_document: StudentDocumentUpdateGQLModel) -> typing.Union[StudentDocumentGQLModel, UpdateError[StudentDocumentGQLModel]]:
+    async def student_document_update(
+        self, 
+        info: strawberry.types.Info, 
+        student_document: StudentDocumentUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[StudentDocumentGQLModel, UpdateError[StudentDocumentGQLModel]]:
         result = await Update[StudentDocumentGQLModel].DoItSafeWay(info=info, entity=student_document)
         return result
 
@@ -164,9 +198,22 @@ class StudentDocumentMutation:
         description="delete existing student_document",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, StudentDocumentGQLModel](roles=["administrátor", "personalista"]),
+            UserRoleProviderExtension[DeleteError, StudentDocumentGQLModel](),
+            RbacProviderExtension[DeleteError, StudentDocumentGQLModel](),
+            LoadDataExtension[DeleteError, StudentDocumentGQLModel]()
         ]
     )
-    async def student_document_delete(self, info: strawberry.types.Info, student_document: StudentDocumentDeleteGQLModel) -> typing.Optional[DeleteError[StudentDocumentGQLModel]]:
+    async def student_document_delete(
+        self, 
+        info: strawberry.types.Info, 
+        student_document: StudentDocumentDeleteGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[StudentDocumentGQLModel]]:
         result = await Delete[StudentDocumentGQLModel].DoItSafeWay(info=info, entity=student_document)
         return result
 

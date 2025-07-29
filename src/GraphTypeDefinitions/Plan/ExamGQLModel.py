@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -213,42 +218,56 @@ from uoishelpers.resolvers import InputModelMixin, TreeInputStructureMixin
 )
 class ExamInsertGQLModel(TreeInputStructureMixin):
     getLoader = ExamGQLModel.getLoader
+    plan_id: typing.Optional[IDType] = strawberry.field(
+        description="Identifier for the exam plan or schedule this exam belongs to.", 
+        # default=None
+    )   
+    type_id: typing.Optional[IDType] = strawberry.field(
+        description="Identifier for the exam type, which determines its category or format.", 
+        # default=None
+    )
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the exam.", default=None
+        description="The localized name of the exam.", 
+        default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the exam.", default=None
+        description="The English name of the exam.", 
+        default=None
     )
     description: typing.Optional[str] = strawberry.field(
-        description="A detailed localized description of the exam.", default=None
+        description="A detailed localized description of the exam.", 
+        default=None
     )
     description_en: typing.Optional[str] = strawberry.field(
-        description="A detailed description of the exam in English.", default=None
+        description="A detailed description of the exam in English.", 
+        default=None
     )
     min_score: typing.Optional[int] = strawberry.field(
-        description="The minimum score required, used for passing or grading.", default=None
+        description="The minimum score required, used for passing or grading.", 
+        default=None
     )
     max_score: typing.Optional[int] = strawberry.field(
-        description="The maximum achievable score for the exam.", default=None
-    )
-    type_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam type, which determines its category or format.", default=None
+        description="The maximum achievable score for the exam.", 
+        default=None
     )
     parent_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier for a parent exam, if applicable.", default=None
+        description="Optional identifier for a parent exam, if applicable.", 
+        default=None
     )
-    plan_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam plan or schedule this exam belongs to.", default=None
-    )   
     id: typing.Optional[IDType] = strawberry.field(
-        description="optional client generated primary key value", default=None
+        description="optional client generated primary key value", 
+        default=None
+    )
+    parts: typing.Optional[typing.List["ExamInsertGQLModel"]] = strawberry.field(
+        description="definition of conditions subparts of exam",
+        default_factory=list
     )
 
     semester_id: strawberry.Private[IDType] = None
     createdby_id: strawberry.Private[IDType] = None
     path: strawberry.Private[str] = ""
     createdby_id: strawberry.Private["IDType"] = None
-    rbacobject: strawberry.Private["IDType"] = None
+    rbacobject_id: strawberry.Private["IDType"] = None
 
 
 
@@ -256,35 +275,47 @@ class ExamInsertGQLModel(TreeInputStructureMixin):
     description="parameter for update"
 )
 class ExamUpdateGQLModel:
-    id: IDType = strawberry.field(description="id of the exam to update")
-    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
+    id: IDType = strawberry.field(
+        description="id of the exam to update"
+    )
+    lastchange: datetime.datetime = strawberry.field(
+        description="timestamp for concurent update"
+    )
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the exam.", default=None
+        description="The localized name of the exam.", 
+        default=None
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the exam.", default=None
+        description="The English name of the exam.", 
+        default=None
     )
     description: typing.Optional[str] = strawberry.field(
-        description="A detailed localized description of the exam.", default=None
+        description="A detailed localized description of the exam.", 
+        default=None
     )
     description_en: typing.Optional[str] = strawberry.field(
-        description="A detailed description of the exam in English.", default=None
+        description="A detailed description of the exam in English.", 
+        default=None
     )
     min_score: typing.Optional[int] = strawberry.field(
-        description="The minimum score required, used for passing or grading.", default=None
+        description="The minimum score required, used for passing or grading.", 
+        default=None
     )
     max_score: typing.Optional[int] = strawberry.field(
-        description="The maximum achievable score for the exam.", default=None
+        description="The maximum achievable score for the exam.", 
+        default=None
     )
     type_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam type, which determines its category or format.", default=None
+        description="Identifier for the exam type, which determines its category or format.", 
+        default=None
     )
-    parent_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier for a parent exam, if applicable.", default=None
-    )
-    plan_id: typing.Optional[IDType] = strawberry.field(
-        description="Identifier for the exam plan or schedule this exam belongs to.", default=None
-    )
+    # parent_id: typing.Optional[IDType] = strawberry.field(
+    #     description="Optional identifier for a parent exam, if applicable.", 
+    #     default=None
+    # )
+    # plan_id: typing.Optional[IDType] = strawberry.field(
+    #     description="Identifier for the exam plan or schedule this exam belongs to.", default=None
+    # )
 
 @strawberry.input(
     description="parameter for delete"
@@ -297,14 +328,37 @@ class ExamDeleteGQLModel:
     description=""
 )
 class ExamMutation:
-
+    from .StudyPlanGQLModel import StudyPlanGQLModel
     @strawberry.mutation(
-        description="inserts a new exam",
+        description="inserts a new exam aka classification conditions",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, ExamGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[InsertError, ExamGQLModel](),
+            RbacProviderExtension[InsertError, ExamGQLModel](),
+            LoadDataExtension[InsertError, ExamGQLModel](
+                primary_key_name="plan_id",
+                getLoader=StudyPlanGQLModel.getLoader
+            )
         ]
     )
-    async def exam_insert(self, info: strawberry.types.Info, exam: ExamInsertGQLModel) -> typing.Union[ExamGQLModel, InsertError[ExamGQLModel]]:
+    async def exam_insert(
+        self, 
+        info: strawberry.types.Info, 
+        exam: ExamInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[ExamGQLModel, InsertError[ExamGQLModel]]:
+        exam.rbacobject_id = rbacobject_id
         #TODO implement plan update to accept examid
         result = await Insert[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
         if getattr(result, "failed", False):
@@ -324,12 +378,31 @@ class ExamMutation:
         return result
     
     @strawberry.mutation(
-        description="updates an existing evaluatio",
+        description="updates an existing exam conditions",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[UpdateError, ExamGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                ]
+            ),
+            UserRoleProviderExtension[UpdateError, ExamGQLModel](),
+            RbacProviderExtension[UpdateError, ExamGQLModel](),
+            LoadDataExtension[UpdateError, ExamGQLModel](primary_key_name="parent_id")
         ]
     )
-    async def exam_update(self, info: strawberry.types.Info, exam: ExamUpdateGQLModel) -> typing.Union[ExamGQLModel, UpdateError[ExamGQLModel]]:
+    async def exam_update(
+        self, 
+        info: strawberry.types.Info, 
+        exam: ExamUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[ExamGQLModel, UpdateError[ExamGQLModel]]:
         result = await Update[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
         return result
 
@@ -337,9 +410,29 @@ class ExamMutation:
         description="deletes an existing exam",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[DeleteError, ExamGQLModel](
+                roles=[
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
+                    # ""
+                ]
+            ),
+            UserRoleProviderExtension[DeleteError, ExamGQLModel](),
+            RbacProviderExtension[DeleteError, ExamGQLModel](),
+            LoadDataExtension[DeleteError, ExamGQLModel](primary_key_name="parent_id")
         ]
     )
-    async def exam_delete(self, info: strawberry.types.Info, exam: ExamUpdateGQLModel) -> typing.Optional[DeleteError[ExamGQLModel]]:
+    async def exam_delete(
+        self, 
+        info: strawberry.types.Info, 
+        exam: ExamUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[ExamGQLModel]]:
         result = await Delete[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
         return result
 

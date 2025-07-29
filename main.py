@@ -120,6 +120,7 @@ app.include_router(graphql_app, prefix="/gql")
 
 @app.get("/voyager", response_class=FileResponse)
 async def graphiql():
+    basedir = os.path.dirname(__file__)
     realpath = os.path.realpath("./voyager.html")
     return realpath
 
@@ -133,6 +134,11 @@ async def graphiql():
 @app.get("/doc", response_class=FileResponse)
 async def graphiql():
     realpath = os.path.realpath("./liveschema.html")
+    return realpath
+
+@app.get("/ui", response_class=FileResponse)
+async def graphiql():
+    realpath = os.path.realpath("./livedata.html")
     return realpath
 
 import prometheus_client

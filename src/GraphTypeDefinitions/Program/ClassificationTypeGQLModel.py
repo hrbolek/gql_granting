@@ -25,6 +25,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -54,3 +59,157 @@ class ClassificationTypeGQLModel(BaseGQLModel):
         ]
     )    
     
+
+@strawberry.interface(description="base queries")
+class ClassificationTypeQueries:
+    async def classificationType_by_id(self, info: strawberry.types.Info, id: IDType) -> ClassificationTypeGQLModel:
+        return await ClassificationTypeGQLModel.resolve_reference(info=info, id=id)
+
+@strawberry.input(description="")
+class ClassificationTypeInsertGQLModel:
+    name: typing.Optional[str] = strawberry.field(
+        description="name of the classification",
+        default=None
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="name of the classification",
+        default=None
+    )    
+    name: typing.Optional[str] = strawberry.field(
+        description="name of the classification",
+        default=None
+    )    
+    id: typing.Optional[IDType] = strawberry.field(
+        description="optional client generated primary key",
+        default=None
+    )
+
+@strawberry.input(description="")
+class ClassificationTypeUpdateGQLModel:
+    id: IDType = strawberry.field(
+        description="primary key"
+    )
+    lastchange: datetime.datetime = strawberry.field(
+        description="time stamp for concurent updates"
+    )
+    name: typing.Optional[str] = strawberry.field(
+        description="name of the classification",
+        default=None
+    )
+    name_en: typing.Optional[str] = strawberry.field(
+        description="name of the classification",
+        default=None
+    )    
+    name: typing.Optional[str] = strawberry.field(
+        description="name of the classification",
+        default=None
+    )    
+
+@strawberry.input(description="")
+class ClassificationTypeDeleteGQLModel:
+    id: IDType = strawberry.field(
+        description="primary key"
+    )
+    lastchange: datetime.datetime = strawberry.field(
+        description="time stamp for concurent updates"
+    )
+
+@strawberry.interface(
+    description="base ClassificationType mutations"
+)
+class ClassificationTypeMutations:
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[InsertError, ClassificationTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+            # UserAccessControlExtension[InsertError, ClassificationTypeGQLModel](roles=["administrátor", "personalista"]),
+            # UserRoleProviderExtension[InsertError, ClassificationTypeGQLModel](),
+            # RbacProviderExtension[InsertError, ClassificationTypeGQLModel](),
+            # LoadDataExtension[InsertError, ClassificationTypeGQLModel]()
+        ]
+    )
+    async def classification_level_insert(
+        self,
+        info: strawberry.types.Info,
+        classification_level: ClassificationTypeInsertGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[InsertError[ClassificationTypeGQLModel], ClassificationTypeGQLModel]:
+        result = await Insert[ClassificationTypeGQLModel].DoItSafeWay(
+            info=info,
+            entity=classification_level
+        )
+        return result
+    
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[UpdateError, ClassificationTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+            # UserAccessControlExtension[UpdateError, ClassificationTypeGQLModel](roles=["administrátor", "personalista"]),
+            # UserRoleProviderExtension[UpdateError, ClassificationTypeGQLModel](),
+            # RbacProviderExtension[UpdateError, ClassificationTypeGQLModel](),
+            # LoadDataExtension[UpdateError, ClassificationTypeGQLModel]()
+        ]
+    )
+    async def classification_level_update(
+        self,
+        info: strawberry.types.Info,
+        classification_level: ClassificationTypeUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Union[UpdateError[ClassificationTypeGQLModel], ClassificationTypeGQLModel]:
+        result = await Update[ClassificationTypeGQLModel].DoItSafeWay(
+            info=info,
+            entity=classification_level
+        )
+        return result
+    
+    @strawberry.mutation(
+        description="",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[DeleteError, ClassificationTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+            # UserAccessControlExtension[DeleteError, ClassificationTypeGQLModel](roles=["administrátor", "personalista"]),
+            # UserRoleProviderExtension[DeleteError, ClassificationTypeGQLModel](),
+            # RbacProviderExtension[DeleteError, ClassificationTypeGQLModel](),
+            # LoadDataExtension[DeleteError, ClassificationTypeGQLModel]()
+        ]
+    )
+    async def classification_level_delete(
+        self,
+        info: strawberry.types.Info,
+        classification_level: ClassificationTypeUpdateGQLModel,
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
+    ) -> typing.Optional[DeleteError[ClassificationTypeGQLModel]]:
+        result = await Delete[ClassificationTypeGQLModel].DoItSafeWay(
+            info=info,
+            entity=classification_level
+        )
+        return result
