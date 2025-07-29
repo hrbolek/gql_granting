@@ -14,6 +14,19 @@ class ClassificationModel(BaseModel):
     """
     __tablename__ = "acclassifications"
 
+    path_attribute_name = "path"
+    parent_attribute_name = "parent"
+    parent_id_attribute_name = "parent_id"
+    children_attribute_name = "parts"
+
+    # Materialized path technique
+    path: Mapped[str] = mapped_column(
+        index=True,
+        nullable=True,
+        default=None,
+        comment="Materialized path technique, not implemented"
+    )
+
     order: Mapped[int] = mapped_column(default=None, nullable=True, comment="attempt to pass")
     points: Mapped[int] = mapped_column(default=None, nullable=True, comment="points got")
     passed: Mapped[bool] = mapped_column(default=None, nullable=True, comment="passed")
@@ -25,17 +38,51 @@ class ClassificationModel(BaseModel):
     exam_id: Mapped[IDType] = mapped_column(ForeignKey("acclassificationplans.id"), default=None, nullable=True, comment="exam of which is this part")
     semester_id: Mapped[IDType] = mapped_column(ForeignKey("acsemesters.id"), index=True, default=None, nullable=True)
     parent_id: Mapped[IDType] = mapped_column(ForeignKey("acclassifications.id"), index=True, default=None, nullable=True)
+    student_id: Mapped[IDType] = mapped_column(ForeignKey("acprograms_students.id"), index=True, default=None, nullable=True)
 
-    student_id: Mapped[IDType] = UUIDFKey(ForeignKey("users.id"), default=None, nullable=True)
+    # student_id: Mapped[IDType] = UUIDFKey(ForeignKey("users.id"), default=None, nullable=True)
     examiner_id: Mapped[IDType] = UUIDFKey(ForeignKey("users.id"), default=None, nullable=True)
     event_id: Mapped[IDType] = UUIDFKey(ForeignKey("events.id"), default=None, nullable=True)
 
-    semester = relationship("SemesterModel", viewonly=True, uselist=False)
+    semester = relationship(
+        "SemesterModel", 
+        viewonly=True, 
+        uselist=False
+    )
     # classificationplan = relationship("ClassificationPlanModel", viewonly=True, uselist=False)
-    classificationlevel = relationship("ClassificationLevelModel", viewonly=True, uselist=False)
-    exam = relationship("ClassificationPlanModel", viewonly=True, uselist=False, foreign_keys=[exam_id])
-    parent = relationship("ClassificationModel", viewonly=True, uselist=False, foreign_keys=[parent_id])
+    classificationlevel = relationship(
+        "ClassificationLevelModel", 
+        viewonly=True, 
+        uselist=False
+    )
+    
+    exam = relationship(
+        "ClassificationPlanModel", 
+        viewonly=True, 
+        uselist=False, 
+        foreign_keys=[exam_id]
+    )
+
+    parent = relationship(
+        "ClassificationModel", 
+        viewonly=True, 
+        remote_side="ClassificationModel.id",
+        uselist=False, 
+        back_populates="parts",
+    )
     # parts = relationship("ClassificationModel", viewonly=True, uselist=True, foreign_keys=[exam_id])
-    parts = relationship("ClassificationModel", viewonly=True, uselist=True, primaryjoin="ClassificationModel.parent_id==ClassificationModel.id")
-    # student = relationship("ProgramStudenModel", viewonly=True, uselist=False, foreign_keys=[student_id])
+    parts = relationship(
+        "ClassificationModel", 
+        back_populates="parent",
+        uselist=True,
+        init=True,
+        cascade="save-update"
+    )
+
+    student = relationship(
+        "ProgramStudentModel", 
+        viewonly=True, 
+        uselist=False, 
+        foreign_keys=[student_id]
+    )
     

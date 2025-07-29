@@ -13,7 +13,7 @@ from uoishelpers.gqlpermissions import (
 )    
 from uoishelpers.resolvers import (
     getLoadersFromInfo, 
-    createInputs,
+    createInputs2,
 
     InsertError, 
     Insert, 
@@ -34,25 +34,27 @@ SemesterGQLModel = typing.Annotated["SemesterGQLModel", strawberry.lazy("..Progr
 UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy("..UserGQLModel")]
 EventGQLModel = typing.Annotated["EventGQLModel", strawberry.lazy("..EventGQLModel")]
 ExamGQLModel = typing.Annotated["ExamGQLModel", strawberry.lazy(".ExamGQLModel")]
+ClassificationLevelGQLModel = typing.Annotated["ClassificationLevelGQLModel", strawberry.lazy("..Program.ClassificationLevelGQLModel")]
 
 SemesterInputFilter = typing.Annotated["SemesterInputFilter", strawberry.lazy("..Program.SemesterGQLModel")]
+StudentInputFilter = typing.Annotated["StudentInputFilter", strawberry.lazy("..Student.StudentGQLModel")]
+ExamInputFilter = typing.Annotated["ExamInputFilter", strawberry.lazy(".ExamGQLModel")]
 
-@createInputs
-@dataclasses.dataclass
+@createInputs2
 class EvaluationInputFilter:
     order: int
     points: int
     passed: bool
     description: str
+
     classificationlevel_id: IDType
     exam_id: IDType
-    exam_id: IDType
-    parent_id: IDType
-    user_id: IDType
-    
-    student_id: IDType
-    examiner_id: IDType
     semester_id: IDType
+    parent_id: IDType
+    student_id: IDType
+    # user_id: IDType
+    
+    examiner_id: IDType
     event_id: IDType
 
     id: IDType
@@ -60,6 +62,9 @@ class EvaluationInputFilter:
     created: datetime.datetime
 
     semester: SemesterInputFilter
+    student: StudentInputFilter
+    exam: ExamInputFilter
+    # parts: "Eva"
 
 
 @strawberry.federation.type(
@@ -104,17 +109,25 @@ class EvaluationGQLModel(BaseGQLModel):
         ]
     )
 
-    grade: typing.Optional[str] = strawberry.field(
+    classificationlevel_id: typing.Optional[IDType] = strawberry.field(
         default=None,
-        description="given grade / mark",
+        description="given grade / mark id",
         permission_classes=[
             OnlyForAuthentized
         ]
     )
 
+    classificationlevel: typing.Optional[ClassificationLevelGQLModel] = strawberry.field(
+        description="represents formal mark",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=ScalarResolver["ClassificationLevelGQLModel"](fkey_field_name="classificationlevel_id")
+    )
+
     student_id: typing.Optional[IDType] = strawberry.field(
         default=None,
-        description="id of the student",
+        description="id of the student, not user, it is point to relation Program<->User",
         permission_classes=[
             OnlyForAuthentized
         ]
@@ -216,23 +229,6 @@ class EvaluationGQLModel(BaseGQLModel):
         resolver=VectorResolver["EvaluationGQLModel"](fkey_field_name="parent_id", whereType=EvaluationInputFilter)
     )
 
-    classificationlevel_id: typing.Optional[IDType] = strawberry.field(
-        default=None,
-        description="Formal given grade",
-        permission_classes=[
-            OnlyForAuthentized
-        ]
-    )
-
-    exam_id: typing.Optional[IDType] = strawberry.field(
-        default=None,
-        description="Exam plan",
-        permission_classes=[
-            OnlyForAuthentized
-        ]
-    )
-
-
 
 @strawberry.interface(
     description=""
@@ -255,11 +251,12 @@ class EvaluationQuery:
         resolver=PageResolver[EvaluationGQLModel](whereType=EvaluationInputFilter)
     )
 
-
+from uoishelpers.resolvers import TreeInputStructureMixin
 @strawberry.input(
     description="parameter for create"
 )
-class EvaluationInsertGQLModel:
+class EvaluationInsertGQLModel(TreeInputStructureMixin):
+    getLoader = EvaluationGQLModel.getLoader
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
     semester_id: typing.Optional[IDType] = strawberry.field(description="Which semester / subject is examined", default=None)
     user_id: typing.Optional[IDType] = strawberry.field(description="Who is examined", default=None)
@@ -267,15 +264,19 @@ class EvaluationInsertGQLModel:
     points: typing.Optional[int] = strawberry.field(description="given points for this exam", default=None)
     passed: typing.Optional[bool] = strawberry.field(description="True if student passed this exam", default=None)
     description: typing.Optional[str] = strawberry.field(description="description given to student and exam", default=None)
-    grade: typing.Optional[str] = strawberry.field(description="given grade / mark", default=None)
     classificationlevel_id: typing.Optional[IDType] = strawberry.field(description="Formal given grade", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="Exam plan", default=None)
     event_id: typing.Optional[IDType] = strawberry.field(description="the event when exam happened and evaluation has been stored", default=None)
     parent_id: typing.Optional[IDType] = strawberry.field(description="id of exam which this is part", default=None)
-    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student", default=None)
+    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student, not user, it points to relation of Program and User", default=None)
     examiner_id: typing.Optional[IDType] = strawberry.field(description="who examined", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="related exam conditions", default=None)
+    parts: typing.Optional[typing.List["EvaluationInsertGQLModel"]] = strawberry.field(description="parts of the evaluation", default_factory=list)
 
+    # Private pole – bez použití strawberry.field
+    path: strawberry.Private[str] = ""
+    rbacobject_id: strawberry.Private[IDType] = None
+    createdby_id: strawberry.Private[IDType] = None
 
 @strawberry.input(
     description="parameter for update"
@@ -293,8 +294,8 @@ class EvaluationUpdateGQLModel:
     classificationlevel_id: typing.Optional[IDType] = strawberry.field(description="Formal given grade", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="Exam plan", default=None)
     event_id: typing.Optional[IDType] = strawberry.field(description="the event when exam happened and evaluation has been stored", default=None)
-    parent_id: typing.Optional[IDType] = strawberry.field(description="id of exam which this is part", default=None)
-    student_id: typing.Optional[IDType] = strawberry.field(description="id of the student", default=None)
+    # parent_id: typing.Optional[IDType] = strawberry.field(description="id of exam which this is part", default=None)
+    # student_id: typing.Optional[IDType] = strawberry.field(description="id of the student", default=None)
     examiner_id: typing.Optional[IDType] = strawberry.field(description="who examined", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="related exam conditions", default=None)
 

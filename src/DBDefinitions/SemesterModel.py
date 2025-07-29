@@ -27,3 +27,11 @@ class SemesterModel(BaseModel):
         cascade="save-update",
         init=True
     )
+
+    plans = relationship(
+        "PlanModel",
+        uselist=True,
+        back_populates="semester",
+        cascade="save-update",
+        init=True
+    )

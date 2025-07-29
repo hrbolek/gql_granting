@@ -13,3 +13,8 @@ class ProgramStudentModel(BaseModel):
     semester_number: Mapped[int] = mapped_column(default=None, nullable=True)
 
     program = relationship("ProgramModel", viewonly=True, uselist=False)
+    classifications = relationship(
+        "ClassificationModel",
+        uselist=True,
+        viewonly=True
+    )

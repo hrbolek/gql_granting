@@ -232,12 +232,13 @@ class StudyPlanLessonQuery:
         resolver=PageResolver[StudyPlanLessonGQLModel](whereType=StudyPlanLessonInputFilter)
     )
 
-
+from uoishelpers.resolvers import InputModelMixin
 
 @strawberry.input(
     description="parameter for create"
 )
-class StudyPlanLessonInsertGQLModel:
+class StudyPlanLessonInsertGQLModel(InputModelMixin):
+    getLoader = StudyPlanLessonGQLModel.getLoader
     plan_id: IDType = strawberry.field(
         description="The identifier of the study plan that this lesson belongs to.", default=None
     )
@@ -269,6 +270,7 @@ class StudyPlanLessonInsertGQLModel:
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
 
     createdby_id: strawberry.Private[IDType] = None
+    rbacobject: strawberry.Private["IDType"] = None    
 
 
 

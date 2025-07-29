@@ -134,6 +134,7 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create"
 )
 class StudyPlanInsertGQLModel(InputModelMixin):
+    getLoader = StudyPlanGQLModel.getLoader
     id: typing.Optional[IDType] = strawberry.field(description="optional client generated primary key value", default=None)
     semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
     exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
@@ -145,6 +146,7 @@ class StudyPlanInsertGQLModel(InputModelMixin):
         default_factory=list
     )  
     createdby_id: strawberry.Private[IDType] = None
+    rbacobject: strawberry.Private["IDType"] = None    
 
 
 

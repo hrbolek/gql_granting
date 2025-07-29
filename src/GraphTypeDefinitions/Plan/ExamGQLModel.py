@@ -206,11 +206,13 @@ class ExamQuery:
         resolver=PageResolver[ExamGQLModel](whereType=ExamInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin, TreeInputStructureMixin
 
 @strawberry.input(
     description="parameter for create"
 )
-class ExamInsertGQLModel:
+class ExamInsertGQLModel(TreeInputStructureMixin):
+    getLoader = ExamGQLModel.getLoader
     name: typing.Optional[str] = strawberry.field(
         description="The localized name of the exam.", default=None
     )
@@ -244,6 +246,9 @@ class ExamInsertGQLModel:
 
     semester_id: strawberry.Private[IDType] = None
     createdby_id: strawberry.Private[IDType] = None
+    path: strawberry.Private[str] = ""
+    createdby_id: strawberry.Private["IDType"] = None
+    rbacobject: strawberry.Private["IDType"] = None
 
 
 

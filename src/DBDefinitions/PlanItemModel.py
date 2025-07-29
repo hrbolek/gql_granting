@@ -18,6 +18,32 @@ class PlanItemModel(BaseModel):
     linked_with_id: Mapped[IDType] = mapped_column(ForeignKey("plan_lessons.id"), index=True, default=None, nullable=True)
     event_id: Mapped[IDType] = UUIDFKey(ForeignKey("events.id"), index=True, default=None, nullable=True)
 
-    teachers = relationship("PlanItemTeacherModel")
-    groups = relationship("PlanItemGroupModel")
-    facilities = relationship("PlanItemFacilityModel")
+    teachers = relationship(
+        "PlanItemTeacherModel",
+        back_populates="planitem",
+        uselist=True,
+        init=True,
+        cascade="save-update"
+    )
+
+    groups = relationship(
+        "PlanItemGroupModel",
+        back_populates="planitem",
+        uselist=True,
+        init=True,
+        cascade="save-update"
+    )
+    
+    facilities = relationship(
+        "PlanItemFacilityModel",
+        back_populates="planitem",
+        uselist=True,
+        init=True,
+        cascade="save-update"
+    )
+
+    plan = relationship(
+        "PlanModel",
+        uselist=False,
+        viewonly=True,
+    )
