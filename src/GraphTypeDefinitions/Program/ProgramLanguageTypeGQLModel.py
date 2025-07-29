@@ -99,6 +99,12 @@ class ProgramLanguageTypeInsertGQLModel(InputModelMixin):
         description="name of the program_language_type"
     )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+    name_en: typing.Optional[str] = strawberry.field(
+        description="name of the program_language_type",
+        default=None
+    )
+    createdby_id: strawberry.Private[IDType] = None
+    rbacobject_id: strawberry.Private[IDType] = None
 
 
 @strawberry.input(
@@ -108,6 +114,10 @@ class ProgramLanguageTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
     name: typing.Optional[str] = strawberry.field(description="name of the program_language_type", default=None)
+    name_en: typing.Optional[str] = strawberry.field(
+        description="name of the program_language_type",
+        default=None
+    )
 
 @strawberry.input(
     description="parameter for delete operation"

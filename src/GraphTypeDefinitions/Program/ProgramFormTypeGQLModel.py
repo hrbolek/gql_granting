@@ -99,7 +99,14 @@ class ProgramFormTypeInsertGQLModel(InputModelMixin):
     name: str = strawberry.field(
         description="name of the program_form_type"
     )
+    name_en: str = strawberry.field(
+        description="name of the program_form_type",
+        default=None
+    )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
+
+    createdby_id: strawberry.Private[IDType] = None
+    rbacobject_id: strawberry.Private[IDType] = None
 
 
 @strawberry.input(
@@ -109,6 +116,10 @@ class ProgramFormTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
     name: typing.Optional[str] = strawberry.field(description="name of the program_form_type", default=None)
+    name_en: str = strawberry.field(
+        description="name of the program_form_type",
+        default=None
+    )
 
 @strawberry.input(
     description="parameter for delete operation"
@@ -124,9 +135,24 @@ class ProgramFormTypeDeleteGQLModel:
 class ProgramFormTypeMutation:
 
     @strawberry.mutation(
-        description="create a new program_form_type"
+        description="create a new program_form_type",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[UpdateError, ProgramFormTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_form_type_insert(self, info: strawberry.types.Info, program_form_type: ProgramFormTypeInsertGQLModel) -> typing.Union[ProgramFormTypeGQLModel, InsertError[ProgramFormTypeGQLModel]]:
+    async def program_form_type_insert(
+        self, 
+        info: strawberry.types.Info, 
+        program_form_type: ProgramFormTypeInsertGQLModel
+    ) -> typing.Union[ProgramFormTypeGQLModel, InsertError[ProgramFormTypeGQLModel]]:
         result = await Insert[ProgramFormTypeGQLModel].DoItSafeWay(info=info, entity=program_form_type)
         return result
     
@@ -134,9 +160,21 @@ class ProgramFormTypeMutation:
         description="updates existing program_form_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[UpdateError, ProgramFormTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_form_type_update(self, info: strawberry.types.Info, program_form_type: ProgramFormTypeUpdateGQLModel) -> typing.Union[ProgramFormTypeGQLModel, UpdateError[ProgramFormTypeGQLModel]]:
+    async def program_form_type_update(
+        self, 
+        info: strawberry.types.Info, 
+        program_form_type: ProgramFormTypeUpdateGQLModel
+    ) -> typing.Union[ProgramFormTypeGQLModel, UpdateError[ProgramFormTypeGQLModel]]:
         result = await Update[ProgramFormTypeGQLModel].DoItSafeWay(info=info, entity=program_form_type)
         return result
 
@@ -144,9 +182,21 @@ class ProgramFormTypeMutation:
         description="delete existing program_form_type",
         permission_classes=[
             OnlyForAuthentized
-        ]
+        ],
+        extensions=[
+            UserAbsoluteAccessControlExtension[DeleteError, ProgramFormTypeGQLModel](
+                roles=[
+                    # "administrátor", 
+                    "studijní administrátor"
+                ]
+            ),
+        ],
     )
-    async def program_form_type_delete(self, info: strawberry.types.Info, program_form_type: ProgramFormTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramFormTypeGQLModel]]:
+    async def program_form_type_delete(
+        self, 
+        info: strawberry.types.Info, 
+        program_form_type: ProgramFormTypeDeleteGQLModel
+    ) -> typing.Optional[DeleteError[ProgramFormTypeGQLModel]]:
         result = await Delete[ProgramFormTypeGQLModel].DoItSafeWay(info=info, entity=program_form_type)
         return result
 

@@ -98,6 +98,9 @@ class ProgramTitleTypeInsertGQLModel(InputModelMixin):
     )
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
 
+    createdby_id: strawberry.Private[IDType] = None
+    rbacobject_id: strawberry.Private[IDType] = None
+
 
 @strawberry.input(
     description="parameter for update operation"

@@ -173,6 +173,8 @@ class ProgramTypeInsertGQLModel(InputModelMixin):
     language_id: typing.Optional[IDType] = strawberry.field(description="language used in programme", default=None)
     form_id: typing.Optional[IDType] = strawberry.field(description="teaching form, like presential, distance, etc.", default=None)
 
+    createdby_id: strawberry.Private[IDType] = None
+    rbacobject_id: strawberry.Private[IDType] = None
 
 
 @strawberry.input(
