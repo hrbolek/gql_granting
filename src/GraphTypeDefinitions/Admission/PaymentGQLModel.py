@@ -28,6 +28,12 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
+
 from ..BaseGQLModel import BaseGQLModel, IDType, Relation
 
 ProgramGQLModel = typing.Annotated["ProgramGQLModel", strawberry.lazy(".ProgramGQLModel")]
@@ -121,10 +127,11 @@ class PaymentQuery:
         resolver=PageResolver["PaymentGQLModel"](whereType=PaymentInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class PaymentInsertGQLModel:
+class PaymentInsertGQLModel(InputModelMixin):
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
     student_id: typing.Optional[IDType] = strawberry.field(
         description="student id", 

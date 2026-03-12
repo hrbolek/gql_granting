@@ -29,6 +29,12 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
+
 from ..BaseGQLModel import BaseGQLModel, IDType
 
 AcProgramGQLModel = typing.Annotated["AcProgramGQLModel", strawberry.lazy(".AcProgramGQLModel")]
@@ -130,10 +136,11 @@ class PaymentInfoQuery:
         resolver=PageResolver["PaymentInfoGQLModel"](whereType=PaymentInfoInputFilter)
     )
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class PaymentInfoInsertGQLModel:
+class PaymentInfoInsertGQLModel(InputModelMixin):
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
     account_number: typing.Optional[str] = strawberry.field(description="číslo účtu s kódem banky za lomítkem", default=None)
     specific_symbol: typing.Optional[str] = strawberry.field(description="specifický symbol", default=None)

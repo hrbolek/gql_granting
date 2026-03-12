@@ -179,9 +179,10 @@ class LessonMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[LessonGQLModel, InsertError[LessonGQLModel]]:
-        lesson.rba
-        result = await Insert[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
-        return result
+        # TODO: check permissions for topic
+        # lesson.rba
+        return await Insert[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
+        
     
     @strawberry.mutation(
         description="updates an existing evaluatio",
@@ -209,8 +210,8 @@ class LessonMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[LessonGQLModel, UpdateError[LessonGQLModel]]:
-        result = await Update[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
-        return result
+        return await Update[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
+        
 
     @strawberry.mutation(
         description="deletes an existing lesson",
@@ -220,8 +221,9 @@ class LessonMutation:
         extensions=[
             UserAccessControlExtension[DeleteError, LessonGQLModel](
                 roles=[
-                    "administrátor", 
-                    "personalista"
+                    "studijní administrátor", 
+                    "garant předmětu",
+                    "garant programu",
                 ]
             ),
             UserRoleProviderExtension[DeleteError, LessonGQLModel](),
@@ -237,6 +239,5 @@ class LessonMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Optional[DeleteError[LessonGQLModel]]:
-        result = await Delete[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
-        return result
+        return await Delete[LessonGQLModel].DoItSafeWay(info=info, entity=lesson)
 

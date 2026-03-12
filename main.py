@@ -94,14 +94,11 @@ async def RunOnceAndReturnSessionMaker():
 # endregion
 
 # region FastAPI setup
-async def get_context(request: Request):
-    asyncSessionMaker = await RunOnceAndReturnSessionMaker()
-        
-    from src.Dataloaders import createLoadersContext
-    context = createLoadersContext(asyncSessionMaker)
-
-    result = {**context}
-    result["request"] = request
+async def get_context(request: Request):    
+    result = {
+        "request": request,
+    }
+    logging.info(f"context created {result}")
     return result
 
 @asynccontextmanager
@@ -114,6 +111,12 @@ app = FastAPI(lifespan=lifespan)
 graphql_app = GraphQLRouter(
     schema,
     context_getter=get_context
+)
+
+from uoishelpers.schema import SessionCommitExtensionFactory
+from src.Dataloaders import createLoadersContext
+schema.extensions.append(
+    SessionCommitExtensionFactory(session_maker_factory=RunOnceAndReturnSessionMaker, loaders_factory=createLoadersContext)
 )
 
 app.include_router(graphql_app, prefix="/gql")

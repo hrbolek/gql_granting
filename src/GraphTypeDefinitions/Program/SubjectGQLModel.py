@@ -96,7 +96,7 @@ class SubjectGQLModel(BaseGQLModel):
         resolver=VectorResolver["SemesterGQLModel"](fkey_field_name="subject_id", whereType=SemesterInputFilter)
         )
     
-    group_id: typing.Optional[IDType] = strawberry.field(
+    guarantors_group_id: typing.Optional[IDType] = strawberry.field(
         default=None,
         description="guarantors of programme",
         permission_classes=[
@@ -109,7 +109,7 @@ class SubjectGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="group_id")
+        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="guarantors_group_id")
     )
 
 
@@ -138,9 +138,10 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class SubjectInsertGQLModel(InputModelMixin):
-    rbacobject_id: typing.Optional[IDType] = strawberry.field(
-        description="rbac proxy object, usually specially created RBACObjectGQLModel"
-    )
+    getLoader = SubjectGQLModel.getLoader
+    # rbacobject_id: typing.Optional[IDType] = strawberry.field(
+    #     description="rbac proxy object, usually specially created RBACObjectGQLModel"
+    # )
     id: typing.Optional[IDType] = strawberry.field(
         description="primary key client generated", 
         default=None
@@ -166,7 +167,7 @@ class SubjectInsertGQLModel(InputModelMixin):
         default=None
     )
     group_id: typing.Optional[IDType] = strawberry.field(
-        description="guarantors of programme", 
+        description="guarantors of subject", 
         default=None
     )
     from .SemesterGQLModel import SemesterInsertGQLModel
@@ -175,6 +176,8 @@ class SubjectInsertGQLModel(InputModelMixin):
         default_factory=list,
     )
 
+    rbacobject_id: strawberry.Private[IDType] = None
+    createdby_id: strawberry.Private[IDType] = None
 
 
 @strawberry.input(
@@ -187,8 +190,8 @@ class SubjectUpdateGQLModel:
     name_en: typing.Optional[str] = strawberry.field(description="subject name in english", default=None)
     description: typing.Optional[str] = strawberry.field(description="subject description", default=None)
     description_en: typing.Optional[str] = strawberry.field(description="subject description in english", default=None)
-    program_id: typing.Optional[IDType] = strawberry.field(description="program id", default=None)
-    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme", default=None)
+    # program_id: typing.Optional[IDType] = strawberry.field(description="program id", default=None)
+    # group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme", default=None)
 
 @strawberry.input(
     description="parameter for delete operation"
@@ -199,7 +202,7 @@ class SubjectDeleteGQLModel:
 
 
 @strawberry.interface(
-    description=""
+    description="Mutations for SubjectGQLModel"
 )
 class SubjectMutation:
     from .ProgramGQLModel import ProgramGQLModel
@@ -231,8 +234,9 @@ class SubjectMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[SubjectGQLModel, InsertError[SubjectGQLModel]]:
-        result = await Insert[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
-        return result
+        subject.rbacobject_id = rbacobject_id
+        return await Insert[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
+        
     
     @strawberry.mutation(
         description="updates existing subject",
@@ -260,8 +264,8 @@ class SubjectMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[SubjectGQLModel, UpdateError[SubjectGQLModel]]:
-        result = await Update[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
-        return result
+        return await Update[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
+        
 
     @strawberry.mutation(
         description="delete existing subject",
@@ -289,6 +293,6 @@ class SubjectMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Optional[DeleteError[SubjectGQLModel]]:
-        result = await Delete[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
-        return result
+        return await Delete[SubjectGQLModel].DoItSafeWay(info=info, entity=subject)
+
 

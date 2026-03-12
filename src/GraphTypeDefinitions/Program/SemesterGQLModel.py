@@ -162,7 +162,9 @@ class SemesterInsertGQLModel(InputModelMixin):
         description="topics of semester",
         default_factory=list,
     )
+
     rbacobject_id: strawberry.Private[IDType] = None
+    changedby_id: strawberry.Private[IDType] = None
 
 
 
@@ -188,7 +190,7 @@ class SemesterDeleteGQLModel:
 
 
 @strawberry.interface(
-    description=""
+    description="Mutations for SemesterGQLModel"
 )
 class SemesterMutation:
     from .SubjectGQLModel import SubjectGQLModel
@@ -222,8 +224,8 @@ class SemesterMutation:
         db_row: typing.Any
     ) -> typing.Union[SemesterGQLModel, InsertError[SemesterGQLModel]]:
         semester.rbacobject_id = rbacobject_id
-        result = await Insert[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
-        return result
+        return await Insert[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
+        
     
     @strawberry.mutation(
         description="updates existing semester",
@@ -251,8 +253,8 @@ class SemesterMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[SemesterGQLModel, UpdateError[SemesterGQLModel]]:
-        result = await Update[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
-        return result
+        return await Update[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
+        
 
     @strawberry.mutation(
         description="delete existing semester",
@@ -280,6 +282,6 @@ class SemesterMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Optional[DeleteError[SemesterGQLModel]]:
-        result = await Delete[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
-        return result
+        return await Delete[SemesterGQLModel].DoItSafeWay(info=info, entity=semester)
+        
 

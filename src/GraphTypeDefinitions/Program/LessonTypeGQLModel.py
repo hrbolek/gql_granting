@@ -83,7 +83,7 @@ class LessonTypeGQLModel(BaseGQLModel):
 )
 class LessonTypeQuery:
     lesson_type_by_id: typing.Optional["LessonTypeGQLModel"] = strawberry.field(
-        description="returns program by its id",
+        description="returns lesson type by its id",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -91,7 +91,7 @@ class LessonTypeQuery:
     )
 
     lesson_type_page: typing.List["LessonTypeGQLModel"] = strawberry.field(
-        description="returns programs defined by filter",
+        description="returns lesson types defined by filter",
         permission_classes=[
             OnlyForAuthentized
         ],
@@ -152,10 +152,13 @@ class LessonTypeMutation:
             OnlyForAuthentized
         ],
         extensions=[
-            UserAccessControlExtension[InsertError, LessonTypeGQLModel](roles=["administrátor", "personalista"]),
-            UserRoleProviderExtension[InsertError, LessonTypeGQLModel](),
-            RbacProviderExtension[InsertError, LessonTypeGQLModel](),
-            LoadDataExtension[InsertError, LessonTypeGQLModel]()
+            UserAbsoluteAccessControlExtension[InsertError, LessonTypeGQLModel](
+                roles=["superadmin"]
+            ),
+            # UserAccessControlExtension[InsertError, LessonTypeGQLModel](roles=["administrátor", "personalista"]),
+            # UserRoleProviderExtension[InsertError, LessonTypeGQLModel](),
+            # RbacProviderExtension[InsertError, LessonTypeGQLModel](),
+            # LoadDataExtension[InsertError, LessonTypeGQLModel]()
         ]
     )
     async def lesson_type_insert(
@@ -163,22 +166,25 @@ class LessonTypeMutation:
         info: strawberry.types.Info, 
         lesson_type: LessonTypeInsertGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Union[LessonTypeGQLModel, InsertError[LessonTypeGQLModel]]:
-        result = await Insert[LessonTypeGQLModel].DoItSafeWay(info=info, entity=lesson_type)
-        return result
+        return await Insert[LessonTypeGQLModel].DoItSafeWay(info=info, entity=lesson_type)
+        
     
     @strawberry.mutation(
-        description="updates an existing evaluatio",
+        description="updates an existing lesson_type",
         permission_classes=[
             OnlyForAuthentized
         ],
         extensions=[
-            UserAccessControlExtension[UpdateError, LessonTypeGQLModel](roles=["administrátor", "personalista"]),
-            UserRoleProviderExtension[UpdateError, LessonTypeGQLModel](),
-            RbacProviderExtension[UpdateError, LessonTypeGQLModel](),
-            LoadDataExtension[UpdateError, LessonTypeGQLModel]()
+            UserAbsoluteAccessControlExtension[InsertError, LessonTypeGQLModel](
+                roles=["superadmin"]
+            ),
+            # UserAccessControlExtension[UpdateError, LessonTypeGQLModel](roles=["administrátor", "personalista"]),
+            # UserRoleProviderExtension[UpdateError, LessonTypeGQLModel](),
+            # RbacProviderExtension[UpdateError, LessonTypeGQLModel](),
+            # LoadDataExtension[UpdateError, LessonTypeGQLModel]()
         ]
     )
     async def lesson_type_update(
@@ -186,11 +192,11 @@ class LessonTypeMutation:
         info: strawberry.types.Info, 
         lesson_type: LessonTypeUpdateGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Union[LessonTypeGQLModel, UpdateError[LessonTypeGQLModel]]:
-        result = await Update[LessonTypeGQLModel].DoItSafeWay(info=info, entity=lesson_type)
-        return result
+        return await Update[LessonTypeGQLModel].DoItSafeWay(info=info, entity=lesson_type)
+        
 
     @strawberry.mutation(
         description="deletes an existing lesson_type",
@@ -198,10 +204,13 @@ class LessonTypeMutation:
             OnlyForAuthentized
         ],
         extensions=[
-            UserAccessControlExtension[DeleteError, LessonTypeGQLModel](roles=["administrátor", "personalista"]),
-            UserRoleProviderExtension[DeleteError, LessonTypeGQLModel](),
-            RbacProviderExtension[DeleteError, LessonTypeGQLModel](),
-            LoadDataExtension[DeleteError, LessonTypeGQLModel]()
+            UserAbsoluteAccessControlExtension[InsertError, LessonTypeGQLModel](
+                roles=["superadmin"]
+            ),
+            # UserAccessControlExtension[DeleteError, LessonTypeGQLModel](roles=["administrátor", "personalista"]),
+            # UserRoleProviderExtension[DeleteError, LessonTypeGQLModel](),
+            # RbacProviderExtension[DeleteError, LessonTypeGQLModel](),
+            # LoadDataExtension[DeleteError, LessonTypeGQLModel]()
         ]
     )
     async def lesson_type_delete(
@@ -209,9 +218,9 @@ class LessonTypeMutation:
         info: strawberry.types.Info, 
         lesson_type: LessonTypeUpdateGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Optional[DeleteError[LessonTypeGQLModel]]:
-        result = await Delete[LessonTypeGQLModel].DoItSafeWay(info=info, entity=lesson_type)
-        return result
+        return await Delete[LessonTypeGQLModel].DoItSafeWay(info=info, entity=lesson_type)
+        
 

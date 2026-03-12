@@ -29,6 +29,10 @@ from .ClassificationPlanModel import ClassificationPlanModel
 from .PlanModel import PlanModel
 from .PlanItemModel import PlanItemModel
 
+from .AdmissionModel import AdmissionModel
+from .PaymentInfoModel import PaymentInfoModel
+from .PaymentModel import PaymentModel
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

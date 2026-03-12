@@ -94,7 +94,7 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class ProgramLanguageTypeInsertGQLModel(InputModelMixin):
-    getloader = ProgramLanguageTypeGQLModel.getLoader
+    getLoader = ProgramLanguageTypeGQLModel.getLoader
     name: str = strawberry.field(
         description="name of the program_language_type"
     )
@@ -141,14 +141,19 @@ class ProgramLanguageTypeMutation:
             UserAbsoluteAccessControlExtension[UpdateError, ProgramLanguageTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
         ],
     )
-    async def program_language_type_insert(self, info: strawberry.types.Info, program_language_type: ProgramLanguageTypeInsertGQLModel) -> typing.Union[ProgramLanguageTypeGQLModel, InsertError[ProgramLanguageTypeGQLModel]]:
-        result = await Insert[ProgramLanguageTypeGQLModel].DoItSafeWay(info=info, entity=program_language_type)
-        return result
+    async def program_language_type_insert(
+        self, 
+        info: strawberry.types.Info, 
+        program_language_type: ProgramLanguageTypeInsertGQLModel,
+        user_roles: typing.List[dict],
+    ) -> typing.Union[ProgramLanguageTypeGQLModel, InsertError[ProgramLanguageTypeGQLModel]]:
+        return await Insert[ProgramLanguageTypeGQLModel].DoItSafeWay(info=info, entity=program_language_type)
+        
     
     @strawberry.mutation(
         description="updates existing program_language_type",
@@ -159,14 +164,19 @@ class ProgramLanguageTypeMutation:
             UserAbsoluteAccessControlExtension[UpdateError, ProgramLanguageTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
         ],
     )
-    async def program_language_type_update(self, info: strawberry.types.Info, program_language_type: ProgramLanguageTypeUpdateGQLModel) -> typing.Union[ProgramLanguageTypeGQLModel, UpdateError[ProgramLanguageTypeGQLModel]]:
-        result = await Update[ProgramLanguageTypeGQLModel].DoItSafeWay(info=info, entity=program_language_type)
-        return result
+    async def program_language_type_update(
+        self, 
+        info: strawberry.types.Info, 
+        program_language_type: ProgramLanguageTypeUpdateGQLModel,
+        user_roles: typing.List[dict],
+    ) -> typing.Union[ProgramLanguageTypeGQLModel, UpdateError[ProgramLanguageTypeGQLModel]]:
+        return await Update[ProgramLanguageTypeGQLModel].DoItSafeWay(info=info, entity=program_language_type)
+        
 
     @strawberry.mutation(
         description="delete existing program_language_type",
@@ -177,12 +187,17 @@ class ProgramLanguageTypeMutation:
             UserAbsoluteAccessControlExtension[UpdateError, ProgramLanguageTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
         ],
     )
-    async def program_language_type_delete(self, info: strawberry.types.Info, program_language_type: ProgramLanguageTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramLanguageTypeGQLModel]]:
-        result = await Delete[ProgramLanguageTypeGQLModel].DoItSafeWay(info=info, entity=program_language_type)
-        return result
+    async def program_language_type_delete(
+        self, 
+        info: strawberry.types.Info, 
+        program_language_type: ProgramLanguageTypeDeleteGQLModel,
+        user_roles: typing.List[dict],
+    ) -> typing.Optional[DeleteError[ProgramLanguageTypeGQLModel]]:
+        return await Delete[ProgramLanguageTypeGQLModel].DoItSafeWay(info=info, entity=program_language_type)
+        
 

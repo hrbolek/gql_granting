@@ -31,6 +31,7 @@ from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtensi
 from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
 from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
 from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
+from uoishelpers.gqlpermissions.RbacInsertProviderExtension import RbacInsertProviderExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType
 
@@ -97,7 +98,7 @@ class ProgramGQLModel(BaseGQLModel):
         resolver=VectorResolver["StudentGQLModel"](fkey_field_name="program_id", whereType=StudentInputFilter)
     )
 
-    group_id: typing.Optional[IDType] = strawberry.field(
+    guarantors_group_id: typing.Optional[IDType] = strawberry.field(
         description="guarantors of programme",
         permission_classes=[
             OnlyForAuthentized
@@ -110,7 +111,7 @@ class ProgramGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="group_id")
+        resolver=ScalarResolver["GroupGQLModel"](fkey_field_name="guarantors_group_id")
     )
 
     licenced_group_id: typing.Optional[IDType] = strawberry.field(
@@ -171,6 +172,15 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class ProgramInsertGQLModel(InputModelMixin):
+    getLoader = ProgramGQLModel.getLoader
+    licenced_group_id: IDType = strawberry.field(
+        description="who is licenced to teach", 
+        # default=None
+    )
+    guarantors_group_id: IDType = strawberry.field(
+        description="guarantors", 
+        # default=None
+    )
     id: typing.Optional[IDType] = strawberry.field(
         description="primary key client generated", 
         default=None
@@ -182,12 +192,6 @@ class ProgramInsertGQLModel(InputModelMixin):
     name_en: typing.Optional[str] = strawberry.field(
         description="name of the program", default=None
     )
-    group_id: typing.Optional[IDType] = strawberry.field(
-        description="guarantors", default=None
-    )
-    licenced_group_id: typing.Optional[IDType] = strawberry.field(
-        description="who is licenced to teach", default=None
-    )
     type_id: typing.Optional[IDType] = strawberry.field(
         description="programme type", default=None
     )
@@ -197,6 +201,9 @@ class ProgramInsertGQLModel(InputModelMixin):
         description="subjects of the program",
         default_factory=list
     )
+
+    rbacobject_id: strawberry.Private[IDType] = None
+    createdby_id: strawberry.Private[IDType] = None
 
 
 @strawberry.input(
@@ -211,9 +218,11 @@ class ProgramUpdateGQLModel:
     name_en: typing.Optional[str] = strawberry.field(
         description="name of the program", default=None
     )
-    group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=None)
-    licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=None)
+    # group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=None)
+    # licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=None)
     type_id: typing.Optional[IDType] = strawberry.field(description="programme type", default=None)
+
+    changedby_id: strawberry.Private[IDType] = None
 
 @strawberry.input(
     description="parameter for delete operation"
@@ -236,13 +245,12 @@ class ProgramMutation:
         extensions=[
             UserAccessControlExtension[InsertError, ProgramGQLModel](
                 roles=[
-                    "administrátor", 
-                    "personalista"
+                    "studijní administrátor", 
+                    # "personalista"
                 ]
             ),
             UserRoleProviderExtension[InsertError, ProgramGQLModel](),
-            RbacProviderExtension[InsertError, ProgramGQLModel](),
-            LoadDataExtension[InsertError, ProgramGQLModel]()
+            RbacInsertProviderExtension[InsertError, ProgramGQLModel](rbac_key_name="licenced_group_id")
         ]
     )
     async def program_insert(
@@ -250,11 +258,11 @@ class ProgramMutation:
         info: strawberry.types.Info, 
         program: ProgramInsertGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        rbacobject_id: IDType
     ) -> typing.Union[ProgramGQLModel, InsertError[ProgramGQLModel]]:
-        result = await Insert[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
-        return result
+        program.rbacobject_id = rbacobject_id
+        return await Insert[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
+        
     
     @strawberry.mutation(
         description="updates existing program",
@@ -264,8 +272,8 @@ class ProgramMutation:
         extensions=[
             UserAccessControlExtension[UpdateError, ProgramGQLModel](
                 roles=[
-                    "administrátor", 
-                    "personalista"
+                    "studijní administrátor", 
+                    # "personalista"
                 ]
             ),
             UserRoleProviderExtension[UpdateError, ProgramGQLModel](),
@@ -281,8 +289,8 @@ class ProgramMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[ProgramGQLModel, UpdateError[ProgramGQLModel]]:
-        result = await Update[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
-        return result
+        return await Update[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
+        
 
     @strawberry.mutation(
         description="delete existing program",
@@ -292,8 +300,8 @@ class ProgramMutation:
         extensions=[
             UserAccessControlExtension[DeleteError, ProgramGQLModel](
                 roles=[
-                    "administrátor", 
-                    "personalista"
+                    "studijní administrátor", 
+                    # "personalista"
                 ]
             ),
             UserRoleProviderExtension[DeleteError, ProgramGQLModel](),
@@ -309,6 +317,6 @@ class ProgramMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Optional[DeleteError[ProgramGQLModel]]:
-        result = await Delete[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
-        return result
+        return await Delete[ProgramGQLModel].DoItSafeWay(info=info, entity=program)
+        
 

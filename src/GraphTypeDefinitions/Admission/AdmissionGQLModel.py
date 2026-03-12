@@ -27,6 +27,11 @@ from uoishelpers.resolvers import (
     VectorResolver,
     ScalarResolver
 )
+from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
+from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
+from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
 from ..BaseGQLModel import BaseGQLModel, IDType, Relation
 
@@ -162,11 +167,11 @@ class AdmissionQuery:
         resolver=PageResolver[AdmissionGQLModel](whereType=AdmissionInputFilter)
     )
 
-
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(
     description="parameter for create operation"
 )
-class AdmissionInsertGQLModel:
+class AdmissionInsertGQLModel(InputModelMixin):
     program_id: IDType = strawberry.field(
         description="program the admission is linked with",
         directives=[Relation(to="ProgramGQLModel")]

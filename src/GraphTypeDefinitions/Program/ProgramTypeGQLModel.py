@@ -212,7 +212,7 @@ class ProgramTypeMutation:
             UserAbsoluteAccessControlExtension[InsertError, ProgramTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
         ],
@@ -220,10 +220,11 @@ class ProgramTypeMutation:
     async def program_type_insert(
         self, 
         info: strawberry.types.Info, 
-        program_type: ProgramTypeInsertGQLModel
+        program_type: ProgramTypeInsertGQLModel,
+        user_roles: typing.List[dict],
     ) -> typing.Union[ProgramTypeGQLModel, InsertError[ProgramTypeGQLModel]]:
-        result = await Insert[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
-        return result
+        return await Insert[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
+        
     
     @strawberry.mutation(
         description="updates existing program_type",
@@ -234,7 +235,7 @@ class ProgramTypeMutation:
             UserAbsoluteAccessControlExtension[UpdateError, ProgramTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
         ],
@@ -242,10 +243,11 @@ class ProgramTypeMutation:
     async def program_type_update(
         self, 
         info: strawberry.types.Info, 
-        program_type: ProgramTypeUpdateGQLModel
+        program_type: ProgramTypeUpdateGQLModel,
+        user_roles: typing.List[dict],
     ) -> typing.Union[ProgramTypeGQLModel, UpdateError[ProgramTypeGQLModel]]:
-        result = await Update[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
-        return result
+        return await Update[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
+        
 
     @strawberry.mutation(
         description="delete existing program_type",
@@ -256,12 +258,17 @@ class ProgramTypeMutation:
             UserAbsoluteAccessControlExtension[DeleteError, ProgramTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
         ],
     )
-    async def program_type_delete(self, info: strawberry.types.Info, program_type: ProgramTypeDeleteGQLModel) -> typing.Optional[DeleteError[ProgramTypeGQLModel]]:
-        result = await Delete[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
-        return result
+    async def program_type_delete(
+        self, 
+        info: strawberry.types.Info, 
+        program_type: ProgramTypeDeleteGQLModel,
+        user_roles: typing.List[dict],
+    ) -> typing.Optional[DeleteError[ProgramTypeGQLModel]]:
+        return await Delete[ProgramTypeGQLModel].DoItSafeWay(info=info, entity=program_type)
+        
 

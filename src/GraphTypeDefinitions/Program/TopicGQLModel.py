@@ -121,6 +121,10 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class TopicInsertGQLModel(InputModelMixin):
+    semester_id: typing.Optional[IDType] = strawberry.field(
+        description="semester id",
+        # default=None
+    )
     id: typing.Optional[IDType] = strawberry.field(
         description="primary key client generated", default=None)
     name: typing.Optional[str] = strawberry.field(
@@ -131,15 +135,15 @@ class TopicInsertGQLModel(InputModelMixin):
         description="topic name", default=None)
     description: typing.Optional[str] = strawberry.field(
         description="topic description", default=None)
-    semester_id: typing.Optional[IDType] = strawberry.field(
-        description="semester id", default=None)
 
     from .LessonGQLModel import LessonInsertGQLModel
     lessons: typing.Optional[typing.List[LessonInsertGQLModel]] = strawberry.field(
         description="lessons",
         default_factory=list,
     )
+
     rbacobject_id: strawberry.Private[IDType] = None
+    createdby_id: strawberry.Private[IDType] = None
     
 
 
@@ -198,8 +202,8 @@ class TopicMutation:
         db_row: typing.Any
     ) -> typing.Union[TopicGQLModel, InsertError[TopicGQLModel]]:
         topic.rbacobject_id = rbacobject_id
-        result = await Insert[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
-        return result
+        return await Insert[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
+        
     
     @strawberry.mutation(
         description="updates existing topic",
@@ -227,8 +231,8 @@ class TopicMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[TopicGQLModel, UpdateError[TopicGQLModel]]:
-        result = await Update[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
-        return result
+        return await Update[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
+        
 
     @strawberry.mutation(
         description="delete existing topic",
@@ -256,6 +260,6 @@ class TopicMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Optional[DeleteError[TopicGQLModel]]:
-        result = await Delete[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
-        return result
+        return await Delete[TopicGQLModel].DoItSafeWay(info=info, entity=topic)
+        
 

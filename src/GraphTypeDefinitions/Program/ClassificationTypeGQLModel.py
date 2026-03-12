@@ -62,6 +62,12 @@ class ClassificationTypeGQLModel(BaseGQLModel):
 
 @strawberry.interface(description="base queries")
 class ClassificationTypeQueries:
+    @strawberry.field(
+        description="get classification type by id",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
     async def classificationType_by_id(self, info: strawberry.types.Info, id: IDType) -> ClassificationTypeGQLModel:
         return await ClassificationTypeGQLModel.resolve_reference(info=info, id=id)
 
@@ -127,7 +133,7 @@ class ClassificationTypeMutations:
             UserAbsoluteAccessControlExtension[InsertError, ClassificationTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
             # UserAccessControlExtension[InsertError, ClassificationTypeGQLModel](roles=["administrátor", "personalista"]),
@@ -136,13 +142,13 @@ class ClassificationTypeMutations:
             # LoadDataExtension[InsertError, ClassificationTypeGQLModel]()
         ]
     )
-    async def classification_level_insert(
+    async def classification_type_insert(
         self,
         info: strawberry.types.Info,
         classification_level: ClassificationTypeInsertGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Union[InsertError[ClassificationTypeGQLModel], ClassificationTypeGQLModel]:
         result = await Insert[ClassificationTypeGQLModel].DoItSafeWay(
             info=info,
@@ -159,7 +165,7 @@ class ClassificationTypeMutations:
             UserAbsoluteAccessControlExtension[UpdateError, ClassificationTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
             # UserAccessControlExtension[UpdateError, ClassificationTypeGQLModel](roles=["administrátor", "personalista"]),
@@ -168,17 +174,17 @@ class ClassificationTypeMutations:
             # LoadDataExtension[UpdateError, ClassificationTypeGQLModel]()
         ]
     )
-    async def classification_level_update(
+    async def classification_type_update(
         self,
         info: strawberry.types.Info,
-        classification_level: ClassificationTypeUpdateGQLModel,
+        classification_type: ClassificationTypeUpdateGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Union[UpdateError[ClassificationTypeGQLModel], ClassificationTypeGQLModel]:
         result = await Update[ClassificationTypeGQLModel].DoItSafeWay(
             info=info,
-            entity=classification_level
+            entity=classification_type
         )
         return result
     
@@ -191,7 +197,7 @@ class ClassificationTypeMutations:
             UserAbsoluteAccessControlExtension[DeleteError, ClassificationTypeGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
             # UserAccessControlExtension[DeleteError, ClassificationTypeGQLModel](roles=["administrátor", "personalista"]),
@@ -200,16 +206,16 @@ class ClassificationTypeMutations:
             # LoadDataExtension[DeleteError, ClassificationTypeGQLModel]()
         ]
     )
-    async def classification_level_delete(
+    async def classification_type_delete(
         self,
         info: strawberry.types.Info,
-        classification_level: ClassificationTypeUpdateGQLModel,
+        classification_type: ClassificationTypeUpdateGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Optional[DeleteError[ClassificationTypeGQLModel]]:
         result = await Delete[ClassificationTypeGQLModel].DoItSafeWay(
             info=info,
-            entity=classification_level
+            entity=classification_type
         )
         return result

@@ -69,11 +69,19 @@ class ClassificationLevelGQLModel(BaseGQLModel):
 
 @strawberry.interface(description="base queries")
 class ClassificationLevelQueries:
+    @strawberry.field(
+        description="get classification level by id",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
     async def classificationLevel_by_id(self, info: strawberry.types.Info, id: IDType) -> ClassificationLevelGQLModel:
         return await ClassificationLevelGQLModel.resolve_reference(info=info, id=id)
 
+from uoishelpers.resolvers import InputModelMixin
 @strawberry.input(description="")
-class ClassificationLevelInsertGQLModel:
+class ClassificationLevelInsertGQLModel(InputModelMixin):
+    getLoader = ClassificationLevelGQLModel.getLoader
     name: typing.Optional[str] = strawberry.field(
         description="name of the classification",
         default=None
@@ -82,12 +90,8 @@ class ClassificationLevelInsertGQLModel:
         description="name of the classification",
         default=None
     )    
-    name: typing.Optional[str] = strawberry.field(
-        description="name of the classification",
-        default=None
-    )
-    ordervalue: typing.Optional[str] = strawberry.field(
-        description="name of the classification",
+    ordervalue: typing.Optional[int] = strawberry.field(
+        description="to make the name convertible to number",
         default=None
     )    
     id: typing.Optional[IDType] = strawberry.field(
@@ -111,12 +115,8 @@ class ClassificationLevelUpdateGQLModel:
         description="name of the classification",
         default=None
     )    
-    name: typing.Optional[str] = strawberry.field(
-        description="name of the classification",
-        default=None
-    )
-    ordervalue: typing.Optional[str] = strawberry.field(
-        description="name of the classification",
+    ordervalue: typing.Optional[int] = strawberry.field(
+        description="to make the name convertible to number",
         default=None
     )    
 
@@ -142,7 +142,7 @@ class ClassificationLevelMutations:
             UserAbsoluteAccessControlExtension[InsertError, ClassificationLevelGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
             # UserAccessControlExtension[InsertError, ClassificationLevelGQLModel](
@@ -161,8 +161,8 @@ class ClassificationLevelMutations:
         info: strawberry.types.Info,
         classification_level: ClassificationLevelInsertGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Union[InsertError[ClassificationLevelGQLModel], ClassificationLevelGQLModel]:
         result = await Insert[ClassificationLevelGQLModel].DoItSafeWay(
             info=info,
@@ -179,7 +179,7 @@ class ClassificationLevelMutations:
             UserAbsoluteAccessControlExtension[InsertError, ClassificationLevelGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
             # UserAccessControlExtension[UpdateError, ClassificationLevelGQLModel](
@@ -198,8 +198,8 @@ class ClassificationLevelMutations:
         info: strawberry.types.Info,
         classification_level: ClassificationLevelUpdateGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Union[UpdateError[ClassificationLevelGQLModel], ClassificationLevelGQLModel]:
         result = await Update[ClassificationLevelGQLModel].DoItSafeWay(
             info=info,
@@ -216,7 +216,7 @@ class ClassificationLevelMutations:
             UserAbsoluteAccessControlExtension[InsertError, ClassificationLevelGQLModel](
                 roles=[
                     # "administrátor", 
-                    "studijní administrátor"
+                    "superadmin"
                 ]
             ),
             # UserAccessControlExtension[DeleteError, ClassificationLevelGQLModel](
@@ -235,8 +235,8 @@ class ClassificationLevelMutations:
         info: strawberry.types.Info,
         classification_level: ClassificationLevelUpdateGQLModel,
         user_roles: typing.List[dict],
-        rbacobject_id: IDType,
-        db_row: typing.Any
+        # rbacobject_id: IDType,
+        # db_row: typing.Any
     ) -> typing.Optional[DeleteError[ClassificationLevelGQLModel]]:
         result = await Delete[ClassificationLevelGQLModel].DoItSafeWay(
             info=info,
