@@ -7,14 +7,25 @@ from .Program import (
     LessonGQLModel,
     LessonTypeGQLModel
 )
-
+from .Admission import (
+    AdmissionQuery, 
+    AdmissionMutation, 
+    PaymentQuery, 
+    PaymentMutation, 
+    PaymentInfoQuery, 
+    PaymentInfoMutation
+)
 from .Student import StudentQuery, StudentMutation
 
 @strawberry.type(description="""Type for query root""")
 class Query(
     ProgramQuery, 
     StudentQuery, 
-    PlanQuery
+    PlanQuery,
+
+    AdmissionQuery,
+    PaymentQuery,
+    PaymentInfoQuery
 ):
     pass
 
@@ -22,6 +33,10 @@ class Query(
 class Mutation(
     ProgramMutation,
     StudentMutation,
-    PlanMutation
+    PlanMutation,
+
+    AdmissionMutation,
+    PaymentMutation,
+    PaymentInfoMutation
 ):
     pass

@@ -38,7 +38,6 @@ from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAb
 from src.GraphTypeDefinitions.BaseGQLModel import BaseGQLModel, IDType
 
 
-AcProgramGQLModel = typing.Annotated["AcProgramGQLModel", strawberry.lazy(".AcProgramGQLModel")]
 AdmissionGQLModel = typing.Annotated["AdmissionGQLModel", strawberry.lazy(".AdmissionGQLModel")]
 PaymentGQLModel = typing.Annotated["PaymentGQLModel", strawberry.lazy(".PaymentGQLModel")]
 
@@ -142,6 +141,7 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class PaymentInfoInsertGQLModel(InputModelMixin):
+    getLoader = PaymentInfoGQLModel.getLoader
     id: typing.Optional[IDType] = strawberry.field(description="primary key client generated", default=None)
     account_number: typing.Optional[str] = strawberry.field(description="číslo účtu s kódem banky za lomítkem", default=None)
     specific_symbol: typing.Optional[str] = strawberry.field(description="specifický symbol", default=None)

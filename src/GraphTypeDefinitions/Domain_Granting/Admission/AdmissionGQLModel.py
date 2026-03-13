@@ -33,13 +33,12 @@ from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProvide
 from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
 from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
 
-from src.GraphTypeDefinitions.BaseGQLModel import BaseGQLModel, IDType
-, Relation
+from src.GraphTypeDefinitions.BaseGQLModel import BaseGQLModel, IDType, Relation
 
-ProgramGQLModel = typing.Annotated["ProgramGQLModel", strawberry.lazy(".ProgramGQLModel")]
+ProgramGQLModel = typing.Annotated["ProgramGQLModel", strawberry.lazy("..Program.ProgramGQLModel")]
 PaymentInfoGQLModel = typing.Annotated["PaymentInfoGQLModel", strawberry.lazy(".PaymentInfoGQLModel")]
 PaymentInfoInputFilter = typing.Annotated["PaymentInfoInputFilter", strawberry.lazy(".PaymentInfoGQLModel")]
-StateGQLModel = typing.Annotated["StateGQLModel", strawberry.lazy("..Domain_UG.StateGQLModel")]
+StateGQLModel = typing.Annotated["StateGQLModel", strawberry.lazy("src.GraphTypeDefinitions.Domain_UG.StateGQLModel")]
 
 @createInputs(v2=True)
 # @dataclasses.dataclass
@@ -173,6 +172,7 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class AdmissionInsertGQLModel(InputModelMixin):
+    getLoader = AdmissionGQLModel.getLoader
     program_id: IDType = strawberry.field(
         description="program the admission is linked with",
         directives=[Relation(to="ProgramGQLModel")]
@@ -207,6 +207,8 @@ class AdmissionInsertGQLModel(InputModelMixin):
     exam_last_date: typing.Optional[datetime.datetime] = strawberry.field(description="Poslední možný den přijímacích zkoušek", default=None)
     student_entry_date: typing.Optional[datetime.datetime] = strawberry.field(description="Den zápisu", default=None)
     
+    rbacobject_id: strawberry.Private[IDType] = None
+    created_by: strawberry.Private[IDType] = None
 
 @strawberry.input(
     description="parameter for update operation"
@@ -255,15 +257,34 @@ class AdmissionDeleteGQLModel:
     description=""
 )
 class AdmissionMutation:
-
+    from ..Program.ProgramGQLModel import ProgramGQLModel
     @strawberry.mutation(
-        description="create a new admission"
+        description="create a new admission",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, AdmissionGQLModel](
+                roles=["studijní administrátor"]),
+            UserRoleProviderExtension[InsertError, AdmissionGQLModel](),
+            RbacProviderExtension[InsertError, AdmissionGQLModel](),
+            LoadDataExtension[InsertError, AdmissionGQLModel](
+                primary_key_name="program_id",
+                getLoader=ProgramGQLModel.getLoader
+            )
+        ]
     )
-    async def admission_insert(self, info: strawberry.types.Info, 
+    async def admission_insert(
+        self, 
+        info: strawberry.types.Info, 
         admission: typing.Annotated[AdmissionInsertGQLModel, strawberry.argument(
             description="Vstupní data pro vytvoření přijímací řízení"
-        )]
+        )],
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
     ) -> typing.Union[AdmissionGQLModel, InsertError[AdmissionGQLModel]]:
+        admission.rbacobject_id = rbacobject_id
         result = await Insert[AdmissionGQLModel].DoItSafeWay(info=info, entity=admission)
         return result
     
@@ -271,12 +292,22 @@ class AdmissionMutation:
         description="updates existing admission",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, AdmissionGQLModel](
+                roles=["studijní administrátor"]),
+            UserRoleProviderExtension[InsertError, AdmissionGQLModel](),
+            RbacProviderExtension[InsertError, AdmissionGQLModel](),
+            LoadDataExtension[InsertError, AdmissionGQLModel]()
         ]
     )
     async def admission_update(self, info: strawberry.types.Info, 
         admission: typing.Annotated[AdmissionUpdateGQLModel, strawberry.argument(
             description="Vstupní data pro úpravu přijímací řízení"
-        )]
+        )],
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
     ) -> typing.Union[AdmissionGQLModel, UpdateError[AdmissionGQLModel]]:
         result = await Update[AdmissionGQLModel].DoItSafeWay(info=info, entity=admission)
         return result
@@ -285,12 +316,24 @@ class AdmissionMutation:
         description="delete existing admission",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            UserAccessControlExtension[InsertError, AdmissionGQLModel](
+                roles=["studijní administrátor"]),
+            UserRoleProviderExtension[InsertError, AdmissionGQLModel](),
+            RbacProviderExtension[InsertError, AdmissionGQLModel](),
+            LoadDataExtension[InsertError, AdmissionGQLModel]()
         ]
     )
-    async def admission_delete(self, info: strawberry.types.Info, 
+    async def admission_delete(
+        self, 
+        info: strawberry.types.Info, 
         admission: typing.Annotated[AdmissionDeleteGQLModel, strawberry.argument(
             description="Vstupní data pro smazání přijímací řízení"
-        )]
+        )],
+        user_roles: typing.List[dict],
+        rbacobject_id: IDType,
+        db_row: typing.Any
     ) -> typing.Optional[DeleteError[AdmissionGQLModel]]:
         result = await Delete[AdmissionGQLModel].DoItSafeWay(info=info, entity=admission)
         return result
