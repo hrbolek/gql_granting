@@ -1,7 +1,7 @@
 import pytest
 import logging
 
-from .asserts import assert_insert, assert_update, assert_delete, assert_same
+from .asserts import assert_read, assert_insert, assert_update, assert_delete, assert_same
 
 default_permissions = {
     "result": [
@@ -14,6 +14,11 @@ default_permissions = {
     ]
 }
 
+
+async def classification_type_read(SchemaExecutor, CreateQuery, variables):
+    query = CreateQuery("classificationTypeById")
+    result = await SchemaExecutor(query=query, variable_values=variables)
+    return result
 
 async def classification_type_insert(SchemaExecutor, CreateMutation, variables):
     query = CreateMutation("classificationTypeInsert")
@@ -32,7 +37,7 @@ async def classification_type_delete(SchemaExecutor, CreateMutation, variables):
 
 
 @pytest.mark.asyncio
-async def test_classification_type_insert(SchemaExecutor, CreateMutation, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):
+async def test_classification_type_insert(SchemaExecutor, CreateQuery, CreateMutation, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):
     WhoAmIExtensionOverride.set_user(
         {
             "id": "30bc16ac-946a-4d73-a1ad-3fd3ddd038f7",
@@ -47,7 +52,9 @@ async def test_classification_type_insert(SchemaExecutor, CreateMutation, WhoAmI
         "name": "Test Program",
     }
     result = await classification_type_insert(SchemaExecutor, CreateMutation, input)
-    assert_insert(result)
+    entity = assert_insert(result)
+    result = await classification_type_read(SchemaExecutor, CreateQuery, entity)
+    assert_read(result)
 
 @pytest.mark.asyncio
 async def test_classification_type_update(SchemaExecutor, CreateMutation, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):

@@ -1,35 +1,23 @@
 import strawberry
 from .BaseGQLModel import IDType
 
-from .Plan import PlanQuery, PlanMutation
-from .Program import (
-    ProgramQuery, 
-    ProgramMutation,
-    LessonGQLModel,
-    LessonTypeGQLModel
-)
+from .Domain_Granting import Query as DomainGrantingQuery, Mutation as DomainGrantingMutation
 
-from .Student import StudentQuery, StudentMutation
-
-from .DocumentGQLModel import DocumentGQLModel
-from .EventGQLModel import EventGQLModel
-from .GroupGQLModel import GroupGQLModel
-from .UserGQLModel import UserGQLModel
+from .Domain_Office.DocumentGQLModel import DocumentGQLModel
+from .Domain_Office.EventGQLModel import EventGQLModel
+from .Domain_UG.GroupGQLModel import GroupGQLModel
+from .Domain_UG.UserGQLModel import UserGQLModel
 
 @strawberry.type(description="""Type for query root""")
 class Query(
-    ProgramQuery, 
-    StudentQuery, 
-    PlanQuery
+    DomainGrantingQuery
 ):
     pass
 
 
 @strawberry.type(description="root of mutations")
 class Mutation(
-    ProgramMutation,
-    StudentMutation,
-    PlanMutation
+    DomainGrantingMutation
 ):
     pass
 

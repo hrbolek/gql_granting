@@ -1,7 +1,7 @@
 import pytest
 import logging
 
-from .asserts import assert_insert, assert_update, assert_delete, assert_same
+from .asserts import assert_read, assert_insert, assert_update, assert_delete, assert_same
 
 default_permissions = {
     "result": [
@@ -14,6 +14,10 @@ default_permissions = {
     ]
 }
 
+async def classification_level_read(SchemaExecutor, CreateQuery, variables):
+    query = CreateQuery("classificationLevelById")
+    result = await SchemaExecutor(query=query, variable_values=variables)
+    return result
 
 async def classification_level_insert(SchemaExecutor, CreateMutation, variables):
     query = CreateMutation("classificationLevelInsert")
@@ -30,9 +34,27 @@ async def classification_level_delete(SchemaExecutor, CreateMutation, variables)
     result = await SchemaExecutor(query=query, variable_values=variables)
     return result
 
+# @pytest.mark.asyncio
+# async def test_classification_level_read(SchemaExecutor, CreateMutation, CreateQuery, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):
+#     WhoAmIExtensionOverride.set_user(
+#         {
+#             "id": "30bc16ac-946a-4d73-a1ad-3fd3ddd038f7",
+#             "roles": [{
+#                 "roletype": {"name": "superadmin"}
+#             }]
+#         }
+#     )
+#     RolePermissionSchemaExtensionOverride.set_response(default_permissions)
+
+#     input = {
+#         "name": "Test Program",
+#     }
+#     result = await classification_level_insert(SchemaExecutor, CreateMutation, input)
+#     assert_insert(result)
+#     result = await classification_level_read(SchemaExecutor, CreateQuery, input)
 
 @pytest.mark.asyncio
-async def test_classification_level_insert(SchemaExecutor, CreateMutation, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):
+async def test_classification_level_insert(SchemaExecutor, CreateMutation, CreateQuery, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):
     WhoAmIExtensionOverride.set_user(
         {
             "id": "30bc16ac-946a-4d73-a1ad-3fd3ddd038f7",
@@ -47,7 +69,9 @@ async def test_classification_level_insert(SchemaExecutor, CreateMutation, WhoAm
         "name": "Test Program",
     }
     result = await classification_level_insert(SchemaExecutor, CreateMutation, input)
-    assert_insert(result)
+    entity = assert_insert(result)
+    result = await classification_level_read(SchemaExecutor, CreateQuery, entity)
+    assert_read(result)
 
 @pytest.mark.asyncio
 async def test_classification_level_update(SchemaExecutor, CreateMutation, WhoAmIExtensionOverride, RolePermissionSchemaExtensionOverride):

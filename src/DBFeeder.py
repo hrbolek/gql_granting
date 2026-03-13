@@ -414,6 +414,33 @@ def get_demodata(filename="./systemdata.json"):
 
     return jsonData
 
+
+AllDBModels = [
+    ProgramFormTypeModel,
+    ProgramLanguageTypeModel,
+    ProgramLevelTypeModel,
+    ProgramTitleTypeModel,
+    ProgramTypeModel,
+    LessonTypeModel,
+    ClassificationLevelModel,
+    ClassificationTypeModel,
+    ClassificationPlanModel,
+
+    ProgramModel,
+    SubjectModel,
+    SemesterModel,
+    TopicModel,
+    LessonModel,
+    ClassificationModel,
+
+    # ProgramStudentStateModel,
+    ProgramStudentModel,
+    ProgramStudentMessageModel,
+    ProgramStudentDocumentModel,
+    PlanModel,
+    PlanItemModel
+]
+
 async def initDB(asyncSessionMaker, filename="./systemdata.json"):
     dbModels = [
             ProgramFormTypeModel,
@@ -427,33 +454,7 @@ async def initDB(asyncSessionMaker, filename="./systemdata.json"):
             ClassificationTypeModel,
     ]
     Demo = os.environ.get("DEMODATA", None) in ["True", "true"]
-    if Demo:
-        dbModels = [
-            ProgramFormTypeModel,
-            ProgramLanguageTypeModel,
-            ProgramLevelTypeModel,
-            ProgramTitleTypeModel,
-            ProgramTypeModel,
-            LessonTypeModel,
-            ClassificationLevelModel,
-            ClassificationTypeModel,
-            ClassificationPlanModel,
-
-            ProgramModel,
-            SubjectModel,
-            SemesterModel,
-            TopicModel,
-            LessonModel,
-            ClassificationModel,
-
-            # ProgramStudentStateModel,
-            ProgramStudentModel,
-            ProgramStudentMessageModel,
-            ProgramStudentDocumentModel,
-            PlanModel,
-            PlanItemModel
-        ]
-        
+    if Demo: dbModels = AllDBModels       
         
     jsonData = get_demodata(filename)
     await ImportModels(asyncSessionMaker, dbModels, jsonData)
