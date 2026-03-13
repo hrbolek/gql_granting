@@ -44,7 +44,7 @@ async def test_semester_insert(SchemaExecutor, CreateMutation, WhoAmIExtensionOv
     RolePermissionSchemaExtensionOverride.set_response(default_permissions)
 
     input = {
-        "name": "Test Semester",
+        "order": 1,
         "subjectId": "3c0f46a2-f7ba-4ae5-9a07-2c21662db562"
     }
     result = await semester_insert(SchemaExecutor, CreateMutation, input)
@@ -64,13 +64,11 @@ async def test_semester_update(SchemaExecutor, CreateMutation, WhoAmIExtensionOv
 
 
     input = {
-        "name": "Test Semester",
-        "nameEn": "Test Semester",
+        "order": 1,
         "subjectId": "3c0f46a2-f7ba-4ae5-9a07-2c21662db562"
     }
     delta = {
-        "name": "Updated Test Semester",
-        "nameEn": "Updated Test Semester",
+        "order": 2
     }
     result = await semester_insert(SchemaExecutor, CreateMutation, input)
     semester_inserted = assert_insert(result)
@@ -96,7 +94,7 @@ async def test_semester_delete(SchemaExecutor, CreateMutation, WhoAmIExtensionOv
     RolePermissionSchemaExtensionOverride.set_response(default_permissions)
 
     input = {
-        "name": "Test Semester",
+        "order": 1,
         "subjectId": "3c0f46a2-f7ba-4ae5-9a07-2c21662db562"
     }
     result = await semester_insert(SchemaExecutor, CreateMutation, input)

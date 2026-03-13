@@ -45,6 +45,7 @@ async def test_subject_insert(SchemaExecutor, CreateMutation, WhoAmIExtensionOve
 
     input = {
         "name": "Test Subject",
+        "programId": "0ac1761b-0ec7-4fc2-b4d7-127e79a316eb"
     }
     result = await subject_insert(SchemaExecutor, CreateMutation, input)
     assert_insert(result)
@@ -65,6 +66,7 @@ async def test_subject_update(SchemaExecutor, CreateMutation, WhoAmIExtensionOve
     input = {
         "name": "Test Subject",
         "nameEn": "Test Subject",
+        "programId": "0ac1761b-0ec7-4fc2-b4d7-127e79a316eb"
     }
     delta = {
         "name": "Updated Test Subject",
@@ -95,6 +97,7 @@ async def test_subject_delete(SchemaExecutor, CreateMutation, WhoAmIExtensionOve
 
     input = {
         "name": "Test Subject",
+        "programId": "0ac1761b-0ec7-4fc2-b4d7-127e79a316eb"
     }
     result = await subject_insert(SchemaExecutor, CreateMutation, input)
     subject_inserted = assert_insert(result)

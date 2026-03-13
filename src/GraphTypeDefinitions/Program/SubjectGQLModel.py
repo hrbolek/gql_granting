@@ -142,6 +142,10 @@ class SubjectInsertGQLModel(InputModelMixin):
     # rbacobject_id: typing.Optional[IDType] = strawberry.field(
     #     description="rbac proxy object, usually specially created RBACObjectGQLModel"
     # )
+    program_id: IDType = strawberry.field(
+        description="program id", 
+        default=None
+    )
     id: typing.Optional[IDType] = strawberry.field(
         description="primary key client generated", 
         default=None
@@ -160,10 +164,6 @@ class SubjectInsertGQLModel(InputModelMixin):
     )
     description_en: typing.Optional[str] = strawberry.field(
         description="subject description in english", 
-        default=None
-    )
-    program_id: typing.Optional[IDType] = strawberry.field(
-        description="program id", 
         default=None
     )
     group_id: typing.Optional[IDType] = strawberry.field(

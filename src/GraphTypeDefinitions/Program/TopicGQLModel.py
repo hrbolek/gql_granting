@@ -121,6 +121,7 @@ from uoishelpers.resolvers import InputModelMixin
     description="parameter for create operation"
 )
 class TopicInsertGQLModel(InputModelMixin):
+    getLoader = TopicGQLModel.getLoader
     semester_id: typing.Optional[IDType] = strawberry.field(
         description="semester id",
         # default=None
