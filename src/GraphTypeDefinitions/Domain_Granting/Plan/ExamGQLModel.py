@@ -367,12 +367,12 @@ class ExamMutation:
         rbacobject_id: IDType,
         db_row: typing.Any
     ) -> typing.Union[ExamGQLModel, InsertError[ExamGQLModel]]:
+        from .StudyPlanGQLModel import StudyPlanGQLModel, StudyPlanUpdateGQLModel
         exam.rbacobject_id = rbacobject_id
         #TODO implement plan update to accept examid
         result = await Insert[ExamGQLModel].DoItSafeWay(info=info, entity=exam)
         if hasattr(result, "failed"): return result
         
-        from .StudyPlanGQLModel import StudyPlanGQLModel, StudyPlanUpdateGQLModel
         if exam.plan_id is None:
             return result
         planRow = StudyPlanGQLModel.from_dataclass(db_row)

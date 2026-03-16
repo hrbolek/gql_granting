@@ -45,7 +45,7 @@ class GroupGQLModel:
     accredited_subjects: typing.List[SubjectGQLModel] = strawberry.field(
         description="List of accredited study programs that are implemented (offered and delivered) by this organizational unit (typically a faculty).",
         permission_classes=[OnlyForAuthentized],
-        resolver=VectorResolver[SubjectGQLModel](fkey_field_name="group_id", whereType=GroupSubjectsInputFilter)
+        resolver=VectorResolver[SubjectGQLModel](fkey_field_name="guarantors_group_id", whereType=GroupSubjectsInputFilter)
     )
     # @strawberry.field(
     #     description="List of accredited study programs that are implemented (offered and delivered) by this organizational unit (typically a faculty).",
