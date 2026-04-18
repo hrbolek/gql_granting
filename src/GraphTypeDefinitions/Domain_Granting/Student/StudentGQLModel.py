@@ -55,7 +55,13 @@ class StudentInputFilter:
     description="Connects an user with a program to define that somebody is studying a program."
 )
 class StudentGQLModel(BaseGQLModel):
-    
+    @classmethod
+    def from_dataclass(cls, db_row):
+        db_row_dict = dataclasses.asdict(db_row)
+        db_row_dict["valid"] = db_row.valid
+        instance = cls(**db_row_dict)
+        return instance
+
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info=info).ProgramStudentModel
@@ -112,6 +118,28 @@ class StudentGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ]
+    )
+
+    startdate: typing.Optional[datetime.datetime] = strawberry.field(
+        default=None,
+        description="start of study",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    enddate: typing.Optional[datetime.datetime] = strawberry.field(
+        default=None,
+        description="end of study",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    valid: typing.Optional[bool] = strawberry.field(
+        description="""If it intersects current date""",
+        default=None,
+        permission_classes=[OnlyForAuthentized]
     )
 
     state: typing.Optional["StateGQLModel"] = strawberry.field(
