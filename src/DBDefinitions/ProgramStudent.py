@@ -20,7 +20,7 @@ class ProgramStudentModel(BaseModel):
     @hybrid_property
     def valid(self):
         """Evaluates if the entity is valid based on the current datetime."""
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(tz=None)
         if self.startdate and self.enddate:
             return self.startdate <= now <= self.enddate
         elif self.startdate:
@@ -31,10 +31,19 @@ class ProgramStudentModel(BaseModel):
 
     @valid.expression
     def valid(cls):
+        """Defines the SQL expression for the 'valid' property."""
+        now = datetime.datetime.now(tz=None)
         return sqlalchemy.and_(
-            sqlalchemy.or_(cls.startdate <= func.now(), cls.startdate.is_(None)),
-            sqlalchemy.or_(cls.enddate >= func.now(), cls.enddate.is_(None))
+            sqlalchemy.or_(cls.startdate <= now, cls.startdate.is_(None)),  # Valid if startdate is in the past or missing
+            sqlalchemy.or_(cls.enddate >= now, cls.enddate.is_(None))       # Valid if enddate is in the future or missing
         )
+    
+    # @valid.expression
+    # def valid(cls):
+    #     return sqlalchemy.and_(
+    #         sqlalchemy.or_(cls.startdate <= func.now(), cls.startdate.is_(None)),
+    #         sqlalchemy.or_(cls.enddate >= func.now(), cls.enddate.is_(None))
+    #     )
     
     program = relationship("ProgramModel", viewonly=True, uselist=False)
     classifications = relationship(

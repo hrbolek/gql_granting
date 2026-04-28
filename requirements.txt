@@ -18,6 +18,8 @@ strawberry-graphql
 aiodataloader
 pyjwt[crypto]
 
+async_lru
+
 
 https://github.com/hrbolek/uoishelpers/archive/refs/heads/main.zip
 

@@ -41,6 +41,7 @@ TopicInputFilter = typing.Annotated["TopicInputFilter", strawberry.lazy(".TopicG
 StudyPlanGQLModel = typing.Annotated["StudyPlanGQLModel", strawberry.lazy("..Plan.StudyPlanGQLModel")]
 StudyPlanInputFilter = typing.Annotated["StudyPlanInputFilter", strawberry.lazy("..Plan.StudyPlanGQLModel")]
 
+ClassificationTypeGQLModel = typing.Annotated["ClassificationTypeGQLModel", strawberry.lazy(".ClassificationTypeGQLModel")]
 
 @createInputs  
 @dataclasses.dataclass
@@ -99,6 +100,12 @@ class SemesterGQLModel(BaseGQLModel):
         description="subjects vhcin must be studied at first", 
         permission_classes=[OnlyForAuthentized],
         resolver=lambda: []
+    )
+
+    classificationtype: typing.Optional["ClassificationTypeGQLModel"] = strawberry.field(
+        description="classification at the end of semester",
+        permission_classes=[OnlyForAuthentized],
+        resolver=ScalarResolver["ClassificationTypeGQLModel"](fkey_field_name="classificationtype_id")
     )
 
     topics: typing.List["TopicGQLModel"] = strawberry.field(

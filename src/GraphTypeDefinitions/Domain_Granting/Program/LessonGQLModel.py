@@ -92,7 +92,7 @@ class LessonGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=ScalarResolver[LessonTypeGQLModel](fkey_field_name="topic_id")
+        resolver=ScalarResolver[LessonTypeGQLModel](fkey_field_name="type_id")
     )
 
 @strawberry.interface(

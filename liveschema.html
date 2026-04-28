@@ -453,7 +453,10 @@
     function generateSidebar() {
       const navDiv = document.getElementById("nav-links");
       navDiv.innerHTML = "";
-      const headings = document.querySelectorAll("#content h5[id]");
+      const headings = document.querySelectorAll("#content h5[id]")
+        .sort((a, b) =>
+        a.textContent.localeCompare(b.textContent, "cs")
+        );
       headings.forEach(h => {
         const link = document.createElement("a");
         link.href = "#" + h.id;
@@ -623,32 +626,76 @@ query IntrospectionQuery {
   }
 }
 `;
-    fetch(fetchURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: introspectionQuery })
-    })
-    .then(response => {
-      if (!response.ok) throw new Error('Network error: ' + response.statusText);
-      return response.json();
-    })
-    .then(data => {
-      const markdownText = generateMarkdownFromSchema(data.data);
-      const md = window.markdownit({
-        html: true,
-        linkify: true,
-        typographer: true
-      }).use(window.markdownItAnchor, {
-        slugify: customSlugify,
-        level: [4, 5]
-      }).use(wrapH5Sections);
-      document.getElementById("content").innerHTML = md.render(markdownText);
-      addButtonGroups();
-      generateSidebar();
-    })
-    .catch(err => {
-      document.getElementById("content").innerHTML = "Error loading schema: " + err;
-    });
+    // fetch(fetchURL, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ query: introspectionQuery })
+    // })
+    // .then(response => {
+    //   if (!response.ok) throw new Error('Network error: ' + response.statusText);
+    //   return response.json();
+    // })
+    // .then(data => {
+    //   const markdownText = generateMarkdownFromSchema(data.data);
+    //   const md = window.markdownit({
+    //     html: true,
+    //     linkify: true,
+    //     typographer: true
+    //   }).use(window.markdownItAnchor, {
+    //     slugify: customSlugify,
+    //     level: [4, 5]
+    //   }).use(wrapH5Sections);
+    //   document.getElementById("content").innerHTML = md.render(markdownText);
+    //   addButtonGroups();
+    //   generateSidebar();
+    // })
+    // .catch(err => {
+    //   document.getElementById("content").innerHTML = "Error loading schema: " + err;
+    // });
+
+
+    async function loadSchemaAndRender() {
+        try {
+            const response = await fetch(fetchURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: introspectionQuery })
+            });
+
+            if (!response.ok) {
+            throw new Error('Network error: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            const markdownText = generateMarkdownFromSchema(data.data);
+
+            const md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
+            })
+            .use(window.markdownItAnchor, {
+            slugify: customSlugify,
+            level: [4, 5]
+            })
+            .use(wrapH5Sections);
+
+            document.getElementById("content").innerHTML =
+            md.render(markdownText);
+
+            addButtonGroups();
+            generateSidebar();
+
+        } catch (err) {
+            document.getElementById("content").innerHTML =
+            "Error loading schema: " + err;
+        }
+    }
+
+    // zavolání
+    loadSchemaAndRender();
+
     // Activate Bootstrap scrollspy.
     window.addEventListener('load', () => {
       new bootstrap.ScrollSpy(document.body, {

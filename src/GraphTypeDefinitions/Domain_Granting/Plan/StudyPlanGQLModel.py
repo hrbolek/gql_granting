@@ -194,6 +194,7 @@ class StudyPlanMutation:
         extensions=[
             UserAccessControlExtension[InsertError, StudyPlanGQLModel](
                 roles=[
+                    "administrátor",
                     "studijní administrátor", 
                     "garant předmětu",
                     "garant programu",
@@ -227,6 +228,7 @@ class StudyPlanMutation:
         extensions=[
             UserAccessControlExtension[UpdateError, StudyPlanGQLModel](
                 roles=[
+                    "administrátor",
                     "studijní administrátor", 
                     "garant předmětu",
                     "garant programu",
@@ -255,6 +257,7 @@ class StudyPlanMutation:
         ],
         extensions=[
             UserAccessControlExtension[DeleteError, StudyPlanGQLModel](roles=[
+                "administrátor",
                 "studijní administrátor", 
                 "garant programu",
             ]),

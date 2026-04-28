@@ -3,7 +3,7 @@ import dataclasses
 import datetime
 import typing
 import strawberry
-
+import async_lru
 import strawberry.types
 from uoishelpers.gqlpermissions import (
     OnlyForAuthentized,
@@ -24,14 +24,16 @@ from uoishelpers.resolvers import (
 
     PageResolver,
     VectorResolver,
-    ScalarResolver
+    ScalarResolver,
+    inspect
 )
 
 from uoishelpers.gqlpermissions.LoadDataExtension import LoadDataExtension
 from uoishelpers.gqlpermissions.RbacProviderExtension import RbacProviderExtension
-from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension
+from uoishelpers.gqlpermissions.UserRoleProviderExtension import UserRoleProviderExtension, getUserFromInfo
 from uoishelpers.gqlpermissions.UserAccessControlExtension import UserAccessControlExtension
 from uoishelpers.gqlpermissions.UserAbsoluteAccessControlExtension import UserAbsoluteAccessControlExtension
+from uoishelpers.gqlpermissions.ReadRBACFieldPermission import ReadRBACFieldPermission
 
 from src.GraphTypeDefinitions.BaseGQLModel import BaseGQLModel, IDType
 
@@ -72,6 +74,15 @@ class EvaluationInputFilter:
     exam: ExamInputFilter
     # parts: "Eva"
 
+@async_lru.alru_cache(maxsize=128, ttl=300, jitter=150)
+async def get_roles_for_access(endpoint_id):
+    return [
+        "administrátor", 
+        "studijní administrátor", 
+        "garant předmětu",
+        "garant programu",
+        "zkoušející"
+    ]
 
 @strawberry.federation.type(
     keys=["id"],
@@ -82,6 +93,17 @@ class EvaluationGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info: strawberry.types.Info):
         return getLoadersFromInfo(info=info).ClassificationModel
+
+    # @classmethod
+    def getExamLoader(info: strawberry.types.Info):
+        from .ExamGQLModel import ExamGQLModel
+        return ExamGQLModel.getLoader(info=info)
+    
+    # @classmethod
+    def getStudentLoader(info: strawberry.types.Info):
+        from ..Student.StudentGQLModel import StudentGQLModel
+        return StudentGQLModel.getLoader(info=info)
+    
 
     path: typing.Optional[str] = strawberry.field(
         default=None,
@@ -96,6 +118,20 @@ class EvaluationGQLModel(BaseGQLModel):
         description="index of attempt",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission.Any([
+                ReadRBACFieldPermission(
+                    roles=lambda: get_roles_for_access(""),
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=lambda: get_roles_for_access(""),
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
         ]
     )
 
@@ -104,6 +140,20 @@ class EvaluationGQLModel(BaseGQLModel):
         description="given points for this exam",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission(any=[
+                ReadRBACFieldPermission(
+                    roles=lambda: get_roles_for_access(""),
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=lambda: get_roles_for_access(""),
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
         ]
     )
 
@@ -120,6 +170,92 @@ class EvaluationGQLModel(BaseGQLModel):
         description="description given to student and exam",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission(any=[
+                ReadRBACFieldPermission(
+                    roles=lambda: get_roles_for_access("EvaluationGQLModel.description"),
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=lambda: get_roles_for_access("EvaluationGQLModel.description"),
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
+        ]
+    )
+
+    points: typing.Optional[int] = strawberry.field(
+        default=None,
+        description="given points for this exam",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission(any=[
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
+        ]
+    )
+
+    passed: typing.Optional[bool] = strawberry.field(
+        default=None,
+        description="True if student passed this exam",
+        permission_classes=[
+            OnlyForAuthentized
+        ]
+    )
+
+    description: typing.Optional[str] = strawberry.field(
+        default=None,
+        description="description given to student and exam",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission(any=[
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
         ]
     )
 
@@ -128,6 +264,30 @@ class EvaluationGQLModel(BaseGQLModel):
         description="given grade / mark id",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission(any=[
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
         ]
     )
 
@@ -135,6 +295,30 @@ class EvaluationGQLModel(BaseGQLModel):
         description="represents formal mark",
         permission_classes=[
             OnlyForAuthentized
+        ],
+        extensions=[
+            ReadRBACFieldPermission(any=[
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="student_id",
+                    loader_getter=getStudentLoader
+                ),
+                ReadRBACFieldPermission(
+                    roles=[
+                        "studijní administrátor", 
+                        "garant předmětu",
+                        "garant programu",
+                        "zkoušející"
+                    ],
+                    pk_field_name="exam_id",
+                    loader_getter=getExamLoader
+                )
+            ])
         ],
         resolver=ScalarResolver["ClassificationLevelGQLModel"](fkey_field_name="classificationlevel_id")
     )
