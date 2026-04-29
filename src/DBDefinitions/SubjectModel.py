@@ -16,6 +16,10 @@ class SubjectModel(BaseModel):
 
     name: Mapped[str] = mapped_column(default=None, nullable=True)
     name_en: Mapped[str] = mapped_column(default=None, nullable=True)
+    
+    description : Mapped[str] = mapped_column(default=None, nullable=True)
+    description_en: Mapped[str] = mapped_column(default=None, nullable=True)
+
     program_id: Mapped[IDType] = mapped_column(ForeignKey("acprograms.id"), index=True, default=None, nullable=True)
     guarantors_group_id: Mapped[IDType] = UUIDFKey(nullable=True)
 
