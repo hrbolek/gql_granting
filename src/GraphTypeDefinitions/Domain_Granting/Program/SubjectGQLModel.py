@@ -187,12 +187,12 @@ class SubjectInsertGQLModel(InputModelMixin):
 class SubjectUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    name: typing.Optional[str] = strawberry.field(description="subject name", default=None)
-    name_en: typing.Optional[str] = strawberry.field(description="subject name in english", default=None)
-    description: typing.Optional[str] = strawberry.field(description="subject description", default=None)
-    description_en: typing.Optional[str] = strawberry.field(description="subject description in english", default=None)
-    # program_id: typing.Optional[IDType] = strawberry.field(description="program id", default=None)
-    # group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme", default=None)
+    name: typing.Optional[str] = strawberry.field(description="subject name", default=strawberry.UNSET)
+    name_en: typing.Optional[str] = strawberry.field(description="subject name in english", default=strawberry.UNSET)
+    description: typing.Optional[str] = strawberry.field(description="subject description", default=strawberry.UNSET)
+    description_en: typing.Optional[str] = strawberry.field(description="subject description in english", default=strawberry.UNSET)
+    # program_id: typing.Optional[IDType] = strawberry.field(description="program id", default=strawberry.UNSET)
+    # group_id: typing.Optional[IDType] = strawberry.field(description="guarantors of programme", default=strawberry.UNSET)
 
 @strawberry.input(
     description="parameter for delete operation"

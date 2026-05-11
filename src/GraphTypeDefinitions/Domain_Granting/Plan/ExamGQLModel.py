@@ -292,31 +292,31 @@ class ExamUpdateGQLModel:
     )
     name: typing.Optional[str] = strawberry.field(
         description="The localized name of the exam.", 
-        default=None
+        default=strawberry.UNSET
     )
     name_en: typing.Optional[str] = strawberry.field(
         description="The English name of the exam.", 
-        default=None
+        default=strawberry.UNSET
     )
     description: typing.Optional[str] = strawberry.field(
         description="A detailed localized description of the exam.", 
-        default=None
+        default=strawberry.UNSET
     )
     description_en: typing.Optional[str] = strawberry.field(
         description="A detailed description of the exam in English.", 
-        default=None
+        default=strawberry.UNSET
     )
     min_score: typing.Optional[int] = strawberry.field(
         description="The minimum score required, used for passing or grading.", 
-        default=None
+        default=strawberry.UNSET
     )
     max_score: typing.Optional[int] = strawberry.field(
         description="The maximum achievable score for the exam.", 
-        default=None
+        default=strawberry.UNSET
     )
     type_id: typing.Optional[IDType] = strawberry.field(
         description="Identifier for the exam type, which determines its category or format.", 
-        default=None
+        default=strawberry.UNSET
     )
     # parent_id: typing.Optional[IDType] = strawberry.field(
     #     description="Optional identifier for a parent exam, if applicable.", 

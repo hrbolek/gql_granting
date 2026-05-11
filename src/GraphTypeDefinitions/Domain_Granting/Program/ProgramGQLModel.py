@@ -214,14 +214,14 @@ class ProgramUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
     name: typing.Optional[str] = strawberry.field(
-        description="name of the program", default=None
+        description="name of the program", default=strawberry.UNSET
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="name of the program", default=None
+        description="name of the program", default=strawberry.UNSET
     )
-    # group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=None)
-    # licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=None)
-    type_id: typing.Optional[IDType] = strawberry.field(description="programme type", default=None)
+    # group_id: typing.Optional[IDType] = strawberry.field(description="guarantors", default=strawberry.UNSET)
+    # licenced_group_id: typing.Optional[IDType] = strawberry.field(description="who is licenced to teach", default=strawberry.UNSET)
+    type_id: typing.Optional[IDType] = strawberry.field(description="programme type", default=strawberry.UNSET)
 
     changedby_id: strawberry.Private[IDType] = None
 

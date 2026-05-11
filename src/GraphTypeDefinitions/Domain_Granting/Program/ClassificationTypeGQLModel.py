@@ -101,15 +101,15 @@ class ClassificationTypeUpdateGQLModel:
     )
     name: typing.Optional[str] = strawberry.field(
         description="name of the classification",
-        default=None
+        default=strawberry.UNSET
     )
     name_en: typing.Optional[str] = strawberry.field(
         description="name of the classification",
-        default=None
+        default=strawberry.UNSET
     )    
     name: typing.Optional[str] = strawberry.field(
         description="name of the classification",
-        default=None
+        default=strawberry.UNSET
     )    
 
 @strawberry.input(description="")

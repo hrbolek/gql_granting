@@ -126,13 +126,13 @@ class LessonTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="id of the lesson_type to update")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the lesson_type.", default=None
+        description="The localized name of the lesson_type.", default=strawberry.UNSET
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the lesson_type.", default=None
+        description="The English name of the lesson_type.", default=strawberry.UNSET
     )
     abbr: typing.Optional[str] = strawberry.field(
-        description="Abbreviation of the lesson_type.", default=None
+        description="Abbreviation of the lesson_type.", default=strawberry.UNSET
     )
 
 @strawberry.input(

@@ -215,9 +215,9 @@ class StudentInsertGQLModel:
 class StudentUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    program_id: typing.Optional[IDType] = strawberry.field(description="id of the program", default=None)
-    state_id: typing.Optional[IDType] = strawberry.field(description="id of the state", default=None)
-    semester_number: typing.Optional[int] = strawberry.field(description="semester of study", default=None)
+    program_id: typing.Optional[IDType] = strawberry.field(description="id of the program", default=strawberry.UNSET)
+    state_id: typing.Optional[IDType] = strawberry.field(description="id of the state", default=strawberry.UNSET)
+    semester_number: typing.Optional[int] = strawberry.field(description="semester of study", default=strawberry.UNSET)
 
 @strawberry.input(
     description="parameter for delete operation"

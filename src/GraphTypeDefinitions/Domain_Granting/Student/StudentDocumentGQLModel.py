@@ -134,9 +134,9 @@ class StudentDocumentInsertGQLModel:
 class StudentDocumentUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    # description: typing.Optional[str] = strawberry.field(description="description", default=None)
-    student_id: typing.Optional[IDType] = strawberry.field(description="id of the study / no user_id", default=None)
-    document_id: typing.Optional[IDType] = strawberry.field(description="id of the document", default=None)
+    # description: typing.Optional[str] = strawberry.field(description="description", default=strawberry.UNSET)
+    student_id: typing.Optional[IDType] = strawberry.field(description="id of the study / no user_id", default=strawberry.UNSET)
+    document_id: typing.Optional[IDType] = strawberry.field(description="id of the document", default=strawberry.UNSET)
     
 @strawberry.input(
     description="parameter for delete operation"

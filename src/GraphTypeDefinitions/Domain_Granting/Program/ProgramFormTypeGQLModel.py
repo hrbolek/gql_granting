@@ -116,10 +116,10 @@ class ProgramFormTypeInsertGQLModel(InputModelMixin):
 class ProgramFormTypeUpdateGQLModel:
     id: IDType = strawberry.field(description="primary key client generated")
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
-    name: typing.Optional[str] = strawberry.field(description="name of the program_form_type", default=None)
+    name: typing.Optional[str] = strawberry.field(description="name of the program_form_type", default=strawberry.UNSET)
     name_en: str = strawberry.field(
         description="name of the program_form_type",
-        default=None
+        default=strawberry.UNSET
     )
 
 @strawberry.input(

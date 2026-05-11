@@ -288,29 +288,29 @@ class StudyPlanLessonUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update")
 
     lessontype_id: typing.Optional[IDType] = strawberry.field(
-        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.", default=None
+        description="The identifier of the lesson type (e.g. lecture, seminar, lab) for this study plan lesson.", default=strawberry.UNSET
     )
     topic_id: typing.Optional[IDType] = strawberry.field(
-        description="The identifier of the topic associated with this study plan lesson.", default=None
+        description="The identifier of the topic associated with this study plan lesson.", default=strawberry.UNSET
     )
     event_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier of an event linked to this study plan lesson (if applicable).", default=None
+        description="Optional identifier of an event linked to this study plan lesson (if applicable).", default=strawberry.UNSET
     )
     linked_with_id: typing.Optional[IDType] = strawberry.field(
-        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).", default=None
+        description="Optional identifier of another study plan lesson that this study plan lesson is linked with (e.g. a follow-up or complementary session).", default=strawberry.UNSET
     )
     name: typing.Optional[str] = strawberry.field(
-        description="The localized name of the study plan lesson.", default=None
+        description="The localized name of the study plan lesson.", default=strawberry.UNSET
     )
     name_en: typing.Optional[str] = strawberry.field(
-        description="The English name of the study plan lesson.", default=None
+        description="The English name of the study plan lesson.", default=strawberry.UNSET
     )
     length: typing.Optional[int] = strawberry.field(
-        description="The duration or length of the study plan lesson, expressed in virtual units.", default=None
+        description="The duration or length of the study plan lesson, expressed in virtual units.", default=strawberry.UNSET
     )
     order: typing.Optional[int] = strawberry.field(
         description="order in plan",
-        default=None
+        default=strawberry.UNSET
     )  
     changedby_id: strawberry.Private[IDType] = None
 

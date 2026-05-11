@@ -168,11 +168,11 @@ class StudyPlanInsertGQLModel(InputModelMixin):
     description="parameter for update"
 )
 class StudyPlanUpdateGQLModel:
-    id: IDType = strawberry.field(description="id of the studyplan to update", default=None)
-    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update", default=None)
-    # semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=None)
-    exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=None)
-    event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=None)
+    id: IDType = strawberry.field(description="id of the studyplan to update", default=strawberry.UNSET)
+    lastchange: datetime.datetime = strawberry.field(description="timestamp for concurent update", default=strawberry.UNSET)
+    # semester_id: typing.Optional[IDType] = strawberry.field(description="Semester to which teh plan is linked.", default=strawberry.UNSET)
+    exam_id: typing.Optional[IDType] = strawberry.field(description="Exam Rules", default=strawberry.UNSET)
+    event_id: typing.Optional[IDType] = strawberry.field(description="Time period when the plan will live", default=strawberry.UNSET)
 
 @strawberry.input(
     description="parameter for delete"

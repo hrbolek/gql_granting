@@ -168,24 +168,24 @@ class PaymentUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(description="timestamp for concurrent update")
     student_id: typing.Optional[IDType] = strawberry.field(
         description="student id", 
-        default=None,
+        default=strawberry.UNSET,
         directives=[
             Relation(to="StudentGQLModel")
         ]
     )
     program_id: typing.Optional[IDType] = strawberry.field(
         description="program id", 
-        default=None,
+        default=strawberry.UNSET,
         directives=[
             Relation(to="ProgramGQLModel")
         ]
     )
-    bank_unique_data: typing.Optional[str] = strawberry.field(description="unikátní identifikátor platby vystavený bankou (link do banky)", default=None)
-    variable_symbol: typing.Optional[str] = strawberry.field(description="uvedený variabilní symbol", default=None)
-    amount: typing.Optional[float] = strawberry.field(description="zaplacená částka", default=None)
+    bank_unique_data: typing.Optional[str] = strawberry.field(description="unikátní identifikátor platby vystavený bankou (link do banky)", default=strawberry.UNSET)
+    variable_symbol: typing.Optional[str] = strawberry.field(description="uvedený variabilní symbol", default=strawberry.UNSET)
+    amount: typing.Optional[float] = strawberry.field(description="zaplacená částka", default=strawberry.UNSET)
     payment_info_id: typing.Optional[IDType] = strawberry.field(
         description="Generální platební podmínky", 
-        default=None,
+        default=strawberry.UNSET,
         directives=[
             Relation(to="PaymentInfoGQLModel")
         ]
